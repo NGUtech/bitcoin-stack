@@ -1,0 +1,115 @@
+version: "2.4"
+
+volumes:
+  bitcoin_data:
+  lndalice_data:
+  lndalice_shared:
+  lndbob_data:
+  lndbob_shared:
+
+services:
+  bitcoind:
+    container_name: ${COMPOSE_PROJECT_NAME}_bitcoind
+    image: bitcoind:latest
+    build: ./bitcoind
+    command: [
+      "bitcoind",
+      "-datadir=/bitcoin",
+      "-port=${BITCOIN_PORT}",
+      "-upnp=0",
+      "-dnsseed=0",
+      "-txindex=1",
+      "-listen=0",
+      "-server=1",
+      "-onlynet=ipv4",
+      "-regtest=1",
+      "-deprecatedrpc=generate",
+      "-regtest.rpcport=${BITCOIN_RPC_PORT}",
+      "-regtest.port=${BITCOIN_PORT}",
+      "-rpcport=${BITCOIN_RPC_PORT}",
+      "-rpcuser=${BITCOIN_RPC_USER}",
+      "-rpcpassword=${BITCOIN_RPC_PASSWORD}",
+      "-rpcallowip=0.0.0.0/0",
+      "-rpcbind=127.0.0.1",
+      "-rpcbind=bitcoind",
+      "-zmqpubrawtx=tcp://0.0.0.0:${BITCOIN_ZMQ_TX_PORT}",
+      "-zmqpubrawblock=tcp://0.0.0.0:${BITCOIN_ZMQ_BLOCK_PORT}",
+      "-zmqpubhashblock=tcp://0.0.0.0:${BITCOIN_ZMQ_BLOCK_PORT}"
+    ]
+    ports:
+      - "${BITCOIN_PORT}:${BITCOIN_PORT}"
+      - "127.0.0.1:${BITCOIN_RPC_PORT}:${BITCOIN_RPC_PORT}"
+    volumes:
+      - bitcoin_data:/bitcoin
+
+  lndalice:
+    container_name: ${COMPOSE_PROJECT_NAME}_lndalice
+    image: lnd:0.7.0-beta
+    build: ./lnd
+    restart: unless-stopped
+    command: [
+      "lnd",
+      "--noseedbackup",
+      "--listen=0.0.0.0:${LNDALICE_PORT}",
+      "--rpclisten=0.0.0.0:${LNDALICE_RPC_PORT}",
+      "--restlisten=0.0.0.0:${LNDALICE_REST_PORT}",
+      "--adminmacaroonpath=/shared/admin.macaroon",
+      "--tlsextradomain=${LNDALICE_HOST}",
+      "--tlsextraip=0.0.0.0",
+      "--tlskeypath=/shared/tls.key",
+      "--tlscertpath=/shared/tls.cert",
+      "--datadir=/lnd",
+      "--bitcoin.active",
+      "--bitcoin.regtest",
+      "--bitcoin.node=bitcoind",
+      "--bitcoind.rpchost=${BITCOIN_HOST}:${BITCOIN_RPC_PORT}",
+      "--bitcoind.rpcuser=${BITCOIN_RPC_USER}",
+      "--bitcoind.rpcpass=${BITCOIN_RPC_PASSWORD}",
+      "--bitcoind.zmqpubrawtx=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_TX_PORT}",
+      "--bitcoind.zmqpubrawblock=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_BLOCK_PORT}"
+    ]
+    depends_on:
+      - bitcoind
+    ports:
+      - "${LNDALICE_PORT}:${LNDALICE_PORT}"
+      - "127.0.0.1:${LNDALICE_RPC_PORT}:${LNDALICE_RPC_PORT}"
+      - "127.0.0.1:${LNDALICE_REST_PORT}:${LNDALICE_REST_PORT}"
+    volumes:
+      - lndalice_data:/lnd
+      - lndalice_shared:/shared
+
+  lndbob:
+    container_name: ${COMPOSE_PROJECT_NAME}_lndbob
+    image: lnd:0.7.0-beta
+    build: ./lnd
+    restart: unless-stopped
+    command: [
+      "lnd",
+      "--noseedbackup",
+      "--listen=0.0.0.0:${LNDBOB_PORT}",
+      "--rpclisten=0.0.0.0:${LNDBOB_RPC_PORT}",
+      "--restlisten=0.0.0.0:${LNDBOB_REST_PORT}",
+      "--adminmacaroonpath=/shared/admin.macaroon",
+      "--tlsextradomain=${LNDBOB_HOST}",
+      "--tlsextraip=0.0.0.0",
+      "--tlskeypath=/shared/tls.key",
+      "--tlscertpath=/shared/tls.cert",
+      "--datadir=/lnd",
+      "--bitcoin.active",
+      "--bitcoin.regtest",
+      "--bitcoin.node=bitcoind",
+      "--bitcoind.rpchost=${BITCOIN_HOST}:${BITCOIN_RPC_PORT}",
+      "--bitcoind.rpcuser=${BITCOIN_RPC_USER}",
+      "--bitcoind.rpcpass=${BITCOIN_RPC_PASSWORD}",
+      "--bitcoind.zmqpubrawtx=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_TX_PORT}",
+      "--bitcoind.zmqpubrawblock=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_BLOCK_PORT}"
+    ]
+    depends_on:
+      - bitcoind
+    ports:
+      - "${LNDBOB_PORT}:${LNDBOB_PORT}"
+      - "127.0.0.1:${LNDBOB_RPC_PORT}:${LNDBOB_RPC_PORT}"
+      - "127.0.0.1:${LNDBOB_REST_PORT}:${LNDBOB_REST_PORT}"
+    volumes:
+      - lndbob_data:/lnd
+      - lndbob_shared:/shared
