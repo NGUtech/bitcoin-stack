@@ -7,6 +7,7 @@ This `docker-compose` template launches `bitcoind`, and two `lnd` containers nam
 It is configured to run in **regtest** mode but can be modified to suit your needs.
 
 ### Notes
+ - `docker` and `docker-compose` installation required (https://docs.docker.com/install/)
  - `bitcoind 0.18.0` is built from an Ubuntu repository and should not be used in production.
  - `lnd 0.7.0` containers will sync to chain after first Bitcoin regtest blocks are generated (see below).
  - Ports and other deamon configuration can be changed in the `.env` and `docker-compose.yml` files.
