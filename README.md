@@ -36,6 +36,7 @@ Use the provided cli tools to execute commands in the containers:
 $ bin/b-cli getwalletinfo
 $ bin/ln-alice getinfo
 $ bin/ln-bob getinfo
+$ bin/e-cli getwalletinfo
 ```
 
 A convenience script is provided to create a channel with some funding between the two `lnd` containers.
