@@ -1,4 +1,4 @@
-# Docker setup for Bitcoind & LND in regtest mode
+# Docker setup for Bitcoin, Elements/Liquid, & LND in regtest mode
 
 ### ONLY FOR DEVELOPMENT and TESTING. These tools may not be suitable for production deployments.
 
