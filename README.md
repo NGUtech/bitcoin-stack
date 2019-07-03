@@ -9,8 +9,8 @@ It is configured to run in **regtest** mode but can be modified to suit your nee
 ### Notes & prerequisites
  - `docker` and `docker-compose` installation is required (https://docs.docker.com/install/).
  - `jq` tool is used in examples for parsing json responses.
- - `bitcoind 0.17.1` is built from an Ubuntu repository and should not be used in production.
- - `lnd 0.7.0-beta` containers will sync to chain after first Bitcoin regtest blocks are generated.
+ - `lnd 0.7.0-beta` and `elementsd 0.17.0` will sync to chain after the first Bitcoin regtest blocks are generated.
+  - All daemons are compiled from source but consider carefully before using them in production environments.
  - Ports and other daemon configuration can be changed in the `.env` and `docker-compose.yml` files.
  - See the [changelog](CHANGELOG.md) when upgrading.
 
