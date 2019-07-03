@@ -50,7 +50,7 @@ $ bin/ln-bob listchannels
 
 Elements sidechain is available and can be pegged in from dev bitcoin chain using the provided convenience script.
 ```
-$ bin/e-pegin
+$ bin/e-pegin 1.337
 $ bin/e-cli getwalletinfo
 ```
 
