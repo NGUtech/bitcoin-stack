@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+bin/e-cli generate 1
+ADDRS=$(bin/e-cli getpeginaddress)
+MAINCHAIN=$(echo $ADDRS | jq '.mainchain_address' | tr -d '"')
+SIDECHAIN=$(echo $ADDRS | jq '.claim_script' | tr -d '"')
+TXID=$(bin/b-cli sendtoaddress $MAINCHAIN 1)
+bin/b-cli generate 101
+PROOF=$(bin/b-cli gettxoutproof '''["'''$TXID'''"]''')
+RAW=$(bin/b-cli getrawtransaction $TXID)
+bin/e-cli claimpegin $RAW $PROOF
+bin/e-cli generate 1

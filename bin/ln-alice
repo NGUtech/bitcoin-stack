@@ -2,7 +2,7 @@
 
 source .env
 
-docker-compose exec lndalice lncli \
+docker-compose exec -T lndalice lncli \
   --macaroonpath /shared/admin.macaroon \
   --tlscertpath /shared/tls.cert \
   --rpcserver 127.0.0.1:$LNDALICE_RPC_PORT \

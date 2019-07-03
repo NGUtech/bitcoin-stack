@@ -14,8 +14,8 @@ RUN apt-get install -y --fix-missing build-essential libtool \
 
 WORKDIR /build
 
-RUN git clone -n https://github.com/bitcoin/bitcoin . \
-  && git checkout ef70f9b52b851c7997a9f1a0834714e3eebc1fd8 \
+RUN git clone -n https://github.com/ElementsProject/elements.git . \
+  && git checkout 551483eae50ff2ee48ed17d6b22bb1a26284b635 \
   && ./autogen.sh \
   && ./configure --without-gui --disable-tests \
   && make && make install
@@ -26,4 +26,4 @@ FROM ubuntu:bionic-20190612
 COPY --from=builder /usr/lib /usr/lib
 COPY --from=builder /usr/local/bin /usr/local/bin
 
-ADD ./bitcoin.conf /bitcoin/bitcoin.conf
+ADD ./elements.conf /elements/elements.conf

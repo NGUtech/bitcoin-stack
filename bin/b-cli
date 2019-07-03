@@ -2,7 +2,7 @@
 
 source .env
 
-docker-compose exec bitcoind bitcoin-cli \
+docker-compose exec -T bitcoind bitcoin-cli \
   -datadir=/bitcoin \
   -rpcuser=$BITCOIN_RPC_USER \
   -rpcpassword=$BITCOIN_RPC_PASSWORD \
