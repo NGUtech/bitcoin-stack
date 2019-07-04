@@ -2,11 +2,13 @@ version: "2.4"
 
 volumes:
   bitcoin_data:
+  bitcoin_shared:
   lndalice_data:
   lndalice_shared:
   lndbob_data:
   lndbob_shared:
   elements_data:
+  lightningdcarol_data:
 
 services:
   bitcoind:
@@ -39,6 +41,7 @@ services:
       - "127.0.0.1:${BITCOIN_RPC_PORT}:${BITCOIN_RPC_PORT}"
     volumes:
       - bitcoin_data:/bitcoin
+      - bitcoin_shared:/shared
 
   lndalice:
     container_name: ${COMPOSE_PROJECT_NAME}_lndalice
@@ -147,3 +150,25 @@ services:
       - "127.0.0.1:${ELEMENTS_RPC_PORT}:${ELEMENTS_RPC_PORT}"
     volumes:
       - elements_data:/elements
+
+  lightningdcarol:
+    container_name: ${COMPOSE_PROJECT_NAME}_lightningdcarol
+    image: lightningd:0.7.1
+    build: ./lightningd
+    command: [
+      "lightningd",
+      "--lightning-dir=/lightningd",
+      "--network=regtest",
+      "--addr=0.0.0.0:${LIGHTNINGDCAROL_PORT}",
+      "--bitcoin-cli=/bitcoin/bitcoin-cli",
+      "--bitcoin-datadir=/bitcoin",
+      "--bitcoin-rpcconnect=${BITCOIN_HOST}",
+      "--bitcoin-rpcport=${BITCOIN_RPC_PORT}",
+      "--bitcoin-rpcuser=${BITCOIN_RPC_USER}",
+      "--bitcoin-rpcpassword=${BITCOIN_RPC_PASSWORD}"
+    ]
+    depends_on:
+      - elementsd
+    volumes:
+      - lightningdcarol_data:/lightningd
+      - bitcoin_shared:/bitcoin

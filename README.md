@@ -2,7 +2,7 @@
 
 ### ONLY FOR DEVELOPMENT and TESTING. These tools may not be suitable for production deployments.
 
-This `docker-compose` template launches `bitcoind`, two `lnd` containers named `lndalice` and `lndbob`, and optionally an `elementsd` side chain (aka Liquid).
+This `docker-compose` template launches `bitcoind`, two `lnd` containers named `lndalice` and `lndbob`, and optionally an `elementsd` side chain (aka Liquid), and `lightningd` as `lightningdcarol`.
 
 It is configured to run in **regtest** mode but can be modified to suit your needs.
 
@@ -21,9 +21,13 @@ It may take up to 30 minutes to launch the stack if container images are not alr
 $ docker-compose up -d bitcoind
 $ bin/b-cli generate 101
 $ docker-compose up -d lndalice lndbob
-# elements can be started optionally
+
+# elements/liquid can be started optionally
 $ docker-compose up -d elementsd
 $ bin/e-cli generate 1
+
+# lightningd can also be started
+$ docker-compose up -d lightningdcarol
 ```
 
 Check containers are up and running with:
@@ -34,12 +38,13 @@ $ docker-compose ps
 Use the provided cli tools to execute commands in the containers:
 ```
 $ bin/b-cli getwalletinfo
+$ bin/e-cli getwalletinfo
 $ bin/ln-alice getinfo
 $ bin/ln-bob getinfo
-$ bin/e-cli getwalletinfo
+$ bin/ld-carol getinfo
 ```
 
-A convenience script is provided to create a channel with some funding between the two `lnd` containers.
+A convenience script is provided to create a channel from `bob` to `alice` with some funding between the two `lnd` containers.
 ```
 $ bin/ln-connect
 # once channels are opened a payment can be simulated
@@ -47,6 +52,15 @@ $ TEST_INVOICE=$(bin/ln-alice addinvoice --amt 10000 | jq '.pay_req' | tr -d '"'
 $ bin/ln-bob payinvoice $TEST_INVOICE
 $ bin/ln-alice listchannels
 $ bin/ln-bob listchannels
+```
+
+Another convenience script will connect `bob` to `carol` on the `lightningd` implementation of LN.
+```
+$ bin/ld-connect
+# once channels are opened a payment can be simulated (note amount in *mSats*)
+$ TEST_INVOICE=$(bin/ld-carol invoice 10000000 "test" "" | jq '.bolt11' | tr -d '"')
+$ bin/ln-bob payinvoice $TEST_INVOICE
+$ bin/ld-carol listfunds
 ```
 
 Elements sidechain is available and can be pegged in from dev bitcoin chain using the provided convenience script.

@@ -25,5 +25,6 @@ FROM ubuntu:bionic-20190612
 
 COPY --from=builder /usr/lib /usr/lib
 COPY --from=builder /usr/local/bin /usr/local/bin
+COPY --from=builder /usr/local/bin/bitcoin-cli /shared/
 
 ADD ./bitcoin.conf /bitcoin/bitcoin.conf
