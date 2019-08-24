@@ -9,7 +9,7 @@ It is configured to run in **regtest** mode but can be modified to suit your nee
 ### Notes & prerequisites
  - `docker` and `docker-compose` installation is required (https://docs.docker.com/install/).
  - `jq` tool is used in examples for parsing json responses.
- - `lnd 0.7.0-beta` and `elementsd 0.17.0` will sync to chain after the first Bitcoin regtest blocks are generated.
+ - `lnd 0.7.1-beta` and `elementsd 0.17.0.1` will sync to chain after the first Bitcoin regtest blocks are generated.
   - All daemons are compiled from source but consider carefully before using them in production environments.
  - Ports and other daemon configuration can be changed in the `.env` and `docker-compose.yml` files.
  - See the [changelog](CHANGELOG.md) when upgrading.
@@ -24,7 +24,7 @@ $ docker-compose up -d lndalice lndbob
 
 # elements/liquid can be started optionally
 $ docker-compose up -d elementsd
-$ bin/e-cli generate 1
+$ bin/e-cli generate 101
 
 # lightningd can also be started
 $ docker-compose up -d lightningdcarol

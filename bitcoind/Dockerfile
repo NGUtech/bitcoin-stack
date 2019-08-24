@@ -15,9 +15,9 @@ RUN apt-get install -y --fix-missing build-essential libtool \
 WORKDIR /build
 
 RUN git clone -n https://github.com/bitcoin/bitcoin . \
-  && git checkout ef70f9b52b851c7997a9f1a0834714e3eebc1fd8 \
+  && git checkout v0.18.1 \
   && ./autogen.sh \
-  && ./configure --without-gui --disable-tests \
+  && ./configure --without-gui --disable-shared --with-pic --disable-tests \
   && make && make install
 
 

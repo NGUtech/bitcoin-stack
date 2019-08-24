@@ -15,9 +15,9 @@ RUN apt-get install -y --fix-missing build-essential libtool \
 WORKDIR /build
 
 RUN git clone -n https://github.com/ElementsProject/elements.git . \
-  && git checkout 551483eae50ff2ee48ed17d6b22bb1a26284b635 \
+  && git checkout elements-0.17.0.1 \
   && ./autogen.sh \
-  && ./configure --without-gui --disable-tests \
+  && ./configure --without-gui --disable-shared --with-pic --disable-tests \
   && make && make install
 
 
@@ -25,5 +25,6 @@ FROM ubuntu:bionic-20190612
 
 COPY --from=builder /usr/lib /usr/lib
 COPY --from=builder /usr/local/bin /usr/local/bin
+COPY --from=builder /usr/local/bin/elements-cli /shared/
 
 ADD ./elements.conf /elements/elements.conf

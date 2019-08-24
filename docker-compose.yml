@@ -3,17 +3,18 @@ version: "2.4"
 volumes:
   bitcoin_data:
   bitcoin_shared:
+  elements_data:
+  elements_shared:
   lndalice_data:
   lndalice_shared:
   lndbob_data:
   lndbob_shared:
-  elements_data:
   lightningdcarol_data:
 
 services:
   bitcoind:
     container_name: ${COMPOSE_PROJECT_NAME}_bitcoind
-    image: bitcoind:0.17.1
+    image: bitcoind:0.18.1
     build: ./bitcoind
     command: [
       "bitcoind",
@@ -24,6 +25,7 @@ services:
       "-server=1",
       "-onlynet=ipv4",
       "-regtest=1",
+      "-deprecatedrpc=generate",
       "-regtest.rpcport=${BITCOIN_RPC_PORT}",
       "-regtest.port=${BITCOIN_PORT}",
       "-rpcport=${BITCOIN_RPC_PORT}",
@@ -43,9 +45,46 @@ services:
       - bitcoin_data:/bitcoin
       - bitcoin_shared:/shared
 
+  elementsd:
+    container_name: ${COMPOSE_PROJECT_NAME}_elementsd
+    image: elementsd:0.17.0.1
+    build: ./elementsd
+    command: [
+      "elementsd",
+      "-datadir=/elements",
+      "-port=${ELEMENTS_PORT}",
+      "-upnp=0",
+      "-server=1",
+      "-txindex=1",
+      "-rpcport=${ELEMENTS_RPC_PORT}",
+      "-rpcuser=${ELEMENTS_RPC_USER}",
+      "-rpcpassword=${ELEMENTS_RPC_PASSWORD}",
+      "-rpcallowip=0.0.0.0/0",
+      "-rpcbind=127.0.0.1",
+      "-rpcbind=elementsd",
+      "-zmqpubrawtx=tcp://0.0.0.0:${ELEMENTS_ZMQ_TX_PORT}",
+      "-zmqpubhashblock=tcp://0.0.0.0:${ELEMENTS_ZMQ_BLOCK_PORT}",
+      "-mainchainrpchost=${BITCOIN_HOST}",
+      "-mainchainrpcport=${BITCOIN_RPC_PORT}",
+      "-mainchainrpcuser=${BITCOIN_RPC_USER}",
+      "-mainchainrpcpassword=${BITCOIN_RPC_PASSWORD}",
+      "-onlynet=ipv4",
+      "-chain=liquidregtest",
+      "-validatepegin=1",
+      "-initialfreecoins=0"
+    ]
+    depends_on:
+      - bitcoind
+    ports:
+      - "${ELEMENTS_PORT}:${ELEMENTS_PORT}"
+      - "127.0.0.1:${ELEMENTS_RPC_PORT}:${ELEMENTS_RPC_PORT}"
+    volumes:
+      - elements_data:/elements
+      - elements_shared:/shared
+
   lndalice:
     container_name: ${COMPOSE_PROJECT_NAME}_lndalice
-    image: lnd:0.7.0-beta
+    image: lnd:0.7.1-beta
     build: ./lnd
     restart: unless-stopped
     command: [
@@ -81,7 +120,7 @@ services:
 
   lndbob:
     container_name: ${COMPOSE_PROJECT_NAME}_lndbob
-    image: lnd:0.7.0-beta
+    image: lnd:0.7.1-beta
     build: ./lnd
     restart: unless-stopped
     command: [
@@ -115,45 +154,9 @@ services:
       - lndbob_data:/lnd
       - lndbob_shared:/shared
 
-  elementsd:
-    container_name: ${COMPOSE_PROJECT_NAME}_elementsd
-    image: elementsd:0.17.0
-    build: ./elementsd
-    command: [
-      "elementsd",
-      "-datadir=/elements",
-      "-port=${ELEMENTS_PORT}",
-      "-upnp=0",
-      "-server=1",
-      "-txindex=1",
-      "-rpcport=${ELEMENTS_RPC_PORT}",
-      "-rpcuser=${ELEMENTS_RPC_USER}",
-      "-rpcpassword=${ELEMENTS_RPC_PASSWORD}",
-      "-rpcallowip=0.0.0.0/0",
-      "-rpcbind=127.0.0.1",
-      "-rpcbind=elementsd",
-      "-zmqpubrawtx=tcp://0.0.0.0:${ELEMENTS_ZMQ_TX_PORT}",
-      "-zmqpubhashblock=tcp://0.0.0.0:${ELEMENTS_ZMQ_BLOCK_PORT}",
-      "-mainchainrpchost=${BITCOIN_HOST}",
-      "-mainchainrpcport=${BITCOIN_RPC_PORT}",
-      "-mainchainrpcuser=${BITCOIN_RPC_USER}",
-      "-mainchainrpcpassword=${BITCOIN_RPC_PASSWORD}",
-      "-onlynet=ipv4",
-      "-chain=liquidregtest",
-      "-validatepegin=1",
-      "-initialfreecoins=0"
-    ]
-    depends_on:
-      - bitcoind
-    ports:
-      - "${ELEMENTS_PORT}:${ELEMENTS_PORT}"
-      - "127.0.0.1:${ELEMENTS_RPC_PORT}:${ELEMENTS_RPC_PORT}"
-    volumes:
-      - elements_data:/elements
-
   lightningdcarol:
     container_name: ${COMPOSE_PROJECT_NAME}_lightningdcarol
-    image: lightningd:0.7.1
+    image: lightningd:0.7.2.1
     build: ./lightningd
     command: [
       "lightningd",
@@ -168,7 +171,7 @@ services:
       "--bitcoin-rpcpassword=${BITCOIN_RPC_PASSWORD}"
     ]
     depends_on:
-      - elementsd
+      - bitcoind
     volumes:
       - lightningdcarol_data:/lightningd
       - bitcoin_shared:/bitcoin

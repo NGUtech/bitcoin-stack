@@ -4,13 +4,13 @@ RUN apt-get -qq update && apt-get install -y software-properties-common
 
 RUN apt-get install -y --fix-missing \
   autoconf automake build-essential git libtool libgmp-dev \
-  libsqlite3-dev python python3 net-tools zlib1g-dev libsodium-dev \
+  libsqlite3-dev python python3 python3-mako net-tools zlib1g-dev libsodium-dev \
   libboost-all-dev libevent-dev
 
 WORKDIR /build
 
 RUN git clone -n https://github.com/ElementsProject/lightning.git . \
-    && git checkout 43d5492619b00e42bd34492f8b9a837b6a03df65 \
+    && git checkout v0.7.2.1 \
     && ./configure \
     && make && make install
 

@@ -1,16 +1,24 @@
 # Changelog
 
+## 2019-08-23
+ - These changes may not be compatible with data volumes from previous builds.
+ - Update `bitcoind` image to 0.18.1, modified `configure` options
+ - Update `lnd` image to 0.7.1-beta
+ - Update `lightningd` image to 0.7.2.1
+ - Update `elementsd` image to 0.17.0.1
+ - Minor changes to `docker-compose` configuration
+
 ## 2019-07-04
- - `bitcoind` Dockerfile updated to allowing sharing of `bitcoin-cli` for `lightningd`.
- - Added a `lightningd` node setup and tooling.
+ - `bitcoind` Dockerfile updated to allowing sharing of `bitcoin-cli` for `lightningd`
+ - Added a `lightningd` node setup and tooling
 
 ## 2019-07-03
- - Replaced `bitcoind` Dockerfile with fully compiled version of 0.17.1 to match latest `elementsd` version.
- - Added `elementsd` container configuration and tooling, compiled from source.
- - Changed Ubuntu base containers to specific date version tag.
- - Minor configuration tweaks.
- - Add MPL2.0 license.
+ - Replaced `bitcoind` Dockerfile with fully compiled version of 0.17.1 to match latest `elementsd` version
+ - Added `elementsd` container configuration and tooling, compiled from source
+ - Changed Ubuntu base containers to specific date version tag
+ - Minor configuration tweaks
+ - Add MPL2.0 license
  - Set pegin amount in convenience script
 
 ## 2019-07-02
- - Initial release.
+ - Initial release
