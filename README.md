@@ -2,17 +2,45 @@
 
 ### ONLY FOR DEVELOPMENT and TESTING. These tools may not be suitable for production deployments.
 
-This `docker-compose` template launches `bitcoind`, two `lnd` containers named `lndalice` and `lndbob`, and optionally an `elementsd` side chain (aka Liquid), and `lightningd` as `lightningdcarol`.
+     +--------------------------------------------------------------------+
+L+:  |                      YOUR APPLICATION STACK                        |
+     +---------------------------------+-------+--------------------------+
+                                       |       |
+                                       /       |
+     +-----------+  +---------+  +-----------+ | +----------+  +----------+
+     |           |  |         |  |           | | |          |  |          |
+L2:  |   ALICE   +--+   BOB   +--+   CAROL   | | |   DAVE   +--+   EMMA   |
+     |           |  |         |  |           | | |          |  |          |
+     +-----+-----+  +----+----+  +-----+-----+ | +----+-----+  +-----+----+
+           |             |             |       |      |              |
+           |             |             |       |      |              |
+           |             |             |       |      |              |
+           |             |             |       |      |              |
+           |   +---------+--------+    |       |    +-+--------------+-+
+           +---+                  +----+       |    |                  |
+L1:            |     BITCOIND     |            /    |     ELEMENTSD    |
+               |                  +-----------------+                  |
+               +------------------+                 +------------------+
 
-It is configured to run in **regtest** mode but can be modified to suit your needs.
+This `docker-compose` template launches `bitcoind`, two `lnd` containers named `lndalice` & `lndbob`, with a `lightningd` container as `lightningdcarol`.
+
+Additionally it will launch an `elementsd` side chain (aka Liquid), with prototype `lightningd-elements` implementation containers as `lightningddave` & `lightningdemma`.
+
+Everything is configured to run in **regtest** mode but can be adjusted as required.
 
 ### Notes & prerequisites
  - `docker` and `docker-compose` installation is required (https://docs.docker.com/install/).
  - `jq` tool is used in examples for parsing json responses.
- - `lnd 0.7.1-beta` and `elementsd 0.17.0.1` will sync to chain after the first Bitcoin regtest blocks are generated.
-  - All daemons are compiled from source but consider carefully before using them in production environments.
+ - All nodes will sync to chain after the first Bitcoin & Elements regtest blocks are generated.
+ - All daemons are compiled from source but it is not recommended to use them in production environments.
  - Ports and other daemon configuration can be changed in the `.env` and `docker-compose.yml` files.
  - See the [changelog](CHANGELOG.md) when upgrading.
+
+### Coming soon
+ - Elements token creation and transaction scripts
+ - Token swaps within Elements
+ - Lightning swaps across Bitcoin and Elements
+ - Other scripting examples
 
 ## How to run
 It may take up to 30 minutes to launch the stack if container images are not already compiled, since they are built from source. From your terminal in this folder:
@@ -22,12 +50,14 @@ $ docker-compose up -d bitcoind
 $ bin/b-cli generate 101
 $ docker-compose up -d lndalice lndbob
 
-# elements/liquid can be started optionally
+# Elements can be started optionally
 $ docker-compose up -d elementsd
 $ bin/e-cli generate 101
 
-# lightningd can also be started
+# lightningd can also be started on Bitcoin & Elements
 $ docker-compose up -d lightningdcarol
+$ docker-compose up -d lightningddave
+$ docker-compose up -d lightningdemma
 ```
 
 Check containers are up and running with:
@@ -35,38 +65,50 @@ Check containers are up and running with:
 $ docker-compose ps
 ```
 
-Use the provided cli tools to execute commands in the containers:
+Use the provided CLI tools to execute commands in the containers:
 ```
 $ bin/b-cli getwalletinfo
 $ bin/e-cli getwalletinfo
 $ bin/ln-alice getinfo
 $ bin/ln-bob getinfo
 $ bin/ld-carol getinfo
+$ bin/ld-dave getinfo
+$ bin/ld-emma getinfo
 ```
 
 A convenience script is provided to create a channel from `bob` to `alice` with some funding between the two `lnd` containers.
 ```
 $ bin/ln-connect
 # once channels are opened a payment can be simulated
-$ TEST_INVOICE=$(bin/ln-alice addinvoice --amt 10000 | jq '.pay_req' | tr -d '"')
-$ bin/ln-bob payinvoice $TEST_INVOICE
+$ ALICE_INVOICE=$(bin/ln-alice addinvoice --amt 10000 | jq '.pay_req' | tr -d '"')
+$ bin/ln-bob payinvoice $ALICE_INVOICE
 $ bin/ln-alice listchannels
 $ bin/ln-bob listchannels
 ```
 
-Another convenience script will connect `bob` to `carol` on the `lightningd` implementation of LN.
+Another convenience script will connect `bob` to `carol` on the `lightningd` implementation of LN on Bitcoin.
 ```
 $ bin/ld-connect
 # once channels are opened a payment can be simulated (note amount in *mSats*)
-$ TEST_INVOICE=$(bin/ld-carol invoice 10000000 "test" "" | jq '.bolt11' | tr -d '"')
-$ bin/ln-bob payinvoice $TEST_INVOICE
+$ CAROL_INVOICE=$(bin/ld-carol invoice 10000000 "test" "" | jq '.bolt11' | tr -d '"')
+$ bin/ln-bob payinvoice $CAROL_INVOICE
 $ bin/ld-carol listfunds
 ```
 
-Elements sidechain is available and can be pegged in from dev bitcoin chain using the provided convenience script.
+Elements sidechain is available and can be pegged in from regtest Bitcoin chain using the provided convenience script.
 ```
 $ bin/e-pegin 1.337
 $ bin/e-cli getwalletinfo
+```
+
+You can also open a `lightningd-elements` channel across the Elements chain between `dave` & `emma`.
+```
+$ bin/lde-connect
+# once channels are opened a payment can be simulated (note amount in *mSats*)
+$ EMMA_INVOICE=$(bin/ld-emma invoice 10000000 "test" "" | jq '.bolt11' | tr -d '"')
+$ bin/ld-dave pay $EMMA_INVOICE
+$ bin/ld-dave listpays
+$ bin/ld-emma listinvoices
 ```
 
 REST/RPC queries can be executed directly from the host to the daemons as follows:
@@ -84,6 +126,9 @@ $ curl -XGET --cacert ./bob-tls.cert --header "$BOB_MACAROON_HEADER" https://127
 
 #elementsd
 $ curl --data-binary '{"jsonrpc":"1.0","id":"curltext","method":"getwalletinfo","params":[]}' -H 'content-type:text/plain;' http://elements:elements@127.0.0.1:18886/
+
+#lightningd
+C-lightning doesn't have an RPC interface yet as far as i know, but the CLI wrapper is available in the bin folder.
 ```
 
 View daemon logs as follows:

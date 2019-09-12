@@ -1,5 +1,7 @@
-FROM ubuntu:bionic-20190612 as builder
+FROM ubuntu:cosmic as builder
 
+ENV TZ Etc/UTC
+ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get -qq update && apt-get install -y software-properties-common
 
 RUN add-apt-repository -y ppa:bitcoin/bitcoin \
@@ -21,7 +23,7 @@ RUN git clone -n https://github.com/bitcoin/bitcoin . \
   && make && make install
 
 
-FROM ubuntu:bionic-20190612
+FROM ubuntu:cosmic
 
 COPY --from=builder /usr/lib /usr/lib
 COPY --from=builder /usr/local/bin /usr/local/bin

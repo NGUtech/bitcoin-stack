@@ -1,7 +1,13 @@
 # Changelog
 
+## 2019-09-11
+ - Add `lightningd-elements` WIP image build & two c-lightning nodes on Elements
+ - Modify Ubuntu base versions in Docker images
+ - Update `elementsd` image to 0.17.0.2
+ - Fix Elements chain name for `elements-cli` calls from `lightningd`
+
 ## 2019-08-23
- - These changes may not be compatible with data volumes from previous builds.
+ - These changes may not be compatible with data volumes from previous builds
  - Update `bitcoind` image to 0.18.1, modified `configure` options
  - Update `lnd` image to 0.7.1-beta
  - Update `lightningd` image to 0.7.2.1

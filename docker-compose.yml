@@ -10,6 +10,8 @@ volumes:
   lndbob_data:
   lndbob_shared:
   lightningdcarol_data:
+  lightningddave_data:
+  lightningdemma_data:
 
 services:
   bitcoind:
@@ -47,7 +49,7 @@ services:
 
   elementsd:
     container_name: ${COMPOSE_PROJECT_NAME}_elementsd
-    image: elementsd:0.17.0.1
+    image: elementsd:0.17.0.2
     build: ./elementsd
     command: [
       "elementsd",
@@ -69,7 +71,7 @@ services:
       "-mainchainrpcuser=${BITCOIN_RPC_USER}",
       "-mainchainrpcpassword=${BITCOIN_RPC_PASSWORD}",
       "-onlynet=ipv4",
-      "-chain=liquidregtest",
+      "-chain=liquid-regtest",
       "-validatepegin=1",
       "-initialfreecoins=0"
     ]
@@ -175,3 +177,47 @@ services:
     volumes:
       - lightningdcarol_data:/lightningd
       - bitcoin_shared:/bitcoin
+
+  lightningddave:
+    container_name: ${COMPOSE_PROJECT_NAME}_lightningddave
+    image: lightningd-elements:0.7.1rc5-54-g83f09c2-modded
+    build: ./lightningd-elements
+    command: [
+      "lightningd",
+      "--lightning-dir=/lightningd",
+      "--network=liquid-regtest",
+      "--addr=0.0.0.0:${LIGHTNINGDDAVE_PORT}",
+      "--bitcoin-cli=/elements/elements-cli",
+      "--bitcoin-datadir=/elements",
+      "--bitcoin-rpcconnect=${ELEMENTS_HOST}",
+      "--bitcoin-rpcport=${ELEMENTS_RPC_PORT}",
+      "--bitcoin-rpcuser=${ELEMENTS_RPC_USER}",
+      "--bitcoin-rpcpassword=${ELEMENTS_RPC_PASSWORD}"
+    ]
+    depends_on:
+      - elementsd
+    volumes:
+      - lightningddave_data:/lightningd
+      - elements_shared:/elements
+
+  lightningdemma:
+    container_name: ${COMPOSE_PROJECT_NAME}_lightningdemma
+    image: lightningd-elements:0.7.1rc5-54-g83f09c2-modded
+    build: ./lightningd-elements
+    command: [
+      "lightningd",
+      "--lightning-dir=/lightningd",
+      "--network=liquid-regtest",
+      "--addr=0.0.0.0:${LIGHTNINGDEMMA_PORT}",
+      "--bitcoin-cli=/elements/elements-cli",
+      "--bitcoin-datadir=/elements",
+      "--bitcoin-rpcconnect=${ELEMENTS_HOST}",
+      "--bitcoin-rpcport=${ELEMENTS_RPC_PORT}",
+      "--bitcoin-rpcuser=${ELEMENTS_RPC_USER}",
+      "--bitcoin-rpcpassword=${ELEMENTS_RPC_PASSWORD}"
+    ]
+    depends_on:
+      - elementsd
+    volumes:
+      - lightningdemma_data:/lightningd
+      - elements_shared:/elements

@@ -1,5 +1,7 @@
-FROM ubuntu:bionic-20190612 as builder
+FROM ubuntu:cosmic as builder
 
+ENV TZ Etc/UTC
+ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get -qq update && apt-get install -y software-properties-common
 
 RUN add-apt-repository -y ppa:bitcoin/bitcoin \
@@ -15,13 +17,13 @@ RUN apt-get install -y --fix-missing build-essential libtool \
 WORKDIR /build
 
 RUN git clone -n https://github.com/ElementsProject/elements.git . \
-  && git checkout elements-0.17.0.1 \
+  && git checkout elements-0.17.0.2 \
   && ./autogen.sh \
   && ./configure --without-gui --disable-shared --with-pic --disable-tests \
   && make && make install
 
 
-FROM ubuntu:bionic-20190612
+FROM ubuntu:cosmic
 
 COPY --from=builder /usr/lib /usr/lib
 COPY --from=builder /usr/local/bin /usr/local/bin
