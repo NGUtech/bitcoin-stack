@@ -2,6 +2,8 @@
 
 ### ONLY FOR DEVELOPMENT and TESTING. These tools may not be suitable for production deployments.
 
+
+```
      +--------------------------------------------------------------------+
 L+:  |                      YOUR APPLICATION STACK                        |
      +---------------------------------+-------+--------------------------+
@@ -21,6 +23,7 @@ L2:  |   ALICE   +--+   BOB   +--+   CAROL   | | |   DAVE   +--+   EMMA   |
 L1:            |     BITCOIND     |            /    |     ELEMENTSD    |
                |                  +-----------------+                  |
                +------------------+                 +------------------+
+```
 
 This `docker-compose` template launches `bitcoind`, two `lnd` containers named `lndalice` & `lndbob`, with a `lightningd` container as `lightningdcarol`.
 
