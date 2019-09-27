@@ -1,4 +1,4 @@
-# Docker setup for Bitcoin, Elements/Liquid, LND, & C-Lightning in regtest mode
+# Docker setup for Bitcoin, Elements/Liquid, LND, C-Lightning, & Eclair in regtest mode
 
 ### ONLY FOR DEVELOPMENT and TESTING. These tools may not be suitable for production deployments.
 
