@@ -1,5 +1,8 @@
 # Changelog
 
+## 2019-09-28
+ - Add headless `eclair` implementation on Bitcoin as `eclairdfrank`
+
 ## 2019-09-11
  - Add `lightningd-elements` WIP image build & two c-lightning nodes on Elements
  - Modify Ubuntu base versions in Docker images

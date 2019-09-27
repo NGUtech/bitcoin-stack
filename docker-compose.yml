@@ -12,6 +12,7 @@ volumes:
   lightningdcarol_data:
   lightningddave_data:
   lightningdemma_data:
+  eclairdfrank_data:
 
 services:
   bitcoind:
@@ -221,3 +222,18 @@ services:
     volumes:
       - lightningdemma_data:/lightningd
       - elements_shared:/elements
+
+  eclairdfrank:
+    container_name: ${COMPOSE_PROJECT_NAME}_eclairdfrank
+    image: eclaird:0.3.1
+    build: ./eclaird
+    command: ["java", "-jar", "eclair-node.jar"]
+    environment:
+      - JAVA_TOOL_OPTIONS=-Xmx512m -Declair.chain=regtest -Declair.server.port=${ECLAIRDFRANK_PORT} -Declair.bitcoind.host=${BITCOIN_HOST} -Declair.bitcoind.rpcport=${BITCOIN_RPC_PORT} -Declair.bitcoind.rpcuser=${BITCOIN_RPC_USER} -Declair.bitcoind.rpcpassword=${BITCOIN_RPC_PASSWORD} -Declair.bitcoind.zmqtx=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_TX_PORT} -Declair.bitcoind.zmqblock=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_BLOCK_PORT} -Declair.api.enabled=true -Declair.api.port=${ECLAIRDFRANK_API_PORT} -Declair.api.password=password -Declair.api.binding-ip=0.0.0.0
+    ports:
+      - "${ECLAIRDFRANK_API_PORT}:${ECLAIRDFRANK_API_PORT}"
+      - "127.0.0.1:${ECLAIRDFRANK_API_PORT}:${ECLAIRDFRANK_API_PORT}"
+    depends_on:
+      - bitcoind
+    volumes:
+      - eclairdfrank_data:/data

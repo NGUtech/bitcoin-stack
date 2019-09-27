@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+source .env
+
+docker-compose exec -T eclairdfrank eclair-cli \
+  -p password \
+  -a eclairdfrank:$ECLAIRDFRANK_API_PORT \
+  "$@"

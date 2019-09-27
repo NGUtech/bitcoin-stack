@@ -8,8 +8,13 @@
 L+:  |                      YOUR APPLICATION STACK                        |
      +---------------------------------+-------+--------------------------+
                                        |       |
-                                       /       |
-     +-----------+  +---------+  +-----------+ | +----------+  +----------+
+                    +---------+        |       |
+                    |         |        |       |
+                    |  FRANK  |        |       |
+                    |         |        |       |
+                    +----+----+        |       |
+                         |             /       |
+     +-----------+  +----+----+  +-----------+ | +----------+  +----------+
      |           |  |         |  |           | | |          |  |          |
 L2:  |   ALICE   +--+   BOB   +--+   CAROL   | | |   DAVE   +--+   EMMA   |
      |           |  |         |  |           | | |          |  |          |
@@ -25,11 +30,13 @@ L1:            |     BITCOIND     |            /    |     ELEMENTSD    |
                +------------------+                 +------------------+
 ```
 
-This `docker-compose` template launches `bitcoind`, two `lnd` containers named `lndalice` & `lndbob`, with a `lightningd` container as `lightningdcarol`.
+This `docker-compose` template launches `bitcoind`, two `lnd` containers named `lndalice` & `lndbob`, with a `lightningd` container as `lightningdcarol`, and an `eclair` container as `eclairdfrank`.
 
 Additionally it will launch an `elementsd` side chain (aka Liquid), with prototype `lightningd-elements` implementation containers as `lightningddave` & `lightningdemma`.
 
 Everything is configured to run in **regtest** mode but can be adjusted as required.
+
+## See the [changelog](CHANGELOG.md) before upgrading.
 
 ### Notes & prerequisites
  - `docker` and `docker-compose` installation is required (https://docs.docker.com/install/).
@@ -37,7 +44,6 @@ Everything is configured to run in **regtest** mode but can be adjusted as requi
  - All nodes will sync to chain after the first Bitcoin & Elements regtest blocks are generated.
  - All daemons are compiled from source but it is not recommended to use them in production environments.
  - Ports and other daemon configuration can be changed in the `.env` and `docker-compose.yml` files.
- - See the [changelog](CHANGELOG.md) when upgrading.
 
 ### Coming soon
  - Elements token creation and transaction scripts
@@ -52,6 +58,7 @@ It may take up to 30 minutes to launch the stack if container images are not alr
 $ docker-compose up -d bitcoind
 $ bin/b-cli generate 101
 $ docker-compose up -d lndalice lndbob
+$ docker-compose up -d eclairdfrank
 
 # Elements can be started optionally
 $ docker-compose up -d elementsd
@@ -77,6 +84,7 @@ $ bin/ln-bob getinfo
 $ bin/ld-carol getinfo
 $ bin/ld-dave getinfo
 $ bin/ld-emma getinfo
+$ bin/ed-frank getinfo
 ```
 
 A convenience script is provided to create a channel from `bob` to `alice` with some funding between the two `lnd` containers.
@@ -89,13 +97,22 @@ $ bin/ln-alice listchannels
 $ bin/ln-bob listchannels
 ```
 
-Another convenience script will connect `bob` to `carol` on the `lightningd` implementation of LN on Bitcoin.
+Another convenience script will connect `bob` to `carol` across the `lightningd` implementation of LN on Bitcoin.
 ```
 $ bin/ld-connect
 # once channels are opened a payment can be simulated (note amount in *mSats*)
 $ CAROL_INVOICE=$(bin/ld-carol invoice 10000000 "test" "" | jq '.bolt11' | tr -d '"')
 $ bin/ln-bob payinvoice $CAROL_INVOICE
 $ bin/ld-carol listfunds
+```
+
+A third script will connect `bob` to `frank` across the `eclair` implementation of LN on Bitcoin.
+```
+$ bin/ed-connect
+# once channels are opened a payment can be simulated (note amount in *mSats*)
+$ FRANK_INVOICE=$(bin/ed-frank createinvoice --amountMsat=10000000 --description="test" | jq '.serialized' | tr -d '"')
+$ bin/ln-bob payinvoice $FRANK_INVOICE
+$ bin/ed-frank audit
 ```
 
 Elements sidechain is available and can be pegged in from regtest Bitcoin chain using the provided convenience script.
@@ -114,7 +131,7 @@ $ bin/ld-dave listpays
 $ bin/ld-emma listinvoices
 ```
 
-REST/RPC queries can be executed directly from the host to the daemons as follows:
+REST/RPC queries can be executed directly from your application to each daemon. Use standard RPC adapters to connect to these and have full control over money flow; hook into message queues for notifications B).
 ```
 #bitcoind
 $ curl --data-binary '{"jsonrpc":"1.0","id":"curltext","method":"getwalletinfo","params":[]}' -H 'content-type:text/plain;' http://bitcoin:bitcoin@127.0.0.1:18889/
@@ -126,6 +143,9 @@ $ BOB_MACAROON_HEADER="Grpc-Metadata-macaroon: `docker-compose exec -T lndbob ca
 $ echo "$(docker-compose exec -T lndbob cat /shared/tls.cert)" > ./bob-tls.cert
 $ curl -XGET --cacert ./alice-tls.cert --header "$ALICE_MACAROON_HEADER" https://127.0.0.1:8080/v1/balance/channels
 $ curl -XGET --cacert ./bob-tls.cert --header "$BOB_MACAROON_HEADER" https://127.0.0.1:8090/v1/balance/channels
+
+#eclair
+$ curl -XPOST -u :password http://127.0.0.1:8100/getinfo
 
 #elementsd
 $ curl --data-binary '{"jsonrpc":"1.0","id":"curltext","method":"getwalletinfo","params":[]}' -H 'content-type:text/plain;' http://elements:elements@127.0.0.1:18886/
