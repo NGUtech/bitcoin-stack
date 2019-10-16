@@ -4,35 +4,36 @@
 
 
 ```
-     +--------------------------------------------------------------------+
+     ┌--------------------------------------------------------------------┐
 L+:  |                      YOUR APPLICATION STACK                        |
-     +---------------------------------+-------+--------------------------+
+     └---------------------------------+-------+--------------------------┘
                                        |       |
-                    +---------+        |       |
+                    ┌---------┐        |       |
                     |         |        |       |
-                    |  FRANK  |        |       |
-                    |         |        |       |
-                    +----+----+        |       |
-                         |             /       |
-     +-----------+  +----+----+  +-----------+ | +----------+  +----------+
+                    |  FRANK  |╟-------┤       ├------┐
+                    |         |        |       |      |
+                    └----+----┘        |       |      |
+                         |             ╧       |      ╧
+     ┌-----------┐  ┌----+----┐  ┌-----------┐ | ┌----------┐  ┌----------┐
      |           |  |         |  |           | | |          |  |          |
 L2:  |   ALICE   +--+   BOB   +--+   CAROL   | | |   DAVE   +--+   EMMA   |
      |           |  |         |  |           | | |          |  |          |
-     +-----+-----+  +----+----+  +-----+-----+ | +----+-----+  +-----+----+
+     └-----+-----┘  └----+----┘  └-----+-----┘ | └----+-----┘  └-----+----┘
            |             |             |       |      |              |
+           |             |             |       |     ┌+--------------+┐
+           |             |             |       |     |      LBTC      |
+           |             |             |       |     └+--------------+┘
            |             |             |       |      |              |
-           |             |             |       |      |              |
-           |             |             |       |      |              |
-           |   +---------+--------+    |       |    +-+--------------+-+
-           +---+                  +----+       |    |                  |
-L1:            |     BITCOIND     |            /    |     ELEMENTSD    |
+           |   ┌---------+--------┐    |       |    ┌-+--------------+-┐
+           └---+                  +----┘       |    |                  |
+L1:            |     BITCOIND     |╟-----------┴---╢|     ELEMENTSD    |
                |                  +-----------------+                  |
-               +------------------+                 +------------------+
+               └------------------┘                 └------------------┘
 ```
 
 This `docker-compose` template launches `bitcoind`, two `lnd` containers named `lndalice` & `lndbob`, with a `lightningd` container as `lightningdcarol`, and an `eclair` container as `eclairdfrank`.
 
-Additionally it will launch an `elementsd` side chain (aka Liquid), with prototype `lightningd-elements` implementation containers as `lightningddave` & `lightningdemma`.
+Additionally it can launch an `elementsd` sidechain (aka Liquid), with prototype `lightningd-elements` implementation containers as `lightningddave` & `lightningdemma` servicing the LBTC asset.
 
 Everything is configured to run in **regtest** mode but can be adjusted as required.
 
@@ -117,7 +118,7 @@ $ bin/ed-frank audit
 
 Elements sidechain is available and can be pegged in from regtest Bitcoin chain using the provided convenience script.
 ```
-$ bin/e-pegin 1.337
+$ bin/e-pegin 13.37
 $ bin/e-cli getwalletinfo
 ```
 

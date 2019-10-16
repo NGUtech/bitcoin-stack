@@ -4,6 +4,7 @@ source .env
 
 bin/b-cli sendtoaddress $(bin/ln-bob newaddress np2wkh | jq '.address' | tr -d '"') 1
 bin/b-cli generate 1
+sleep 5
 LNDALICE_PUBKEY=$(bin/ln-alice getinfo | jq '.identity_pubkey' | tr -d '"')
 bin/ln-bob connect $LNDALICE_PUBKEY@$LNDALICE_HOST:$LNDALICE_PORT
 bin/ln-bob openchannel --node_key $LNDALICE_PUBKEY --local_amt=10000000 --push_amt=5000000 --private

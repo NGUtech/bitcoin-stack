@@ -17,7 +17,7 @@ RUN apt-get install -y --fix-missing build-essential libtool \
 WORKDIR /build
 
 RUN git clone -n https://github.com/ElementsProject/elements.git . \
-  && git checkout elements-0.17.0.2 \
+  && git checkout elements-0.17.0.3 \
   && ./autogen.sh \
   && ./configure --without-gui --disable-shared --with-pic --disable-tests \
   && make && make install

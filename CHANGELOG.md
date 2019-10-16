@@ -1,5 +1,13 @@
 # Changelog
 
+## 2019-10-16
+ - Update `lnd` to 0.8.0-beta and `go` version to 1.13
+ - Update `elementsd` to 0.17.0.3 (`lightningd-elements` does not currently work with `elementsd` >= 0.18)
+ - Update `eclair` to 0.3.2
+ - Update `lightningd-elements` Dockerfile
+ - Update schematic to show `elementsd` LN nodes specifically servicing the LBTC asset
+ - Remove Docker host global port bindings
+
 ## 2019-09-28
  - Add headless `eclair` implementation on Bitcoin as `eclairdfrank`
 

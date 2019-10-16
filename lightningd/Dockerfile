@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get -qq update && apt-get install -y software-properties-common
 
 RUN apt-get install -y --fix-missing \
-  autoconf automake asciidoc build-essential git libtool libgmp-dev \
+  autoconf automake asciidoc gettext build-essential git libtool libgmp-dev \
   libsqlite3-dev python python3 python3-mako net-tools zlib1g-dev libsodium-dev \
   libboost-all-dev libevent-dev
 

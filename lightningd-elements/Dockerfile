@@ -5,15 +5,14 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get -qq update && apt-get install -y software-properties-common
 
 RUN apt-get install -y --fix-missing \
-  autoconf automake asciidoc build-essential git libtool libgmp-dev \
+  autoconf automake asciidoc gettext build-essential git libtool libgmp-dev \
   libsqlite3-dev python python3 python3-mako net-tools zlib1g-dev libsodium-dev \
   libboost-all-dev libevent-dev
 
 WORKDIR /build
 
 RUN git clone -n https://github.com/cdecker/lightning.git . \
-    && git checkout lightning-elements \
-    && git revert -n 0ce13f463ce25f2fbb949a694b271c6442c93794 \
+    && git checkout 1b60aae2db06267f4214c30548655c5c0717fdc4 \
     && ./configure \
     && make && make install
 

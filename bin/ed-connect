@@ -4,6 +4,7 @@ source .env
 
 bin/b-cli sendtoaddress $(bin/ln-bob newaddress np2wkh | jq '.address' | tr -d '"') 1
 bin/b-cli generate 1
+sleep 5
 ECLAIRDFRANK_NODEID=$(bin/ed-frank getinfo | jq '.nodeId' | tr -d '"')
 bin/ln-bob connect $ECLAIRDFRANK_NODEID@$ECLAIRDFRANK_HOST:$ECLAIRDFRANK_PORT
 bin/ln-bob openchannel --node_key $ECLAIRDFRANK_NODEID --local_amt=10000000 --push_amt=5000000 --private

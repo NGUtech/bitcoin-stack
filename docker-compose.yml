@@ -42,7 +42,6 @@ services:
       "-zmqpubhashblock=tcp://0.0.0.0:${BITCOIN_ZMQ_BLOCK_PORT}"
     ]
     ports:
-      - "${BITCOIN_PORT}:${BITCOIN_PORT}"
       - "127.0.0.1:${BITCOIN_RPC_PORT}:${BITCOIN_RPC_PORT}"
     volumes:
       - bitcoin_data:/bitcoin
@@ -50,7 +49,7 @@ services:
 
   elementsd:
     container_name: ${COMPOSE_PROJECT_NAME}_elementsd
-    image: elementsd:0.17.0.2
+    image: elementsd:0.17.0.3
     build: ./elementsd
     command: [
       "elementsd",
@@ -79,7 +78,6 @@ services:
     depends_on:
       - bitcoind
     ports:
-      - "${ELEMENTS_PORT}:${ELEMENTS_PORT}"
       - "127.0.0.1:${ELEMENTS_RPC_PORT}:${ELEMENTS_RPC_PORT}"
     volumes:
       - elements_data:/elements
@@ -87,7 +85,7 @@ services:
 
   lndalice:
     container_name: ${COMPOSE_PROJECT_NAME}_lndalice
-    image: lnd:0.7.1-beta
+    image: lnd:0.8.0-beta
     build: ./lnd
     restart: unless-stopped
     command: [
@@ -114,7 +112,6 @@ services:
     depends_on:
       - bitcoind
     ports:
-      - "${LNDALICE_PORT}:${LNDALICE_PORT}"
       - "127.0.0.1:${LNDALICE_RPC_PORT}:${LNDALICE_RPC_PORT}"
       - "127.0.0.1:${LNDALICE_REST_PORT}:${LNDALICE_REST_PORT}"
     volumes:
@@ -123,7 +120,7 @@ services:
 
   lndbob:
     container_name: ${COMPOSE_PROJECT_NAME}_lndbob
-    image: lnd:0.7.1-beta
+    image: lnd:0.8.0-beta
     build: ./lnd
     restart: unless-stopped
     command: [
@@ -150,7 +147,6 @@ services:
     depends_on:
       - bitcoind
     ports:
-      - "${LNDBOB_PORT}:${LNDBOB_PORT}"
       - "127.0.0.1:${LNDBOB_RPC_PORT}:${LNDBOB_RPC_PORT}"
       - "127.0.0.1:${LNDBOB_REST_PORT}:${LNDBOB_REST_PORT}"
     volumes:
@@ -181,7 +177,7 @@ services:
 
   lightningddave:
     container_name: ${COMPOSE_PROJECT_NAME}_lightningddave
-    image: lightningd-elements:0.7.1rc5-54-g83f09c2-modded
+    image: lightningd-elements:0.7.1-741-g1b60aae
     build: ./lightningd-elements
     command: [
       "lightningd",
@@ -203,7 +199,7 @@ services:
 
   lightningdemma:
     container_name: ${COMPOSE_PROJECT_NAME}_lightningdemma
-    image: lightningd-elements:0.7.1rc5-54-g83f09c2-modded
+    image: lightningd-elements:0.7.1-741-g1b60aae
     build: ./lightningd-elements
     command: [
       "lightningd",
@@ -225,7 +221,7 @@ services:
 
   eclairdfrank:
     container_name: ${COMPOSE_PROJECT_NAME}_eclairdfrank
-    image: eclaird:0.3.1
+    image: eclaird:0.3.2
     build: ./eclaird
     command: ["java", "-jar", "eclair-node.jar"]
     environment:
@@ -245,7 +241,6 @@ services:
         -Declair.api.password=password
         -Declair.api.binding-ip=0.0.0.0
     ports:
-      - "${ECLAIRDFRANK_API_PORT}:${ECLAIRDFRANK_API_PORT}"
       - "127.0.0.1:${ECLAIRDFRANK_API_PORT}:${ECLAIRDFRANK_API_PORT}"
     depends_on:
       - bitcoind
