@@ -33,7 +33,7 @@ L1:            |     BITCOIND     |╟-----------┴---╢|     ELEMENTSD    |
 
 This `docker-compose` template launches `bitcoind`, two `lnd` containers named `lndalice` & `lndbob`, with a `lightningd` container as `lightningdcarol`, and an `eclair` container as `eclairdfrank`.
 
-Additionally it can launch an `elementsd` sidechain (aka Liquid), with prototype `lightningd-elements` implementation containers as `lightningddave` & `lightningdemma` servicing the LBTC asset.
+Additionally it can launch an `elementsd` sidechain (aka Liquid), with `lightningd` implementation containers as `lightningddave` & `lightningdemma` servicing the LBTC asset.
 
 Everything is configured to run in **regtest** mode but can be adjusted as required.
 
@@ -122,7 +122,7 @@ $ bin/e-pegin 13.37
 $ bin/e-cli getwalletinfo
 ```
 
-You can also open a `lightningd-elements` channel across the Elements chain between `dave` & `emma`.
+You can also open a LN LBTC channel on `lightningd` across the Elements chain between `dave` & `emma`.
 ```
 $ bin/lde-connect
 # once channels are opened a payment can be simulated (note amount in *mSats*)
