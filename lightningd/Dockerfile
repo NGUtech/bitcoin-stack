@@ -12,7 +12,7 @@ RUN apt-get install -y --fix-missing \
 WORKDIR /build
 
 RUN git clone -n https://github.com/ElementsProject/lightning.git . \
-    && git checkout v0.7.2.1 \
+    && git checkout v0.7.3 \
     && ./configure \
     && make && make install
 

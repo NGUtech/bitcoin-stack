@@ -22,13 +22,13 @@ services:
     command: [
       "bitcoind",
       "-datadir=/bitcoin",
-      "-port=${BITCOIN_PORT}",
-      "-upnp=0",
-      "-txindex=1",
-      "-server=1",
-      "-onlynet=ipv4",
       "-regtest=1",
+      "-upnp=0",
+      "-server=1",
+      "-txindex=1",
+      "-onlynet=ipv4",
       "-deprecatedrpc=generate",
+      "-port=${BITCOIN_PORT}",
       "-regtest.rpcport=${BITCOIN_RPC_PORT}",
       "-regtest.port=${BITCOIN_PORT}",
       "-rpcport=${BITCOIN_RPC_PORT}",
@@ -54,10 +54,15 @@ services:
     command: [
       "elementsd",
       "-datadir=/elements",
-      "-port=${ELEMENTS_PORT}",
+      "-chain=liquid-regtest",
+      "-validatepegin=1",
       "-upnp=0",
       "-server=1",
       "-txindex=1",
+      "-onlynet=ipv4",
+      "-initialfreecoins=0",
+      "-deprecatedrpc=generate",
+      "-port=${ELEMENTS_PORT}",
       "-rpcport=${ELEMENTS_RPC_PORT}",
       "-rpcuser=${ELEMENTS_RPC_USER}",
       "-rpcpassword=${ELEMENTS_RPC_PASSWORD}",
@@ -69,11 +74,7 @@ services:
       "-mainchainrpchost=${BITCOIN_HOST}",
       "-mainchainrpcport=${BITCOIN_RPC_PORT}",
       "-mainchainrpcuser=${BITCOIN_RPC_USER}",
-      "-mainchainrpcpassword=${BITCOIN_RPC_PASSWORD}",
-      "-onlynet=ipv4",
-      "-chain=liquid-regtest",
-      "-validatepegin=1",
-      "-initialfreecoins=0"
+      "-mainchainrpcpassword=${BITCOIN_RPC_PASSWORD}"
     ]
     depends_on:
       - bitcoind
@@ -155,7 +156,7 @@ services:
 
   lightningdcarol:
     container_name: ${COMPOSE_PROJECT_NAME}_lightningdcarol
-    image: lightningd:0.7.2.1
+    image: lightningd:0.7.3
     build: ./lightningd
     command: [
       "lightningd",
@@ -177,8 +178,8 @@ services:
 
   lightningddave:
     container_name: ${COMPOSE_PROJECT_NAME}_lightningddave
-    image: lightningd-elements:0.7.1-741-g1b60aae
-    build: ./lightningd-elements
+    image: lightningd:0.7.3
+    build: ./lightningd
     command: [
       "lightningd",
       "--lightning-dir=/lightningd",
@@ -199,8 +200,8 @@ services:
 
   lightningdemma:
     container_name: ${COMPOSE_PROJECT_NAME}_lightningdemma
-    image: lightningd-elements:0.7.1-741-g1b60aae
-    build: ./lightningd-elements
+    image: lightningd:0.7.3
+    build: ./lightningd
     command: [
       "lightningd",
       "--lightning-dir=/lightningd",

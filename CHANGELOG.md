@@ -1,5 +1,9 @@
 # Changelog
 
+## 2019-10-30
+ - Update `lightningd` to 0.7.3
+ - Remove `lightningd-elements` now that `lightningd` 0.7.3 supports Liquid
+
 ## 2019-10-16
  - Update `lnd` to 0.8.0-beta and `go` version to 1.13
  - Update `elementsd` to 0.17.0.3 (`lightningd-elements` does not currently work with `elementsd` >= 0.18)
