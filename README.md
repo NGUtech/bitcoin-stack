@@ -35,6 +35,8 @@ This `docker-compose` template launches `bitcoind`, two `lnd` containers named `
 
 Additionally it can launch an `elementsd` sidechain (aka Liquid), with `lightningd` implementation containers as `lightningddave` & `lightningdemma` servicing the LBTC asset.
 
+An application subscriber node is include which demonstrates how to connect to LND and listen to invoice messages.
+
 Everything is configured to run in **regtest** mode but can be adjusted as required.
 
 ## See the [changelog](CHANGELOG.md) before upgrading.
@@ -47,6 +49,7 @@ Everything is configured to run in **regtest** mode but can be adjusted as requi
  - Ports and other daemon configuration can be changed in the `.env` and `docker-compose.yml` files.
 
 ### Coming soon
+ - C-lightning RPC example
  - Elements token creation and transaction scripts
  - Token swaps within Elements
  - Lightning swaps across Bitcoin and Elements
@@ -86,6 +89,11 @@ $ bin/ld-carol getinfo
 $ bin/ld-dave getinfo
 $ bin/ld-emma getinfo
 $ bin/ed-frank getinfo
+```
+
+Start following the subscriber node in a separate terminal window to see invoice messages as they come through.
+```
+$ docker-compose logs -f subscriber
 ```
 
 A convenience script is provided to create a channel from `bob` to `alice` with some funding between the two `lnd` containers.
@@ -152,7 +160,7 @@ $ curl -XPOST -u :password http://127.0.0.1:8100/getinfo
 $ curl --data-binary '{"jsonrpc":"1.0","id":"curltext","method":"getwalletinfo","params":[]}' -H 'content-type:text/plain;' http://elements:elements@127.0.0.1:18886/
 
 #lightningd
-C-lightning doesn't have an RPC interface yet as far as i know, but the CLI wrapper is available in the bin folder.
+C-lightning doesn't have a REST interface without using a plugin, but it does exposes a JSON-RPC interface.
 ```
 
 View daemon logs as follows:

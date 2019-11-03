@@ -1,5 +1,8 @@
 # Changelog
 
+## 2019-11-03
+ - Add a app subscriber node listening to LND invoice events over secure GRPC.
+
 ## 2019-10-30
  - Update `lightningd` to 0.7.3
  - Remove `lightningd-elements` now that `lightningd` 0.7.3 supports Liquid

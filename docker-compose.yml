@@ -96,6 +96,7 @@ services:
       "--rpclisten=0.0.0.0:${LNDALICE_RPC_PORT}",
       "--restlisten=0.0.0.0:${LNDALICE_REST_PORT}",
       "--adminmacaroonpath=/shared/admin.macaroon",
+      "--invoicemacaroonpath=/shared/invoice.macaroon",
       "--tlsextradomain=${LNDALICE_HOST}",
       "--tlsextraip=0.0.0.0",
       "--tlskeypath=/shared/tls.key",
@@ -131,6 +132,7 @@ services:
       "--rpclisten=0.0.0.0:${LNDBOB_RPC_PORT}",
       "--restlisten=0.0.0.0:${LNDBOB_REST_PORT}",
       "--adminmacaroonpath=/shared/admin.macaroon",
+      "--invoicemacaroonpath=/shared/invoice.macaroon",
       "--tlsextradomain=${LNDBOB_HOST}",
       "--tlsextraip=0.0.0.0",
       "--tlskeypath=/shared/tls.key",
@@ -247,3 +249,16 @@ services:
       - bitcoind
     volumes:
       - eclairdfrank_data:/data
+
+  subscriber:
+    container_name: ${COMPOSE_PROJECT_NAME}_subscriber
+    image: subscriber:12.13
+    build: ./node
+    restart: unless-stopped
+    command: ['node', 'subscriber.js']
+    environment:
+      - LNDALICE_HOST
+      - LNDALICE_RPC_PORT
+    volumes:
+      - ./node/app:/usr/src/app
+      - lndalice_shared:/alice_shared:ro
