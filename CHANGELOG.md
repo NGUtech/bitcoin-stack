@@ -1,5 +1,8 @@
 # Changelog
 
+## 2019-11-13
+ - Rename repo to `bitcoin-stack`. Use `git remote set-url origin https://github.com/MrHash/bitcoin-stack` to retarget local clones.
+
 ## 2019-11-03
  - Add a app subscriber node listening to LND invoice events over secure GRPC.
 
