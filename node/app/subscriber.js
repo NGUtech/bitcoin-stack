@@ -4,8 +4,8 @@ const protoLoader = require('@grpc/proto-loader');
 const fs = require('fs');
 
 // file paths
-const macaroonPath = '/alice_shared/invoice.macaroon';
-const tlsCertPath = '/alice_shared/tls.cert';
+const macaroonPath = '/lnd/data/chain/bitcoin/regtest/invoice.macaroon';
+const tlsCertPath = '/lnd/tls.cert';
 const rpcProtoPath = 'rpc.proto';
 
 // setup grpc connection to lnd
@@ -25,7 +25,7 @@ const packageDefinition = protoLoader.loadSync(
 );
 const packageObject = grpc.loadPackageDefinition(packageDefinition);
 const lnrpc = packageObject.lnrpc;
-const lndHost = process.env.LNDALICE_HOST+':'+process.env.LNDALICE_RPC_PORT;
+const lndHost = process.env.ALICE_HOST+':'+process.env.ALICE_RPC_PORT;
 const lnd = new lnrpc.Lightning(lndHost, credentials);
 
 // subscribe to lightning invoice events
@@ -40,6 +40,7 @@ lnd.subscribeInvoices({})
   // process invoice message directly or pass on to a peristent queue
   // for processing by a secondary service.
   console.log(JSON.stringify(invoice, null, 2))
-});
+})
+.on('status', console.log);
 
-console.log('Subscriber connected to LND @ ' + lndHost);
+console.log('Subscriber connection to LND @ ' + lndHost);

@@ -1,107 +1,27 @@
 version: "2.4"
 
 volumes:
-  bitcoin_data:
-  bitcoin_shared:
-  elements_data:
-  elements_shared:
-  lndalice_data:
-  lndalice_shared:
-  lndbob_data:
-  lndbob_shared:
-  lightningdcarol_data:
-  lightningddave_data:
-  lightningdemma_data:
-  eclairdfrank_data:
+  alice_data:
+  bob_data:
+  carol_data:
+  dave_data:
+  emma_data:
+  frank_data:
 
 services:
-  bitcoind:
-    container_name: ${COMPOSE_PROJECT_NAME}_bitcoind
-    image: bitcoind:0.18.1
-    build: ./bitcoind
-    command: [
-      "bitcoind",
-      "-datadir=/bitcoin",
-      "-regtest=1",
-      "-upnp=0",
-      "-server=1",
-      "-txindex=1",
-      "-onlynet=ipv4",
-      "-deprecatedrpc=generate",
-      "-port=${BITCOIN_PORT}",
-      "-regtest.rpcport=${BITCOIN_RPC_PORT}",
-      "-regtest.port=${BITCOIN_PORT}",
-      "-rpcport=${BITCOIN_RPC_PORT}",
-      "-rpcuser=${BITCOIN_RPC_USER}",
-      "-rpcpassword=${BITCOIN_RPC_PASSWORD}",
-      "-rpcallowip=0.0.0.0/0",
-      "-rpcbind=127.0.0.1",
-      "-rpcbind=bitcoind",
-      "-zmqpubrawtx=tcp://0.0.0.0:${BITCOIN_ZMQ_TX_PORT}",
-      "-zmqpubrawblock=tcp://0.0.0.0:${BITCOIN_ZMQ_BLOCK_PORT}",
-      "-zmqpubhashblock=tcp://0.0.0.0:${BITCOIN_ZMQ_BLOCK_PORT}"
-    ]
-    ports:
-      - "127.0.0.1:${BITCOIN_RPC_PORT}:${BITCOIN_RPC_PORT}"
-    volumes:
-      - bitcoin_data:/bitcoin
-      - bitcoin_shared:/shared
-
-  elementsd:
-    container_name: ${COMPOSE_PROJECT_NAME}_elementsd
-    image: elementsd:0.17.0.3
-    build: ./elementsd
-    command: [
-      "elementsd",
-      "-datadir=/elements",
-      "-chain=liquid-regtest",
-      "-validatepegin=1",
-      "-upnp=0",
-      "-server=1",
-      "-txindex=1",
-      "-onlynet=ipv4",
-      "-initialfreecoins=0",
-      "-deprecatedrpc=generate",
-      "-port=${ELEMENTS_PORT}",
-      "-rpcport=${ELEMENTS_RPC_PORT}",
-      "-rpcuser=${ELEMENTS_RPC_USER}",
-      "-rpcpassword=${ELEMENTS_RPC_PASSWORD}",
-      "-rpcallowip=0.0.0.0/0",
-      "-rpcbind=127.0.0.1",
-      "-rpcbind=elementsd",
-      "-zmqpubrawtx=tcp://0.0.0.0:${ELEMENTS_ZMQ_TX_PORT}",
-      "-zmqpubhashblock=tcp://0.0.0.0:${ELEMENTS_ZMQ_BLOCK_PORT}",
-      "-mainchainrpchost=${BITCOIN_HOST}",
-      "-mainchainrpcport=${BITCOIN_RPC_PORT}",
-      "-mainchainrpcuser=${BITCOIN_RPC_USER}",
-      "-mainchainrpcpassword=${BITCOIN_RPC_PASSWORD}"
-    ]
-    depends_on:
-      - bitcoind
-    ports:
-      - "127.0.0.1:${ELEMENTS_RPC_PORT}:${ELEMENTS_RPC_PORT}"
-    volumes:
-      - elements_data:/elements
-      - elements_shared:/shared
-
-  lndalice:
-    container_name: ${COMPOSE_PROJECT_NAME}_lndalice
-    image: lnd:0.8.0-beta
-    build: ./lnd
+  alice:
+    container_name: ${COMPOSE_PROJECT_NAME}_alice
+    image: bitcoinstack/lnd:0.8.1-alpine
     restart: unless-stopped
     command: [
-      "lnd",
       "--noseedbackup",
-      "--listen=0.0.0.0:${LNDALICE_PORT}",
-      "--rpclisten=0.0.0.0:${LNDALICE_RPC_PORT}",
-      "--restlisten=0.0.0.0:${LNDALICE_REST_PORT}",
-      "--adminmacaroonpath=/shared/admin.macaroon",
-      "--invoicemacaroonpath=/shared/invoice.macaroon",
-      "--tlsextradomain=${LNDALICE_HOST}",
+      "--alias=alice",
+      "--listen=0.0.0.0:${ALICE_PORT}",
+      "--rpclisten=0.0.0.0:${ALICE_RPC_PORT}",
+      "--restlisten=0.0.0.0:${ALICE_REST_PORT}",
+      "--tlsextradomain=${ALICE_HOST}",
       "--tlsextraip=0.0.0.0",
-      "--tlskeypath=/shared/tls.key",
-      "--tlscertpath=/shared/tls.cert",
-      "--datadir=/lnd",
+      "--autopilot.allocation=0",
       "--bitcoin.active",
       "--bitcoin.regtest",
       "--bitcoin.node=bitcoind",
@@ -112,32 +32,26 @@ services:
       "--bitcoind.zmqpubrawblock=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_BLOCK_PORT}"
     ]
     depends_on:
-      - bitcoind
+      - bitcoin
     ports:
-      - "127.0.0.1:${LNDALICE_RPC_PORT}:${LNDALICE_RPC_PORT}"
-      - "127.0.0.1:${LNDALICE_REST_PORT}:${LNDALICE_REST_PORT}"
+      - "127.0.0.1:${ALICE_RPC_PORT}:${ALICE_RPC_PORT}"
+      - "127.0.0.1:${ALICE_REST_PORT}:${ALICE_REST_PORT}"
     volumes:
-      - lndalice_data:/lnd
-      - lndalice_shared:/shared
+      - alice_data:/home/lnd/.lnd
 
-  lndbob:
-    container_name: ${COMPOSE_PROJECT_NAME}_lndbob
-    image: lnd:0.8.0-beta
-    build: ./lnd
+  bob:
+    container_name: ${COMPOSE_PROJECT_NAME}_bob
+    image: bitcoinstack/lnd:0.8.1-alpine
     restart: unless-stopped
     command: [
-      "lnd",
       "--noseedbackup",
-      "--listen=0.0.0.0:${LNDBOB_PORT}",
-      "--rpclisten=0.0.0.0:${LNDBOB_RPC_PORT}",
-      "--restlisten=0.0.0.0:${LNDBOB_REST_PORT}",
-      "--adminmacaroonpath=/shared/admin.macaroon",
-      "--invoicemacaroonpath=/shared/invoice.macaroon",
-      "--tlsextradomain=${LNDBOB_HOST}",
+      "--alias=bob",
+      "--listen=0.0.0.0:${BOB_PORT}",
+      "--rpclisten=0.0.0.0:${BOB_RPC_PORT}",
+      "--restlisten=0.0.0.0:${BOB_REST_PORT}",
+      "--tlsextradomain=${BOB_HOST}",
       "--tlsextraip=0.0.0.0",
-      "--tlskeypath=/shared/tls.key",
-      "--tlscertpath=/shared/tls.cert",
-      "--datadir=/lnd",
+      "--autopilot.allocation=0",
       "--bitcoin.active",
       "--bitcoin.regtest",
       "--bitcoin.node=bitcoind",
@@ -148,23 +62,20 @@ services:
       "--bitcoind.zmqpubrawblock=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_BLOCK_PORT}"
     ]
     depends_on:
-      - bitcoind
+      - bitcoin
     ports:
-      - "127.0.0.1:${LNDBOB_RPC_PORT}:${LNDBOB_RPC_PORT}"
-      - "127.0.0.1:${LNDBOB_REST_PORT}:${LNDBOB_REST_PORT}"
+      - "127.0.0.1:${BOB_RPC_PORT}:${BOB_RPC_PORT}"
+      - "127.0.0.1:${BOB_REST_PORT}:${BOB_REST_PORT}"
     volumes:
-      - lndbob_data:/lnd
-      - lndbob_shared:/shared
+      - bob_data:/home/lnd/.lnd
 
-  lightningdcarol:
-    container_name: ${COMPOSE_PROJECT_NAME}_lightningdcarol
-    image: lightningd:0.7.3
-    build: ./lightningd
+  carol:
+    container_name: ${COMPOSE_PROJECT_NAME}_carol
+    image: bitcoinstack/clightning:0.7.3-alpine
     command: [
-      "lightningd",
-      "--lightning-dir=/lightningd",
+      "--alias=carol",
       "--network=regtest",
-      "--addr=0.0.0.0:${LIGHTNINGDCAROL_PORT}",
+      "--addr=0.0.0.0:${CAROL_PORT}",
       "--bitcoin-cli=/bitcoin/bitcoin-cli",
       "--bitcoin-datadir=/bitcoin",
       "--bitcoin-rpcconnect=${BITCOIN_HOST}",
@@ -173,20 +84,18 @@ services:
       "--bitcoin-rpcpassword=${BITCOIN_RPC_PASSWORD}"
     ]
     depends_on:
-      - bitcoind
+      - bitcoin
     volumes:
-      - lightningdcarol_data:/lightningd
+      - carol_data:/home/clightning/.lightning
       - bitcoin_shared:/bitcoin
 
-  lightningddave:
-    container_name: ${COMPOSE_PROJECT_NAME}_lightningddave
-    image: lightningd:0.7.3
-    build: ./lightningd
+  dave:
+    container_name: ${COMPOSE_PROJECT_NAME}_dave
+    image: bitcoinstack/clightning:0.7.3-alpine
     command: [
-      "lightningd",
-      "--lightning-dir=/lightningd",
+      "--alias=dave",
       "--network=liquid-regtest",
-      "--addr=0.0.0.0:${LIGHTNINGDDAVE_PORT}",
+      "--addr=0.0.0.0:${DAVE_PORT}",
       "--bitcoin-cli=/elements/elements-cli",
       "--bitcoin-datadir=/elements",
       "--bitcoin-rpcconnect=${ELEMENTS_HOST}",
@@ -195,20 +104,18 @@ services:
       "--bitcoin-rpcpassword=${ELEMENTS_RPC_PASSWORD}"
     ]
     depends_on:
-      - elementsd
+      - elements
     volumes:
-      - lightningddave_data:/lightningd
+      - dave_data:/home/clightning/.lightning
       - elements_shared:/elements
 
-  lightningdemma:
-    container_name: ${COMPOSE_PROJECT_NAME}_lightningdemma
-    image: lightningd:0.7.3
-    build: ./lightningd
+  emma:
+    container_name: ${COMPOSE_PROJECT_NAME}_emma
+    image: bitcoinstack/clightning:0.7.3-alpine
     command: [
-      "lightningd",
-      "--lightning-dir=/lightningd",
+      "--alias=emma",
       "--network=liquid-regtest",
-      "--addr=0.0.0.0:${LIGHTNINGDEMMA_PORT}",
+      "--addr=0.0.0.0:${EMMA_PORT}",
       "--bitcoin-cli=/elements/elements-cli",
       "--bitcoin-datadir=/elements",
       "--bitcoin-rpcconnect=${ELEMENTS_HOST}",
@@ -217,22 +124,22 @@ services:
       "--bitcoin-rpcpassword=${ELEMENTS_RPC_PASSWORD}"
     ]
     depends_on:
-      - elementsd
+      - elements
     volumes:
-      - lightningdemma_data:/lightningd
+      - emma_data:/home/clightning/.lightning
       - elements_shared:/elements
 
-  eclairdfrank:
-    container_name: ${COMPOSE_PROJECT_NAME}_eclairdfrank
-    image: eclaird:0.3.2
-    build: ./eclaird
+  frank:
+    container_name: ${COMPOSE_PROJECT_NAME}_frank
+    image: bitcoinstack/eclair:0.3.2
     command: ["java", "-jar", "eclair-node.jar"]
     environment:
       - |
         JAVA_TOOL_OPTIONS=
         -Xmx512m
         -Declair.chain=regtest
-        -Declair.server.port=${ECLAIRDFRANK_PORT}
+        -Declair.node-alias=frank
+        -Declair.server.port=${FRANK_PORT}
         -Declair.bitcoind.host=${BITCOIN_HOST}
         -Declair.bitcoind.rpcport=${BITCOIN_RPC_PORT}
         -Declair.bitcoind.rpcuser=${BITCOIN_RPC_USER}
@@ -240,25 +147,26 @@ services:
         -Declair.bitcoind.zmqtx=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_TX_PORT}
         -Declair.bitcoind.zmqblock=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_BLOCK_PORT}
         -Declair.api.enabled=true
-        -Declair.api.port=${ECLAIRDFRANK_API_PORT}
+        -Declair.api.port=${FRANK_REST_PORT}
         -Declair.api.password=password
         -Declair.api.binding-ip=0.0.0.0
     ports:
-      - "127.0.0.1:${ECLAIRDFRANK_API_PORT}:${ECLAIRDFRANK_API_PORT}"
+      - "127.0.0.1:${FRANK_REST_PORT}:${FRANK_REST_PORT}"
     depends_on:
-      - bitcoind
+      - bitcoin
     volumes:
-      - eclairdfrank_data:/data
+      - frank_data:/data
 
   subscriber:
     container_name: ${COMPOSE_PROJECT_NAME}_subscriber
-    image: subscriber:12.13
-    build: ./node
+    image: bitcoinstack/subscriber:0.1
     restart: unless-stopped
     command: ['node', 'subscriber.js']
+    depends_on:
+      - alice
     environment:
-      - LNDALICE_HOST
-      - LNDALICE_RPC_PORT
+      - ALICE_HOST
+      - ALICE_RPC_PORT
     volumes:
       - ./node/app:/usr/src/app
-      - lndalice_shared:/alice_shared:ro
+      - alice_data:/lnd:ro

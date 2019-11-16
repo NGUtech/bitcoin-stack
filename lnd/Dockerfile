@@ -8,18 +8,26 @@ ENV GODEBUG netdns=cgo
 
 RUN apk add --no-cache --update alpine-sdk git make \
   && git clone -n https://github.com/lightningnetwork/lnd . \
-  && git checkout v0.8.0-beta \
+  && git checkout v0.8.1-beta \
   && make && make install
 
 # Start a new, final image to reduce size.
 FROM alpine as final
 
-# Copy the binaries and entrypoint from the builder image.
+RUN adduser -S lnd
+RUN apk add --no-cache \
+  bash \
+  su-exec
+
+ENV LND_DATA=/home/lnd/.lnd
 COPY --from=builder /go/bin/lncli /bin/
 COPY --from=builder /go/bin/lnd /bin/
+COPY docker-entrypoint.sh /entrypoint.sh
 
-# Add bash.
-RUN apk add --no-cache bash
+VOLUME ["/home/lnd/.lnd"]
 
-# Import the config
-ADD ./lnd.conf /root/.lnd/lnd.conf
+ADD ./lnd.conf /home/lnd/.lnd/lnd.conf
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["lnd"]

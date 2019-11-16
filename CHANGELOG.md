@@ -1,14 +1,26 @@
 # Changelog
 
+## 2019-11-16 (breaking changes)
+ - Fast deployment! Reorganised files & upload precompiled images to Docker hub:
+ - Update `bitcoin`, `elements` and `clightning` images to `alpine` linux reducing container size by 50-75%.
+    * bitcoin:0.18.1-alpine    302MB
+    * elements:0.17.0.3-alpine 182MB
+    * lnd:0.8.1-alpine         70.8MB
+    * clightning:0.7.3-alpine  176MB
+    * eclair:0.3.2             294MB
+    (h/t to @ruipmarinho for https://github.com/ruimarinho/docker-bitcoin-core/tree/master/0.18/alpine)
+ - Refactor node/container composition scripts
+ - Add lightning node aliases
+
 ## 2019-11-13
- - Rename repo to `bitcoin-stack`. Use `git remote set-url origin https://github.com/MrHash/bitcoin-stack` to retarget local clones.
+ - Rename repo to `bitcoin-stack` (use `git remote set-url origin https://github.com/MrHash/bitcoin-stack` to retarget local clones)
 
 ## 2019-11-03
- - Add a app subscriber node listening to LND invoice events over secure GRPC.
+ - Add a app subscriber node listening to LND invoice events over secure GRPC
 
 ## 2019-10-30
  - Update `lightningd` to 0.7.3
- - Remove `lightningd-elements` now that `lightningd` 0.7.3 supports Liquid
+ - Remove `lightningd-elements` now that `lightningd` 0.7.3 supports Elements/Liquid
 
 ## 2019-10-16
  - Update `lnd` to 0.8.0-beta and `go` version to 1.13

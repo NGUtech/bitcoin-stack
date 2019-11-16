@@ -1,0 +1,168 @@
+#!/usr/bin/env bash
+
+source .env
+
+NODE="$1" && shift
+COMMAND="$1"
+ARGS="$@"
+L1_SET="bitcoin elements"
+L2_SET="lnd clightning eclair"
+
+function ucase() {
+    echo $1 | tr a-z A-Z
+}
+
+function getChainNode() {
+    guardImpl $1 "$L2_SET"
+    local IMPL=$(getImpl $1)
+    case "$IMPL" in
+        clightning)
+            local NETWORK=$(bin/stack $1 getinfo | jq '.network' | tr -d '"')
+            if [[ $NETWORK == "liquid-regtest" ]]; then echo "elements"; fi ;;
+        *) echo "bitcoin"; ;;
+    esac
+}
+
+function dockerInspect() {
+    echo $(docker inspect --format="{{$2}}" $COMPOSE_PROJECT_NAME"_"$1 2>/dev/null)
+}
+
+function getImpl() {
+    local IMPL=$(dockerInspect "$1" ".Config.Image")
+    if [[ -z $IMPL ]]; then echo $1; fi
+    [[ $IMPL =~ .+/(.+):.+ ]]
+    echo "${BASH_REMATCH[1]}"
+}
+
+function guardImpl() {
+    local IMPL=$(getImpl $1)
+    if [[ $2 != *$IMPL* ]]; then
+        echo "'$1' node impl '$IMPL' is not within set '$2'"
+        exit 2
+    fi
+}
+
+function getAddress() {
+    guardImpl $1 "$L2_SET"
+    local IMPL=$(getImpl $1)
+    case "$IMPL" in
+        lnd) echo $(bin/stack $1 newaddress np2wkh | jq '.address' | tr -d '"'); ;;
+        clightning) echo $(bin/stack $1 newaddr p2sh-segwit | jq '.address' | tr -d '"'); ;;
+        eclair) ;; # @todo add impl
+    esac
+}
+
+function getNodeId() {
+    guardImpl $1 "$L2_SET"
+    local IMPL=$(getImpl $1)
+    case "$IMPL" in
+        lnd) echo $(bin/stack $1 getinfo | jq '.identity_pubkey' | tr -d '"'); ;;
+        clightning) echo $(bin/stack $1 getinfo | jq '.id' | tr -d '"'); ;;
+        eclair) echo $(bin/stack $1 getinfo | jq '.nodeId' | tr -d '"'); ;;
+    esac
+}
+
+function openchannel() {
+    guardImpl $1 "$L2_SET"
+    guardImpl $2 "$L2_SET"
+    local TARGET_PUBKEY=$(getNodeId $2)
+    local TARGET_HOST=$(ucase $TARGET)_HOST
+    local TARGET_PORT=$(ucase $TARGET)_PORT
+    local TARGET_URI=$TARGET_PUBKEY@${!TARGET_HOST}:${!TARGET_PORT}
+    local IMPL=$(getImpl $1)
+    case "$IMPL" in
+        lnd)
+            bin/stack $1 connect $TARGET_URI
+            bin/stack $1 openchannel --node_key $TARGET_PUBKEY --local_amt=$3
+            ;;
+        clightning)
+            bin/stack $1 connect $TARGET_URI
+            bin/stack $1 fundchannel $TARGET_PUBKEY $3
+            ;;
+        eclair)
+            bin/stack $1 connect --uri=$TARGET_URI
+            bin/stack $1 open --nodeId=$TARGET_PUBKEY --fundingSatoshis=$3
+            ;;
+    esac
+}
+
+function channelto_command() {
+    IFS=' ' read -r -a args <<< $ARGS
+    local TARGET=${args[1]}
+    guardImpl $NODE "$L2_SET"
+    guardImpl $TARGET "$L2_SET"
+    local CHAIN_NODE=$(getChainNode $NODE)
+    bin/stack $CHAIN_NODE sendtoaddress $(getAddress $NODE) 1
+    bin/stack $CHAIN_NODE generate 1
+    # @todo wait for funds
+    openchannel $NODE $TARGET ${args[2]}
+    bin/stack $CHAIN_NODE generate 5
+}
+
+function pegin_command() {
+    IFS=' ' read -r -a args <<< $ARGS
+    local TARGET=${args[1]}
+    guardImpl $NODE "bitcoin"
+    guardImpl $TARGET "elements"
+    #test pegin amount
+    local AMOUNT=${args[2]}
+    bin/stack $TARGET generate 1
+    local ADDRS=$(bin/stack $TARGET getpeginaddress)
+    local MAINCHAIN=$(echo $ADDRS | jq '.mainchain_address' | tr -d '"')
+    local SIDECHAIN=$(echo $ADDRS | jq '.claim_script' | tr -d '"')
+    local TXID=$(bin/stack $NODE sendtoaddress $MAINCHAIN $AMOUNT)
+    bin/stack $NODE generate 101
+    local PROOF=$(bin/stack $NODE gettxoutproof '''["'''$TXID'''"]''')
+    local RAW=$(bin/stack $NODE getrawtransaction $TXID)
+    bin/stack $TARGET claimpegin $RAW $PROOF
+    bin/stack $TARGET generate 1
+}
+
+function passthru_command() {
+    local NODE_IMPL=$(getImpl $NODE)
+    case "$NODE_IMPL" in
+        bitcoin)
+            docker-compose exec -T --user bitcoin $NODE bitcoin-cli \
+                -rpcuser=$BITCOIN_RPC_USER \
+                -rpcpassword=$BITCOIN_RPC_PASSWORD \
+                -rpcport=$BITCOIN_RPC_PORT \
+                $ARGS
+            ;;
+        elements)
+            docker-compose exec -T --user elements $NODE elements-cli \
+                -rpcuser=$ELEMENTS_RPC_USER \
+                -rpcpassword=$ELEMENTS_RPC_PASSWORD \
+                -rpcport=$ELEMENTS_RPC_PORT \
+                $ARGS
+            ;;
+        lnd)
+            NODE_RPC_PORT=$(ucase $NODE)_RPC_PORT
+            docker-compose exec -T --user lnd $NODE lncli \
+                --network regtest \
+                --rpcserver 127.0.0.1:${!NODE_RPC_PORT} \
+                $ARGS
+            ;;
+        clightning)
+            docker-compose exec -T --user clightning $NODE lightning-cli \
+                $ARGS
+            ;;
+        eclair)
+            NODE_REST_PORT=$(ucase $NODE )_REST_PORT
+            docker-compose exec -T $NODE eclair-cli \
+                -p password \
+                -a $NODE:${!NODE_REST_PORT} \
+                $ARGS
+            ;;
+        *)
+            echo "Unknown node impl '$NODE_IMPL'"; exit 2;
+            ;;
+    esac
+}
+
+case "$COMMAND" in
+    channelto) channelto_command ;;
+
+    pegin) pegin_command ;;
+
+    *) passthru_command ;;
+esac

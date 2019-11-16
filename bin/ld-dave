@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-source .env
-
-docker-compose exec -T lightningddave lightning-cli \
-  --lightning-dir=/lightningd \
-  "$@"

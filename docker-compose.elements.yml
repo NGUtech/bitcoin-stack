@@ -1,0 +1,42 @@
+version: "2.4"
+
+volumes:
+  elements_data:
+  elements_shared:
+
+services:
+  elements:
+    container_name: ${COMPOSE_PROJECT_NAME}_elements
+    image: bitcoinstack/elements:0.17.0.3-alpine
+    command: [
+      "-chain=liquid-regtest",
+      "-validatepegin=1",
+      "-upnp=0",
+      "-server=1",
+      "-txindex=1",
+      "-onlynet=ipv4",
+      "-dnsseed=0",
+      "-dbcache=50",
+      "-initialfreecoins=0",
+      "-deprecatedrpc=generate",
+      "-port=${ELEMENTS_PORT}",
+      "-rpcport=${ELEMENTS_RPC_PORT}",
+      "-rpcuser=${ELEMENTS_RPC_USER}",
+      "-rpcpassword=${ELEMENTS_RPC_PASSWORD}",
+      "-rpcallowip=0.0.0.0/0",
+      "-rpcbind=127.0.0.1",
+      "-rpcbind=${ELEMENTS_HOST}",
+      "-zmqpubrawtx=tcp://0.0.0.0:${ELEMENTS_ZMQ_TX_PORT}",
+      "-zmqpubhashblock=tcp://0.0.0.0:${ELEMENTS_ZMQ_BLOCK_PORT}",
+      "-mainchainrpchost=${BITCOIN_HOST}",
+      "-mainchainrpcport=${BITCOIN_RPC_PORT}",
+      "-mainchainrpcuser=${BITCOIN_RPC_USER}",
+      "-mainchainrpcpassword=${BITCOIN_RPC_PASSWORD}"
+    ]
+    depends_on:
+      - bitcoin
+    ports:
+      - "127.0.0.1:${ELEMENTS_RPC_PORT}:${ELEMENTS_RPC_PORT}"
+    volumes:
+      - elements_data:/home/elements/.elements
+      - elements_shared:/opt/elements/bin
