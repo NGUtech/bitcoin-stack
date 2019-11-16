@@ -2,13 +2,16 @@
 
 ## 2019-11-16 (breaking changes)
  - Fast deployment! Reorganised files & upload precompiled images to Docker hub:
- - Update `bitcoin`, `elements` and `clightning` images to `alpine` linux reducing container size by 50-75%.
-    * bitcoin:0.18.1-alpine    302MB
-    * elements:0.17.0.3-alpine 182MB
-    * lnd:0.8.1-alpine         70.8MB
-    * clightning:0.7.3-alpine  176MB
-    * eclair:0.3.2             294MB
-    (h/t to @ruipmarinho for https://github.com/ruimarinho/docker-bitcoin-core/tree/master/0.18/alpine)
+ - Update `bitcoin`, `elements` and `clightning` images to `alpine` linux reducing container size by 50-75%. (h/t to @ruipmarinho for https://github.com/ruimarinho/docker-bitcoin-core/tree/master/0.18/alpine)
+ 
+ - | Image | Size |
+   | --- | --- |
+   | bitcoin:0.18.1-alpine | 302MB |
+   | elements:0.17.0.3-alpine | 182MB |
+   | lnd:0.8.1-alpine | 70.8MB |
+   | clightning:0.7.3-alpine | 176MB |
+   | eclair:0.3.2 | 294MB |
+
  - Refactor node/container composition scripts
  - Add lightning node aliases
 
