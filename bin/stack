@@ -125,6 +125,7 @@ function passthru_command() {
             docker-compose exec -T --user bitcoin $NODE bitcoin-cli \
                 -rpcuser=$BITCOIN_RPC_USER \
                 -rpcpassword=$BITCOIN_RPC_PASSWORD \
+                -rpcconnect=$BITCOIN_HOST \
                 -rpcport=$BITCOIN_RPC_PORT \
                 $ARGS
             ;;
@@ -132,6 +133,7 @@ function passthru_command() {
             docker-compose exec -T --user elements $NODE elements-cli \
                 -rpcuser=$ELEMENTS_RPC_USER \
                 -rpcpassword=$ELEMENTS_RPC_PASSWORD \
+                -rpcconnect=$ELEMENTS_HOST \
                 -rpcport=$ELEMENTS_RPC_PORT \
                 $ARGS
             ;;

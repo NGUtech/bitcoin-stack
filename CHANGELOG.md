@@ -1,5 +1,8 @@
 # Changelog
 
+## 2019-12-02
+ - Add extended rpc support to `lnd`, including hold invoice.
+
 ## 2019-11-16 (breaking changes)
  - Fast deployment! Reorganised files & upload precompiled images to Docker hub.
  - Update `bitcoin`, `elements` and `clightning` images to `alpine` linux reducing container size by 50-75%. (h/t to @ruipmarinho for https://github.com/ruimarinho/docker-bitcoin-core/tree/master/0.18/alpine)
