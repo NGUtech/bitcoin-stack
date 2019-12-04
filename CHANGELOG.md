@@ -1,18 +1,22 @@
 # Changelog
 
+## 2019-12-04
+ - Add support to `clightning` image for `nodejs` plugins; `hello` example provided (h/t to @darosior for https://github.com/darosior/clightningjs)
+ - Added some more ARM and ARM64 images to Docker hub
+
 ## 2019-12-02
- - Add extended rpc support to `lnd`, including hold invoice.
+ - Add extended rpc support to `lnd`, including hold invoice
 
 ## 2019-11-16 (breaking changes)
- - Fast deployment! Reorganised files & upload precompiled images to Docker hub.
- - Update `bitcoin`, `elements` and `clightning` images to `alpine` linux reducing container size by 50-75%. (h/t to @ruipmarinho for https://github.com/ruimarinho/docker-bitcoin-core/tree/master/0.18/alpine)
+ - Fast deployment! Reorganised files & upload precompiled images to Docker hub
+ - Update `bitcoin`, `elements` and `clightning` images to `alpine` linux reducing container size by 50-75%. (h/t to @ruipmarinho for https://github.com/ruimarinho/docker-bitcoin-core)
 
  - | Image | Size |
    | --- | --- |
    | bitcoin:0.18.1-alpine | 302MB |
    | elements:0.17.0.3-alpine | 182MB |
-   | lnd:0.8.1-alpine | 70.8MB |
-   | clightning:0.7.3-alpine | 176MB |
+   | lnd:0.8.1-alpine | 77MB |
+   | clightning:0.7.3-alpine | 219MB |
    | eclair:0.3.2 | 294MB |
 
  - Refactor node/container composition scripts

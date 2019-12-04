@@ -63,7 +63,10 @@ RUN apk --no-cache add \
   libevent \
   libressl \
   libzmq \
-  su-exec
+  su-exec \
+  # enable support for custom nodejs plugins
+  nodejs \
+  npm
 
 ENV CLIGHTNING_DATA=/home/clightning/.lightning
 ENV CLIGHTNING_PREFIX=/opt/clightning
@@ -72,7 +75,7 @@ ENV PATH=${CLIGHTNING_PREFIX}/bin:$PATH
 COPY --from=clightning /opt /opt
 COPY docker-entrypoint.sh /entrypoint.sh
 
-VOLUME ["/home/clightning/.clightning"]
+VOLUME ["/home/clightning/.lightning"]
 
 ADD ./lightning.conf /home/clightning/.lightning/lightning.conf
 

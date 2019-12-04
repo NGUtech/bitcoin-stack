@@ -87,6 +87,7 @@ services:
       - bitcoin
     volumes:
       - carol_data:/home/clightning/.lightning
+      - ./clightning/plugins:/home/clightning/.lightning/plugins
       - bitcoin_shared:/bitcoin
 
   dave:

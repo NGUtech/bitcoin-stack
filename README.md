@@ -1,4 +1,4 @@
-# Docker setup for Bitcoin, Elements/Liquid, LND, C-Lightning, & Eclair in regtest mode
+# Docker setup for Bitcoin, Elements/Liquid, LND, Clightning, & Eclair in regtest mode
 
 ### ONLY FOR DEVELOPMENT and TESTING. These tools may not be suitable for production deployments.
 
@@ -31,9 +31,9 @@ L1:            |     BITCOIN      |╟-----------┴---╢|     ELEMENTS     |
                └------------------┘                 └------------------┘
 ```
 
-This `docker-compose` template launches `bitcoin`, two `lnd` containers named `alice` & `bob`, with a `c-lightning` container as `carol`, and an `eclair` container as `frank`.
+This `docker-compose` template launches `bitcoin`, two `lnd` containers named `alice` & `bob`, with a `clightning` container as `carol`, and an `eclair` container as `frank`.
 
-Additionally it can launch an `elements` sidechain (aka Liquid), with `c-lightning` implementation containers as `dave` & `emma` servicing the LBTC asset.
+Additionally it can launch an `elements` sidechain (aka Liquid), with `clightning` implementation containers as `dave` & `emma` servicing the LBTC asset.
 
 An application subscriber node is include which demonstrates how to connect to LND and listen to invoice messages.
 
@@ -50,7 +50,7 @@ Everything is configured to run in **regtest** mode but can be adjusted as requi
 
 ### Coming soon
  - Orchestration
- - C-lightning RPC example
+ - Clightning RPC example
  - Elements token creation and transaction scripts
  - Token swaps within Elements
  - Lightning swaps across Bitcoin and Elements
@@ -68,7 +68,7 @@ $ docker-compose up -d alice bob frank
 $ docker-compose up -d elements
 $ bin/stack elements generate 101
 
-# C-lightning can also be started on Bitcoin & Elements
+# Clightning can also be started on Bitcoin & Elements
 $ docker-compose up -d carol dave emma
 ```
 
@@ -106,13 +106,15 @@ $ bin/stack alice listchannels
 $ bin/stack bob listchannels
 ```
 
-A similar command will connect `bob` to `carol` across the `c-lightning` implementation of LN on Bitcoin.
+A similar command will connect `bob` to `carol` across the `clightning` implementation of LN on Bitcoin.
 ```
 $ bin/stack bob channelto carol 10000000
 # once channels are opened a payment can be simulated (note amount in *mSats*)
 $ CAROL_INVOICE=$(bin/stack carol invoice 100000000 "label" "description" | jq '.bolt11' | tr -d '"')
 $ bin/stack bob payinvoice $CAROL_INVOICE
 $ bin/stack carol listfunds
+# test the example plugin with the following:
+$ bin/stack hello yourname
 ```
 
 The same command will connect `bob` to `frank` across the `eclair` implementation of LN on Bitcoin.
@@ -130,7 +132,7 @@ $ bin/stack bitcoin pegin elements 13.37
 $ bin/stack elements getwalletinfo
 ```
 
-You can also open a LN LBTC channel on `c-lightning` across the Elements chain between `dave` & `emma`.
+You can also open a LN LBTC channel on `clightning` across the Elements chain between `dave` & `emma`.
 ```
 $ bin/stack dave channelto emma 10000000
 # once channels are opened a payment can be simulated (note amount in *mSats*)
@@ -156,8 +158,8 @@ $ curl -XGET --cacert ./alice-tls.cert --header "$ALICE_MACAROON_HEADER" https:/
 #eclair
 $ curl -XPOST -u :password http://127.0.0.1:8100/getinfo
 
-#c-lightning
-C-lightning doesn't have a REST interface without using a plugin, but it does exposes a JSON-RPC interface.
+#clightning
+Clightning doesn't have a REST interface without using a plugin, but it does exposes a JSON-RPC interface via a socket.
 ```
 
 View daemon logs as follows:

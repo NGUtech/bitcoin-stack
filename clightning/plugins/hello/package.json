@@ -1,0 +1,11 @@
+{
+  "name": "hello",
+  "version": "0.0.1",
+  "description": "Hello plugin example",
+  "main": "hello",
+  "author": "",
+  "license": "MPL-2.0",
+  "dependencies": {
+    "clightningjs": "^0.1.1"
+  }
+}
