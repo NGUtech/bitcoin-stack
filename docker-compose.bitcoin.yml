@@ -17,7 +17,6 @@ services:
       "-onlynet=ipv4",
       "-dnsseed=0",
       "-dbcache=50",
-      "-deprecatedrpc=generate",
       "-port=${BITCOIN_PORT}",
       "-regtest.rpcport=${BITCOIN_RPC_PORT}",
       "-regtest.port=${BITCOIN_PORT}",

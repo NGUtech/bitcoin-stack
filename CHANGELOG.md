@@ -1,5 +1,8 @@
 # Changelog
 
+## 2019-12-10
+ - Removed deprecated rpc options from `bitcoin` & `elements` and added convenience `generate` command
+
 ## 2019-12-04
  - Add support to `clightning` image for `nodejs` plugins; `hello` example provided (h/t to @darosior for https://github.com/darosior/clightningjs)
  - Added some more ARM and ARM64 images to Docker hub
