@@ -117,12 +117,12 @@ function pegin_command() {
     bin/stack $TARGET generate 1
     local ADDRS=$(bin/stack $TARGET getpeginaddress)
     local MAINCHAIN=$(echo $ADDRS | jq '.mainchain_address' | tr -d '"')
-    local SIDECHAIN=$(echo $ADDRS | jq '.claim_script' | tr -d '"')
+    local CLAIMSCRIPT=$(echo $ADDRS | jq '.claim_script' | tr -d '"')
     local TXID=$(bin/stack $NODE sendtoaddress $MAINCHAIN $AMOUNT)
     bin/stack $NODE generate 101
     local PROOF=$(bin/stack $NODE gettxoutproof '''["'''$TXID'''"]''')
     local RAW=$(bin/stack $NODE getrawtransaction $TXID)
-    bin/stack $TARGET claimpegin $RAW $PROOF
+    bin/stack $TARGET claimpegin $RAW $PROOF $CLAIMSCRIPT
     bin/stack $TARGET generate 1
 }
 
