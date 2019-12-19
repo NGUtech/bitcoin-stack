@@ -101,7 +101,7 @@ A command is provided to create a channel from `alice` to `bob` with some fundin
 $ bin/stack alice channelto bob 10000000
 # once channels are opened a payment can be simulated
 $ BOB_INVOICE=$(bin/stack bob addinvoice 100000 | jq '.pay_req' | tr -d '"')
-$ bin/stack alice payinvoice $BOB_INVOICE
+$ bin/stack alice payinvoice -f $BOB_INVOICE
 $ bin/stack alice listchannels
 $ bin/stack bob listchannels
 ```
@@ -111,7 +111,7 @@ A similar command will connect `bob` to `carol` across the `clightning` implemen
 $ bin/stack bob channelto carol 10000000
 # once channels are opened a payment can be simulated (note amount in *mSats*)
 $ CAROL_INVOICE=$(bin/stack carol invoice 100000000 "label" "description" | jq '.bolt11' | tr -d '"')
-$ bin/stack bob payinvoice $CAROL_INVOICE
+$ bin/stack bob payinvoice -f $CAROL_INVOICE
 $ bin/stack carol listfunds
 # test the example plugin with the following:
 $ bin/stack hello yourname
@@ -122,7 +122,7 @@ The same command will connect `bob` to `frank` across the `eclair` implementatio
 $ bin/stack bob channelto frank 10000000
 # once channels are opened a payment can be simulated (note amount in *mSats*)
 $ FRANK_INVOICE=$(bin/stack frank createinvoice --amountMsat=100000000 --description="test" | jq '.serialized' | tr -d '"')
-$ bin/stack bob payinvoice $FRANK_INVOICE
+$ bin/stack bob payinvoice -f $FRANK_INVOICE
 $ bin/stack frank audit
 ```
 
@@ -132,11 +132,11 @@ $ bin/stack bitcoin pegin elements 13.37
 $ bin/stack elements getwalletinfo
 ```
 
-You can also open a LN LBTC channel on `clightning` across the Elements chain between `dave` & `emma`.
+You can also open a LN **L-BTC** channel on `clightning` across the Elements chain between `dave` & `emma`.
 ```
 $ bin/stack dave channelto emma 10000000
-# once channels are opened a payment can be simulated (note amount in *mSats*)
-$ EMMA_INVOICE=$(bin/stack emma invoice 100000000 "label" "description" | jq '.bolt11' | tr -d '"')
+# once channels are opened a payment can be simulated (note amount specified as *sat*)
+$ EMMA_INVOICE=$(bin/stack emma invoice 100000sat "label1" "description1" | jq '.bolt11' | tr -d '"')
 $ bin/stack dave pay $EMMA_INVOICE
 $ bin/stack dave listpays
 $ bin/stack emma listinvoices
@@ -159,7 +159,7 @@ $ curl -XGET --cacert ./alice-tls.cert --header "$ALICE_MACAROON_HEADER" https:/
 $ curl -XPOST -u :password http://127.0.0.1:8100/getinfo
 
 #clightning
-Clightning doesn't have a REST interface without using a plugin, but it does exposes a JSON-RPC interface via a socket.
+Clightning exposes a JSON-RPC interface via a socket... example to follow..
 ```
 
 View daemon logs as follows:

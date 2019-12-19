@@ -1,5 +1,10 @@
 # Changelog
 
+## 2019-12-19
+ - Update `lnd` to v0.8.2-beta
+ - Update `clightning` to v0.8.0 and update `stack` command to support new network specification
+ - Update `bitcoin` to v0.19.0.1
+
 ## 2019-12-10
  - Removed deprecated rpc options from `bitcoin` & `elements` and added convenience `generate` command
  - Fix broken `pegin` stack command

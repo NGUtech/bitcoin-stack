@@ -104,7 +104,7 @@ function channelto_command() {
     bin/stack $CHAIN_NODE generate 1
     # @todo wait for funds
     openchannel $NODE $TARGET ${args[2]}
-    bin/stack $CHAIN_NODE generate 5
+    bin/stack $CHAIN_NODE generate 6
 }
 
 function pegin_command() {
@@ -153,7 +153,10 @@ function passthru_command() {
                 $ARGS
             ;;
         clightning)
+            local NETWORK=$(dockerInspect "$NODE" ".Args")
+            [[ $NETWORK =~ .+--network=([[:alnum:]_-]+) ]]
             docker-compose exec -T --user clightning $NODE lightning-cli \
+                --network ${BASH_REMATCH[1]} \
                 $ARGS
             ;;
         eclair)
