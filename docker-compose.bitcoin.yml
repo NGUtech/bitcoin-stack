@@ -27,6 +27,7 @@ services:
       "-rpcbind=127.0.0.1",
       "-rpcbind=${BITCOIN_HOST}",
       "-zmqpubrawtx=tcp://0.0.0.0:${BITCOIN_ZMQ_TX_PORT}",
+      "-zmqpubhashtx=tcp://0.0.0.0:${BITCOIN_ZMQ_TX_PORT}",
       "-zmqpubrawblock=tcp://0.0.0.0:${BITCOIN_ZMQ_BLOCK_PORT}",
       "-zmqpubhashblock=tcp://0.0.0.0:${BITCOIN_ZMQ_BLOCK_PORT}"
     ]

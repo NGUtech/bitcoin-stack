@@ -1,5 +1,8 @@
 # Changelog
 
+## 2020-01-30
+ - Update `lnd` to v0.9.0-beta
+
 ## 2019-12-19
  - Update `lnd` to v0.8.2-beta
  - Update `clightning` to v0.8.0 and update `stack` command to support new network specification
