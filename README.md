@@ -100,7 +100,7 @@ A command is provided to create a channel from `alice` to `bob` with some fundin
 ```
 $ bin/stack alice channelto bob 10000000
 # once channels are opened a payment can be simulated
-$ BOB_INVOICE=$(bin/stack bob addinvoice 100000 | jq '.pay_req' | tr -d '"')
+$ BOB_INVOICE=$(bin/stack bob addinvoice 100000 | jq '.payment_request' | tr -d '"')
 $ bin/stack alice payinvoice -f $BOB_INVOICE
 $ bin/stack alice listchannels
 $ bin/stack bob listchannels
@@ -110,11 +110,11 @@ A similar command will connect `bob` to `carol` across the `clightning` implemen
 ```
 $ bin/stack bob channelto carol 10000000
 # once channels are opened a payment can be simulated (note amount in *mSats*)
-$ CAROL_INVOICE=$(bin/stack carol invoice 100000000 "label" "description" | jq '.bolt11' | tr -d '"')
+$ CAROL_INVOICE=$(bin/stack carol invoice 100000000 "label1" "description1" | jq '.bolt11' | tr -d '"')
 $ bin/stack bob payinvoice -f $CAROL_INVOICE
 $ bin/stack carol listfunds
 # test the example plugin with the following:
-$ bin/stack hello yourname
+$ bin/stack carol hello yourname
 ```
 
 The same command will connect `bob` to `frank` across the `eclair` implementation of LN on Bitcoin.
@@ -135,7 +135,8 @@ $ bin/stack elements getwalletinfo
 You can also open a LN **L-BTC** channel on `clightning` across the Elements chain between `dave` & `emma`.
 ```
 $ bin/stack dave channelto emma 10000000
-# once channels are opened a payment can be simulated (note amount specified as *sat*)
+# this may take upto a minute to sync with chain before channel has visible balance
+# once channels are opened a payment can be simulated (note amount explicitly specified as *sat*)
 $ EMMA_INVOICE=$(bin/stack emma invoice 100000sat "label1" "description1" | jq '.bolt11' | tr -d '"')
 $ bin/stack dave pay $EMMA_INVOICE
 $ bin/stack dave listpays

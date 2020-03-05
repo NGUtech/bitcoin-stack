@@ -1,5 +1,10 @@
 # Changelog
 
+## 2020-03-05
+ - Update `clightning` to v0.8.1
+ - Update `lnd` to v0.9.1-beta
+ - Update `eclair` to v0.3.3
+
 ## 2020-01-30
  - Update `lnd` to v0.9.0-beta
 

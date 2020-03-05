@@ -31,7 +31,7 @@ RUN set -ex \
     gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
   done
 
-ENV CLIGHTNING_VERSION=0.8.0
+ENV CLIGHTNING_VERSION=0.8.1
 ENV CLIGHTNING_PREFIX=/opt/clightning
 
 RUN wget https://github.com/ElementsProject/lightning/releases/download/v${CLIGHTNING_VERSION}/SHA256SUMS
@@ -45,7 +45,7 @@ RUN unzip -q clightning-v${CLIGHTNING_VERSION}.zip
 WORKDIR /clightning-v${CLIGHTNING_VERSION}
 
 RUN ./configure --prefix=${CLIGHTNING_PREFIX}
-RUN make -j4
+RUN make -j$(nproc)
 RUN make install
 RUN strip ${CLIGHTNING_PREFIX}/bin/lightning-cli
 RUN strip ${CLIGHTNING_PREFIX}/bin/lightningd
