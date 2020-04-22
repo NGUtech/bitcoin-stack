@@ -16,7 +16,7 @@ services:
       "-txindex=1",
       "-onlynet=ipv4",
       "-dnsseed=0",
-      "-dbcache=50",
+      "-dbcache=10",
       "-initialfreecoins=0",
       "-port=${ELEMENTS_PORT}",
       "-rpcport=${ELEMENTS_RPC_PORT}",

@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 
 # Build stage for BerkeleyDB
-FROM alpine as berkeleydb
+FROM alpine:3.10 as berkeleydb
 
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add autoconf
@@ -47,7 +47,7 @@ RUN make install
 RUN rm -rf ${BERKELEYDB_PREFIX}/docs
 
 # Build stage for Elements Core
-FROM alpine as elements-core
+FROM alpine:3.10 as elements-core
 
 COPY --from=berkeleydb /opt /opt
 
@@ -112,7 +112,7 @@ RUN strip ${ELEMENTS_PREFIX}/lib/libelementsconsensus.a
 RUN strip ${ELEMENTS_PREFIX}/lib/libelementsconsensus.so.0.0.0
 
 # Build stage for compiled artifacts
-FROM alpine
+FROM alpine:3.10
 
 RUN adduser -S elements
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories

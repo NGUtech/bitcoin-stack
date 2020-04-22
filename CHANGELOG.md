@@ -1,5 +1,11 @@
 # Changelog
 
+## 2020-04-21
+ - Update `bitcoin` to v0.19.1
+ - Update `lnd` to v0.9.2-beta, added `keysend` example
+ - Update `eclair` to v0.3.4
+ - Explicitly set `alpine` base images to v3.10
+
 ## 2020-03-05
  - Update `clightning` to v0.8.1
  - Update `lnd` to v0.9.1-beta

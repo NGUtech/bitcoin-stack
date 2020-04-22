@@ -106,6 +106,13 @@ $ bin/stack alice listchannels
 $ bin/stack bob listchannels
 ```
 
+The `bob` container is also configured to accept `keysend` transactions so payments can be made without requiring an invoice.
+```
+# assuming channel is opened as above
+$ BOB_NODE=$(bin/stack bob getinfo | jq '.identity_pubkey' | tr -d '"')
+$ bin/stack alice sendpayment --keysend $BOB_NODE 10000
+```
+
 A similar command will connect `bob` to `carol` across the `clightning` implementation of LN on Bitcoin.
 ```
 $ bin/stack bob channelto carol 10000000

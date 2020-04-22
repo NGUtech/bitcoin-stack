@@ -1,4 +1,4 @@
-FROM alpine as clightning
+FROM alpine:3.10 as clightning
 
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add autoconf
@@ -51,7 +51,7 @@ RUN strip ${CLIGHTNING_PREFIX}/bin/lightning-cli
 RUN strip ${CLIGHTNING_PREFIX}/bin/lightningd
 
 # Build stage for compiled artifacts
-FROM alpine
+FROM alpine:3.10
 
 RUN adduser -S clightning
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
