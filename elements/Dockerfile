@@ -68,7 +68,10 @@ RUN apk --no-cache add protobuf-dev
 RUN apk --no-cache add zeromq-dev
 RUN set -ex \
   && for key in \
-    6BE2CED14A9917BC \
+    #niftynei
+    #6BE2CED14A9917BC \
+    #stevenroose
+    8CC974D9CFD034DCEED213B02A57E0A610D7F19C \
   ; do \
     gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key" || \
     gpg --batch --keyserver pgp.mit.edu --recv-keys "$key" || \
@@ -77,7 +80,7 @@ RUN set -ex \
     gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
   done
 
-ENV ELEMENTS_VERSION=0.17.0.3
+ENV ELEMENTS_VERSION=0.18.1.6
 ENV ELEMENTS_PREFIX=/opt/elements
 
 RUN wget https://github.com/ElementsProject/elements/releases/download/elements-${ELEMENTS_VERSION}/SHA256SUMS.asc

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2020-04-25
+ - Update `elements` to v0.18.1.6
+ - Adjust default ports
+
 ## 2020-04-21
  - Update `bitcoin` to v0.19.1
  - Update `lnd` to v0.9.2-beta, added `keysend` example

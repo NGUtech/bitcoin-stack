@@ -48,7 +48,7 @@ Everything is configured to run in **regtest** mode but can be adjusted as requi
  - Precompiled images are provided on Docker Hub but it is not recommended to use them in production environments.
  - Ports and other daemon configuration can be changed in the `.env` and `docker-compose.yml` files.
 
-### Coming soon
+### To Do
  - Orchestration
  - Clightning RPC example
  - Elements token creation and transaction scripts
@@ -139,7 +139,7 @@ $ bin/stack bitcoin pegin elements 13.37
 $ bin/stack elements getwalletinfo
 ```
 
-You can also open a LN **L-BTC** channel on `clightning` across the Elements chain between `dave` & `emma`.
+You can also open a LN **L-BTC** channel on `clightning` across the Elements chain between `dave` & `emma`!
 ```
 $ bin/stack dave channelto emma 10000000
 # this may take upto a minute to sync with chain before channel has visible balance
@@ -161,10 +161,10 @@ $ curl --data-binary '{"jsonrpc":"1.0","id":"curltext","method":"getwalletinfo",
 #lnd
 $ ALICE_MACAROON_HEADER="Grpc-Metadata-macaroon: `docker-compose exec -T alice cat /home/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon | xxd -ps -u -c 1000`"
 $ echo "$(docker-compose exec -T alice cat /home/lnd/.lnd/tls.cert)" > ./alice-tls.cert
-$ curl -XGET --cacert ./alice-tls.cert --header "$ALICE_MACAROON_HEADER" https://127.0.0.1:8080/v1/balance/channels
+$ curl -XGET --cacert ./alice-tls.cert --header "$ALICE_MACAROON_HEADER" https://127.0.0.1:8090/v1/balance/channels
 
 #eclair
-$ curl -XPOST -u :password http://127.0.0.1:8100/getinfo
+$ curl -XPOST -u :password http://127.0.0.1:8110/getinfo
 
 #clightning
 Clightning exposes a JSON-RPC interface via a socket... example to follow..
