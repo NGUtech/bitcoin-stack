@@ -11,7 +11,7 @@ volumes:
 services:
   alice:
     container_name: ${COMPOSE_PROJECT_NAME}_alice
-    image: bitcoinstack/lnd:0.9.2-alpine
+    image: bitcoinstack/lnd:0.10.0-alpine
     restart: unless-stopped
     command: [
       "--noseedbackup",
@@ -41,7 +41,7 @@ services:
 
   bob:
     container_name: ${COMPOSE_PROJECT_NAME}_bob
-    image: bitcoinstack/lnd:0.9.2-alpine
+    image: bitcoinstack/lnd:0.10.0-alpine
     restart: unless-stopped
     command: [
       "--noseedbackup",

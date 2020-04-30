@@ -1,5 +1,8 @@
 # Changelog
 
+## 2020-04-30
+ - Update `lnd` to v0.10.0-beta
+
 ## 2020-04-25
  - Update `elements` to v0.18.1.6
  - Adjust default ports

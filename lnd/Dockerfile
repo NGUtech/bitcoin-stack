@@ -1,4 +1,4 @@
-FROM golang:1.13-alpine as builder
+FROM golang:1.14-alpine as builder
 
 WORKDIR /go/src/github.com/lightningnetwork/lnd
 
@@ -8,7 +8,7 @@ ENV GODEBUG netdns=cgo
 
 RUN apk add --no-cache --update alpine-sdk git make \
   && git clone -n https://github.com/lightningnetwork/lnd . \
-  && git checkout v0.9.2-beta \
+  && git checkout v0.10.0-beta \
   && make \
   && make install tags="autopilotrpc chainrpc invoicesrpc routerrpc signrpc walletrpc watchtowerrpc wtclientrpc"
 
