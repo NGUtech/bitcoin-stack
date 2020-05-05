@@ -1,5 +1,8 @@
 # Changelog
 
+## 2020-05-05
+ - Update `clightning` to v0.8.2
+
 ## 2020-04-30
  - Update `lnd` to v0.10.0-beta
 

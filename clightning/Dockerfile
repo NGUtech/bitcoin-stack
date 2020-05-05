@@ -31,7 +31,7 @@ RUN set -ex \
     gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
   done
 
-ENV CLIGHTNING_VERSION=0.8.1
+ENV CLIGHTNING_VERSION=0.8.2
 ENV CLIGHTNING_PREFIX=/opt/clightning
 
 RUN wget https://github.com/ElementsProject/lightning/releases/download/v${CLIGHTNING_VERSION}/SHA256SUMS

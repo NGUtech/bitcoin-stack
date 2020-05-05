@@ -96,12 +96,14 @@ $ docker-compose logs -f subscriber
 $ bin/stack alice addinvoice 1000
 ```
 
-A command is provided to create a channel from `alice` to `bob` with some funding between the two `lnd` containers.
+A command is provided to easily create channels, so we can open some from `alice` to `bob` with some funding between the two `lnd` containers and do a multi part payment.
 ```
-$ bin/stack alice channelto bob 10000000
+$ bin/stack alice channelto bob 5000000
+$ bin/stack alice channelto bob 2000000
+$ bin/stack alice channelto bob 500000
 # once channels are opened a payment can be simulated
-$ BOB_INVOICE=$(bin/stack bob addinvoice 100000 | jq '.payment_request' | tr -d '"')
-$ bin/stack alice payinvoice -f $BOB_INVOICE
+$ BOB_INVOICE=$(bin/stack bob addinvoice 5275000 | jq '.payment_request' | tr -d '"')
+$ bin/stack alice payinvoice --max_parts=5 -f $BOB_INVOICE
 $ bin/stack alice listchannels
 $ bin/stack bob listchannels
 ```
@@ -124,6 +126,13 @@ $ bin/stack carol listfunds
 $ bin/stack carol hello yourname
 ```
 
+You can also receive `keysend` payments on `clightning`:
+```
+# assuming channel is opened as above (might take a minute to sync & activate)
+$ CAROL_NODE=$(bin/stack carol getinfo | jq '.id' | tr -d '"')
+$ bin/stack bob sendpayment --keysend $CAROL_NODE 10000
+```
+
 The same command will connect `bob` to `frank` across the `eclair` implementation of LN on Bitcoin.
 ```
 $ bin/stack bob channelto frank 10000000
@@ -141,8 +150,9 @@ $ bin/stack elements getwalletinfo
 
 You can also open a LN **L-BTC** channel on `clightning` across the Elements chain between `dave` & `emma`!
 ```
-$ bin/stack dave channelto emma 10000000
-# this may take upto a minute to sync with chain before channel has visible balance
+# open a 1LBTC large channel (wumbo)
+$ bin/stack dave channelto emma 100000000
+# this may take a minute to sync nodes & activate before channel has visible balance
 # once channels are opened a payment can be simulated (note amount explicitly specified as *sat*)
 $ EMMA_INVOICE=$(bin/stack emma invoice 100000sat "label1" "description1" | jq '.bolt11' | tr -d '"')
 $ bin/stack dave pay $EMMA_INVOICE
