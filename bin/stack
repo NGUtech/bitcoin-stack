@@ -2,6 +2,12 @@
 
 source .env
 
+EXEC_OPTS="-T"
+while [[ "$1" == -* ]]; do
+    EXEC_OPTS+=" $1"
+    shift
+done
+
 NODE="$1" && shift
 COMMAND="$1"
 ARGS="$@"
@@ -18,7 +24,7 @@ function getChainNode() {
     case "$IMPL" in
         clightning)
             local NETWORK=$(bin/stack $1 getinfo | jq '.network' | tr -d '"')
-            if [[ $NETWORK == "liquid-regtest" ]]; then echo "elements"; fi ;;
+            if [[ $NETWORK == "liquid-regtest" ]]; then echo "elements"; else echo "bitcoin"; fi ;;
         *) echo "bitcoin"; ;;
     esac
 }
@@ -130,7 +136,7 @@ function passthru_command() {
     local NODE_IMPL=$(getImpl $NODE)
     case "$NODE_IMPL" in
         bitcoin)
-            docker-compose exec -T --user bitcoin $NODE bitcoin-cli \
+            docker-compose exec $EXEC_OPTS --user bitcoin $NODE bitcoin-cli \
                 -rpcuser=$BITCOIN_RPC_USER \
                 -rpcpassword=$BITCOIN_RPC_PASSWORD \
                 -rpcconnect=$BITCOIN_HOST \
@@ -138,7 +144,7 @@ function passthru_command() {
                 $ARGS
             ;;
         elements)
-            docker-compose exec -T --user elements $NODE elements-cli \
+            docker-compose exec $EXEC_OPTS --user elements $NODE elements-cli \
                 -rpcuser=$ELEMENTS_RPC_USER \
                 -rpcpassword=$ELEMENTS_RPC_PASSWORD \
                 -rpcconnect=$ELEMENTS_HOST \
@@ -147,7 +153,7 @@ function passthru_command() {
             ;;
         lnd)
             NODE_RPC_PORT=$(ucase $NODE)_RPC_PORT
-            docker-compose exec -T --user lnd $NODE lncli \
+            docker-compose exec $EXEC_OPTS --user lnd $NODE lncli \
                 --network regtest \
                 --rpcserver 127.0.0.1:${!NODE_RPC_PORT} \
                 $ARGS
@@ -155,13 +161,13 @@ function passthru_command() {
         clightning)
             local NETWORK=$(dockerInspect "$NODE" ".Args")
             [[ $NETWORK =~ .+--network=([[:alnum:]_-]+) ]]
-            docker-compose exec -T --user clightning $NODE lightning-cli \
+            docker-compose exec $EXEC_OPTS --user clightning $NODE lightning-cli \
                 --network ${BASH_REMATCH[1]} \
                 $ARGS
             ;;
         eclair)
             NODE_REST_PORT=$(ucase $NODE )_REST_PORT
-            docker-compose exec -T $NODE eclair-cli \
+            docker-compose exec $EXEC_OPTS $NODE eclair-cli \
                 -p password \
                 -a $NODE:${!NODE_REST_PORT} \
                 $ARGS
