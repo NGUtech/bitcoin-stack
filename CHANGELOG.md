@@ -1,5 +1,8 @@
 # Changelog
 
+## 2020-05-22
+ - Update `clightning` to v0.8.2.1
+
 ## 2020-05-05
  - Update `clightning` to v0.8.2
 
