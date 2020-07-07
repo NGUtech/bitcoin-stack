@@ -54,7 +54,7 @@ function getAddress() {
     case "$IMPL" in
         lnd) echo $(bin/stack $1 newaddress np2wkh | jq '.address' | tr -d '"'); ;;
         clightning) echo $(bin/stack $1 newaddr p2sh-segwit | jq '.address' | tr -d '"'); ;;
-        eclair) ;; # @todo add impl
+        eclair) echo $(bin stack $1 getnewaddress); ;;
     esac
 }
 
