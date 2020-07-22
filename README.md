@@ -5,7 +5,7 @@
 
 ```
      ┌--------------------------------------------------------------------┐
-L+:  |                      YOUR APPLICATION STACK                        |
+L+:  |                       YOUR APPLICATION STACK                       |
      └---------------------------------+-------+--------------------------┘
                                        |       |
                     ┌---------┐        |       |
@@ -35,9 +35,9 @@ This `docker-compose` template launches `bitcoin`, two `lnd` containers named `a
 
 Additionally it can launch an `elements` sidechain (aka Liquid), with `clightning` implementation containers as `dave` & `emma` servicing the LBTC asset.
 
-An application subscriber node is include which demonstrates how to connect to LND and listen to invoice messages.
+An application demo node is include which demonstrates how to connect to LND and listen to invoice messages and is able to generate transaction spam for fee estimation.
 
-Everything is configured to run in **regtest** mode but can be adjusted as required.
+Everything is configured to run in **regtest** mode but can be adjusted as required. Most images are provided for AMD64 and ARM64 architectures so you may have to manually build for others (see bottom).
 
 ## See the [changelog](CHANGELOG.md) before upgrading.
 
@@ -51,6 +51,7 @@ Everything is configured to run in **regtest** mode but can be adjusted as requi
 ### To Do
  - Orchestration
  - Clightning RPC example
+ - Libbitcoin reference
  - Elements token creation and transaction scripts
  - Token swaps within Elements
  - Lightning swaps across Bitcoin and Elements
@@ -89,10 +90,16 @@ $ bin/stack emma getinfo
 $ bin/stack frank getinfo
 ```
 
-Start following the subscriber node in a separate terminal window to see invoice messages as they come through.
+Generate some bitcoin tx spam (optional) to enable smart fee estimation.
 ```
-$ docker-compose up -d subscriber
-$ docker-compose logs -f subscriber
+$ docker-compose exec demo sh -c "node bitcoin-spam.js"
+$ bin/stack bitcoin estimatesmartfee 24 ECONOMICAL
+```
+
+Start following the demo subscriber node in a separate terminal window to see invoice messages as they come through.
+```
+$ docker-compose up -d demo
+$ docker-compose logs -f demo
 $ bin/stack alice addinvoice 1000
 ```
 
@@ -118,15 +125,15 @@ $ bin/stack alice sendpayment --keysend $BOB_NODE 10000
 A similar command will connect `bob` to `carol` across the `clightning` implementation of LN on Bitcoin.
 ```
 $ bin/stack bob channelto carol 10000000
-# once channels are opened a payment can be simulated (note amount in *mSats*)
-$ CAROL_INVOICE=$(bin/stack carol invoice 100000000 "label1" "description1" | jq '.bolt11' | tr -d '"')
+# once channels are opened a payment can be simulated
+$ CAROL_INVOICE=$(bin/stack carol invoice 100000sat "label1" "description1" | jq '.bolt11' | tr -d '"')
 $ bin/stack bob payinvoice -f $CAROL_INVOICE
 $ bin/stack carol listfunds
 # test the example plugin with the following:
 $ bin/stack carol hello yourname
 ```
 
-You can also receive `keysend` payments on `clightning`:
+You can also receive `keysend` payments to `clightning`:
 ```
 # assuming channel is opened as above (might take a minute to sync & activate)
 $ CAROL_NODE=$(bin/stack carol getinfo | jq '.id' | tr -d '"')
@@ -153,7 +160,7 @@ You can also open a LN **L-BTC** channel on `clightning` across the Elements cha
 # open a 1LBTC large channel (wumbo)
 $ bin/stack dave channelto emma 100000000
 # this may take a minute to sync nodes & activate before channel has visible balance
-# once channels are opened a payment can be simulated (note amount explicitly specified as *sat*)
+# once channels are opened a payment can be simulated
 $ EMMA_INVOICE=$(bin/stack emma invoice 100000sat "label1" "description1" | jq '.bolt11' | tr -d '"')
 $ bin/stack dave pay $EMMA_INVOICE
 $ bin/stack dave listpays

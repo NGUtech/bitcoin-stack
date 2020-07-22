@@ -7,7 +7,7 @@ volumes:
 services:
   bitcoin:
     container_name: ${COMPOSE_PROJECT_NAME}_bitcoin
-    image: bitcoinstack/bitcoin:0.19.1-alpine
+    image: bitcoinstack/bitcoin:0.20.0-alpine
     restart: unless-stopped
     command: [
       "-regtest=1",
@@ -18,8 +18,6 @@ services:
       "-dnsseed=0",
       "-dbcache=10",
       "-port=${BITCOIN_PORT}",
-      "-regtest.rpcport=${BITCOIN_RPC_PORT}",
-      "-regtest.port=${BITCOIN_PORT}",
       "-rpcport=${BITCOIN_RPC_PORT}",
       "-rpcuser=${BITCOIN_RPC_USER}",
       "-rpcpassword=${BITCOIN_RPC_PASSWORD}",

@@ -11,7 +11,7 @@ volumes:
 services:
   alice:
     container_name: ${COMPOSE_PROJECT_NAME}_alice
-    image: bitcoinstack/lnd:0.10.0-alpine
+    image: bitcoinstack/lnd:0.10.4-alpine
     restart: unless-stopped
     command: [
       "--noseedbackup",
@@ -41,7 +41,7 @@ services:
 
   bob:
     container_name: ${COMPOSE_PROJECT_NAME}_bob
-    image: bitcoinstack/lnd:0.10.0-alpine
+    image: bitcoinstack/lnd:0.10.4-alpine
     restart: unless-stopped
     command: [
       "--noseedbackup",
@@ -136,7 +136,7 @@ services:
 
   frank:
     container_name: ${COMPOSE_PROJECT_NAME}_frank
-    image: bitcoinstack/eclair:0.3.4
+    image: bitcoinstack/eclair:0.4.1
     command: ["bash", "eclair-node/bin/eclair-node.sh"]
     environment:
       - |
@@ -163,14 +163,19 @@ services:
     volumes:
       - frank_data:/data
 
-  subscriber:
-    container_name: ${COMPOSE_PROJECT_NAME}_subscriber
-    image: bitcoinstack/subscriber:0.1
+  demo:
+    container_name: ${COMPOSE_PROJECT_NAME}_demo
+    image: bitcoinstack/demo:0.1
     restart: unless-stopped
     command: ['node', 'subscriber.js']
     depends_on:
+      - bitcoin
       - alice
     environment:
+      - BITCOIN_HOST
+      - BITCOIN_RPC_PORT
+      - BITCOIN_RPC_USER
+      - BITCOIN_RPC_PASSWORD
       - ALICE_HOST
       - ALICE_RPC_PORT
     volumes:

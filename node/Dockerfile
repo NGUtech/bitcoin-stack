@@ -9,6 +9,7 @@ ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 
 USER node
 RUN npm install -g \
+        bitcoin-json-rpc@^1.0.2 \
         @grpc/proto-loader@^0.5.2 \
         amqplib@^0.5.5 \
         dotenv@^8.2.0 \

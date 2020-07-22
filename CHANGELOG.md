@@ -1,5 +1,11 @@
 # Changelog
 
+## 2020-07-22
+ - Update `lnd` to v0.10.4-beta
+ - Update `bitcoind` to v0.20.0
+ - Update `eclair` to v0.4.1
+ - Add bitcoin tx spam generator to demo app container to enable fee estimation
+
 ## 2020-05-22
  - Update `clightning` to v0.8.2.1
 
@@ -62,7 +68,7 @@
  - Rename repo to `bitcoin-stack` (use `git remote set-url origin https://github.com/MrHash/bitcoin-stack` to retarget local clones)
 
 ## 2019-11-03
- - Add a app subscriber node listening to LND invoice events over secure GRPC
+ - Add a app demo node listening to LND invoice events over secure GRPC
 
 ## 2019-10-30
  - Update `lightningd` to 0.7.3
