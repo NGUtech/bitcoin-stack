@@ -98,6 +98,7 @@ $ docker-compose exec demo sh -c "node bitcoin-spam.js"
 $ bin/stack bitcoin estimatesmartfee 24 ECONOMICAL
 ```
 
+### Notification listener demo
 Start following the demo subscriber node in a separate terminal window to see invoice messages as they come through.
 ```
 $ docker-compose up -d demo
@@ -105,6 +106,7 @@ $ docker-compose logs -f demo
 $ bin/stack alice addinvoice 1000
 ```
 
+### LND MPP to LND
 A command is provided to easily create channels, so we can open some from `alice` to `bob` with some funding between the two `lnd` containers and do a multi part payment.
 ```
 $ bin/stack alice channelto bob 5000000
@@ -117,6 +119,7 @@ $ bin/stack alice listchannels
 $ bin/stack bob listchannels
 ```
 
+### LND keysend to LND
 The `bob` container is also configured to accept `keysend` transactions so payments can be made without requiring an invoice.
 ```
 # assuming channel is opened as above
@@ -124,6 +127,7 @@ $ BOB_NODE=$(bin/stack bob getinfo | jq '.identity_pubkey' | tr -d '"')
 $ bin/stack alice sendpayment --keysend $BOB_NODE 10000
 ```
 
+### LND invoice payment to Clightning
 Similar commands will connect `alice` & `bob` to `carol` across the `clightning` implementation of LN on Bitcoin.
 ```
 $ bin/stack alice channelto carol 2000000
@@ -134,6 +138,7 @@ $ bin/stack bob payinvoice -f $CAROL_INVOICE
 $ bin/stack carol listfunds
 ```
 
+### LND keysend payment to Clightning
 You can also receive `keysend` payments to `clightning`:
 ```
 # assuming channel is opened as above (might take a minute to sync & activate)
@@ -141,6 +146,7 @@ $ CAROL_NODE=$(bin/stack carol getinfo | jq '.id' | tr -d '"')
 $ bin/stack bob sendpayment --keysend $CAROL_NODE 10000
 ```
 
+### Clightning MPP to LND
 Since 0.9.0 `clightning` supports MPP by default so payments are adaptively split into random amounts.
 ```
 $ ALICE_INVOICE=$(bin/stack alice addinvoice 1000000 | jq '.payment_request' | tr -d '"')
@@ -148,11 +154,13 @@ $ bin/stack carol pay $ALICE_INVOICE
 $ bin/stack alice lookupinvoice $(bin/stack alice decodepayreq $ALICE_INVOICE | jq '.payment_hash' | tr -d '"')
 ```
 
+### Clightning plugin
 A `clightning` plugin example is included for more advanced feature development.
 ```
 $ bin/stack carol hello yourname
 ```
 
+### LND invoice payment to Eclair
 Similar commands will connect `bob` to `frank` across the `eclair` implementation of LN on Bitcoin.
 ```
 $ bin/stack bob channelto frank 10000000
@@ -162,12 +170,14 @@ $ bin/stack bob payinvoice -f $FRANK_INVOICE
 $ bin/stack frank audit
 ```
 
+### Peg-in Bitcoin to Elements
 Elements sidechain is available and can be pegged in from regtest Bitcoin chain using the provided script command.
 ```
 $ bin/stack bitcoin pegin elements 13.37
 $ bin/stack elements getwalletinfo
 ```
 
+### Clightning payments on Elements
 You can also open a LN **L-BTC** channel on `clightning` across the Elements chain between `dave` & `emma`!
 ```
 # open a 1LBTC large channel (wumbo)
@@ -180,6 +190,7 @@ $ bin/stack dave listpays
 $ bin/stack emma listinvoices
 ```
 
+### REST/RPC examples
 REST/RPC queries can be executed directly from your application to each daemon. Use standard RPC adapters to connect to these and have full control over money flow; hook into message queues for notifications B).
 ```
 #bitcoin
@@ -200,6 +211,7 @@ $ curl -XPOST -u :password http://127.0.0.1:8110/getinfo
 Clightning exposes a JSON-RPC interface via a socket... example to follow..
 ```
 
+## Other information
 View daemon logs as follows:
 ```
 $ docker-compose logs -f
