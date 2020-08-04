@@ -13,8 +13,9 @@ L+:  |                       YOUR APPLICATION STACK                       |
                     |  FRANK  |╟-------┤       ├------┐
                     |         |        |       |      |
                     └----+----┘        |       |      |
-                         |             ╧       |      ╧
-     ┌-----------┐  ┌----+----┐  ┌-----------┐ | ┌----------┐  ┌----------┐
+                         |             |       |      |
+           ┌-------------|-------------╧       |      ╧
+     ┌-----+-----┐  ┌----+----┐  ┌-----------┐ | ┌----------┐  ┌----------┐
      |           |  |         |  |           | | |          |  |          |
 L2:  |   ALICE   +--+   BOB   +--+   CAROL   | | |   DAVE   +--+   EMMA   |
      |           |  |         |  |           | | |          |  |          |
@@ -49,6 +50,7 @@ Everything is configured to run in **regtest** mode but can be adjusted as requi
  - Ports and other daemon configuration can be changed in the `.env` and `docker-compose.yml` files.
 
 ### To Do
+ - Clightning keysend example
  - Orchestration
  - Clightning RPC example
  - Libbitcoin reference
@@ -122,15 +124,14 @@ $ BOB_NODE=$(bin/stack bob getinfo | jq '.identity_pubkey' | tr -d '"')
 $ bin/stack alice sendpayment --keysend $BOB_NODE 10000
 ```
 
-A similar command will connect `bob` to `carol` across the `clightning` implementation of LN on Bitcoin.
+Similar commands will connect `alice` & `bob` to `carol` across the `clightning` implementation of LN on Bitcoin.
 ```
+$ bin/stack alice channelto carol 2000000
 $ bin/stack bob channelto carol 10000000
 # once channels are opened a payment can be simulated
-$ CAROL_INVOICE=$(bin/stack carol invoice 100000sat "label1" "description1" | jq '.bolt11' | tr -d '"')
+$ CAROL_INVOICE=$(bin/stack carol invoice 3000000sat "label1" "description1" | jq '.bolt11' | tr -d '"')
 $ bin/stack bob payinvoice -f $CAROL_INVOICE
 $ bin/stack carol listfunds
-# test the example plugin with the following:
-$ bin/stack carol hello yourname
 ```
 
 You can also receive `keysend` payments to `clightning`:
@@ -140,7 +141,19 @@ $ CAROL_NODE=$(bin/stack carol getinfo | jq '.id' | tr -d '"')
 $ bin/stack bob sendpayment --keysend $CAROL_NODE 10000
 ```
 
-The same command will connect `bob` to `frank` across the `eclair` implementation of LN on Bitcoin.
+Since 0.9.0 `clightning` supports MPP by default so payments are adaptively split into random amounts.
+```
+$ ALICE_INVOICE=$(bin/stack alice addinvoice 1000000 | jq '.payment_request' | tr -d '"')
+$ bin/stack carol pay $ALICE_INVOICE
+$ bin/stack alice lookupinvoice $(bin/stack alice decodepayreq $ALICE_INVOICE | jq '.payment_hash' | tr -d '"')
+```
+
+A `clightning` plugin example is included for more advanced feature development.
+```
+$ bin/stack carol hello yourname
+```
+
+Similar commands will connect `bob` to `frank` across the `eclair` implementation of LN on Bitcoin.
 ```
 $ bin/stack bob channelto frank 10000000
 # once channels are opened a payment can be simulated (note amount in *mSats*)
@@ -199,7 +212,7 @@ $ docker-compose down -v
 
 Images can be built locally using the following pattern:
 ```
-$ docker build -t bitcoinstack/bitcoin:0.18.1-alpine ./bitcoin
+$ docker build -t bitcoinstack/bitcoin:0.20.1-alpine ./bitcoin
 ```
 
 ---

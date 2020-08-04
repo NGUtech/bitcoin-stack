@@ -1,5 +1,9 @@
 # Changelog
 
+## 2020-08-04
+ - Update `clightning` to v0.9.0 and add MPP example
+ - Update `bitcoind` to v0.20.1
+
 ## 2020-07-22
  - Update `lnd` to v0.10.4-beta
  - Update `bitcoind` to v0.20.0
