@@ -14,8 +14,8 @@ L+:  |                       YOUR APPLICATION STACK                       |
                     |         |        |       |      |
                     └----+----┘        |       |      |
                          |             |       |      |
-           ┌-------------|-------------╧       |      ╧
-     ┌-----+-----┐  ┌----+----┐  ┌-----------┐ | ┌----------┐  ┌----------┐
+           ┌-------------|-----------┐ ╧       |      ╧
+     ┌-----+-----┐  ┌----+----┐  ┌---+-------┐ | ┌----------┐  ┌----------┐
      |           |  |         |  |           | | |          |  |          |
 L2:  |   ALICE   +--+   BOB   +--+   CAROL   | | |   DAVE   +--+   EMMA   |
      |           |  |         |  |           | | |          |  |          |
@@ -133,7 +133,7 @@ Similar commands will connect `alice` & `bob` to `carol` across the `clightning`
 $ bin/stack alice channelto carol 2000000
 $ bin/stack bob channelto carol 10000000
 # once channels are opened a payment can be simulated
-$ CAROL_INVOICE=$(bin/stack carol invoice 3000000sat "label1" "description1" | jq '.bolt11' | tr -d '"')
+$ CAROL_INVOICE=$(bin/stack carol invoice 3000000sat "label1" "desc1" | jq '.bolt11' | tr -d '"')
 $ bin/stack bob payinvoice -f $CAROL_INVOICE
 $ bin/stack carol listfunds
 ```
@@ -160,13 +160,12 @@ A `clightning` plugin example is included for more advanced feature development.
 $ bin/stack carol hello yourname
 ```
 
-### LND invoice payment to Eclair
-Similar commands will connect `bob` to `frank` across the `eclair` implementation of LN on Bitcoin.
+### Eclair invoice payment to Clightning
+Similar commands will connect `frank` to `bob` from the `eclair` implementation of LN on Bitcoin.
 ```
-$ bin/stack bob channelto frank 10000000
-# once channels are opened a payment can be simulated (note amount in *mSats*)
-$ FRANK_INVOICE=$(bin/stack frank createinvoice --amountMsat=100000000 --description="test" | jq '.serialized' | tr -d '"')
-$ bin/stack bob payinvoice -f $FRANK_INVOICE
+$ bin/stack frank channelto bob 10000000
+$ CAROL_INVOICE=$(bin/stack carol invoice 50000000msat "label2" "desc2" | jq '.bolt11' | tr -d '"')
+$ bin/stack frank payinvoice --invoice=$CAROL_INVOICE
 $ bin/stack frank audit
 ```
 
