@@ -1,5 +1,8 @@
 # Changelog
 
+## 2020-08-06
+ - Add `RTL` v0.8.3 admin UI container with default configs for `alice` and `bob`
+
 ## 2020-08-04
  - Update `clightning` to v0.9.0 and add MPP example
  - Update `bitcoind` to v0.20.1

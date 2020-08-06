@@ -1,0 +1,49 @@
+{
+  "defaultNodeIndex": 1,
+  "SSO": {
+    "rtlSSO": 0,
+    "rtlCookiePath": "",
+    "logoutRedirectLink": ""
+  },
+  "nodes": [
+    {
+      "index": 1,
+      "lnNode": "alice",
+      "lnImplementation": "LND",
+      "Authentication": {
+        "macaroonPath": "/alice/data/chain/bitcoin/regtest",
+        "configPath": "/alice"
+      },
+      "Settings": {
+        "userPersona": "OPERATOR",
+        "themeMode": "DAY",
+        "themeColor": "PURPLE",
+        "channelBackupPath": "/tmp",
+        "bitcoindConfigPath": "",
+        "enableLogging": true,
+        "fiatConversion": false,
+        "lnServerUrl": "https://alice:8090/v1"
+      }
+    },
+    {
+      "index": 2,
+      "lnNode": "bob",
+      "lnImplementation": "LND",
+      "Authentication": {
+        "macaroonPath": "/bob/data/chain/bitcoin/regtest",
+        "configPath": "/bob"
+      },
+      "Settings": {
+        "userPersona": "OPERATOR",
+        "themeMode": "DAY",
+        "themeColor": "BLUE",
+        "channelBackupPath": "/tmp",
+        "bitcoindConfigPath": "",
+        "enableLogging": true,
+        "fiatConversion": false,
+        "lnServerUrl": "https://bob:8100/v1"
+      }
+    }
+  ],
+  "multiPassHashed": "09317fe22ca2985249d900071ed1e7bba89a9eb8120d31f66e7143957e44dbcf"
+}

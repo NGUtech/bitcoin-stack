@@ -52,7 +52,8 @@ Everything is configured to run in **regtest** mode but can be adjusted as requi
 ### To Do
  - Clightning keysend example
  - Orchestration
- - Clightning RPC example
+ - Clightning REST/RPC example
+ - Add Clightning & Eclair configs to RTL
  - Libbitcoin reference
  - Elements token creation and transaction scripts
  - Token swaps within Elements
@@ -94,6 +95,7 @@ $ bin/stack frank getinfo
 
 Generate some bitcoin tx spam (optional) to enable smart fee estimation.
 ```
+$ docker-compose up -d demo
 $ docker-compose exec demo sh -c "node bitcoin-spam.js"
 $ bin/stack bitcoin estimatesmartfee 24 ECONOMICAL
 ```
@@ -101,7 +103,6 @@ $ bin/stack bitcoin estimatesmartfee 24 ECONOMICAL
 ### Notification listener demo
 Start following the demo subscriber node in a separate terminal window to see invoice messages as they come through.
 ```
-$ docker-compose up -d demo
 $ docker-compose logs -f demo
 $ bin/stack alice addinvoice 1000
 ```
@@ -208,6 +209,12 @@ $ curl -XPOST -u :password http://127.0.0.1:8110/getinfo
 
 #clightning
 Clightning exposes a JSON-RPC interface via a socket... example to follow..
+```
+
+## RTL Admin
+A [Ride-The-Lightning](https://github.com/Ride-The-Lightning/RTL) admin UI container is available. The interface is configured to monitor `alice` and `bob` by default and is available at `http://localhost:3000` with login password `rtl`.
+```
+$ docker-compose up -d rtl
 ```
 
 ## Other information

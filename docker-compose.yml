@@ -181,3 +181,21 @@ services:
     volumes:
       - ./node/app:/usr/src/app
       - alice_data:/lnd:ro
+
+  rtl:
+    container_name: ${COMPOSE_PROJECT_NAME}_rtl
+    image: shahanafarooqui/rtl:0.8.3
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${RTL_PORT}:${RTL_PORT}"
+    depends_on:
+      - alice
+      - bob
+    environment:
+      - PORT=${RTL_PORT}
+      - HOST=${RTL_HOST}
+      - RTL_CONFIG_PATH=/RTL/config
+    volumes:
+      - ./rtl:/RTL/config
+      - alice_data:/alice:ro
+      - bob_data:/bob:ro
