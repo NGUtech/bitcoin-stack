@@ -34,3 +34,12 @@ services:
     volumes:
       - bitcoin_data:/home/bitcoin/.bitcoin
       - bitcoin_shared:/opt/bitcoin/bin
+
+  # utreexo:
+  #   container_name: ${COMPOSE_PROJECT_NAME}_utreexo
+  #   image: bitcoinstack/utreexo:0.1
+  #   build: ./utreexo
+  #   command: ["./cmd/utreexoserver/utreexoserver", "-net=regtest", "-datadir=/home/bitcoin/.bitcoin/regtest/blocks"]
+  #   restart: unless-stopped
+  #   volumes:
+  #     - bitcoin_data:/home/bitcoin/.bitcoin

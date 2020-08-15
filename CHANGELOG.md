@@ -1,5 +1,9 @@
 # Changelog
 
+## 2020-08-15
+ - Transfer repo to `NGUtech` (use `git remote set-url origin https://github.com/NGUtech/bitcoin-stack` to retarget local clones)
+ - Update `clightning` to v0.9.0-1
+
 ## 2020-08-06
  - Add `RTL` v0.8.3 admin UI container with default configs for `alice` and `bob`
 
