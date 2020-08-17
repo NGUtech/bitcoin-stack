@@ -1,5 +1,8 @@
 # Changelog
 
+## 2020-08-17
+ - Add ARM64 image support for `eclair`
+
 ## 2020-08-15
  - Transfer repo to `NGUtech` (use `git remote set-url origin https://github.com/NGUtech/bitcoin-stack` to retarget local clones)
  - Update `clightning` to v0.9.0-1

@@ -152,7 +152,7 @@ Since 0.9.0 `clightning` supports MPP by default so payments are adaptively spli
 ```
 $ ALICE_INVOICE=$(bin/stack alice addinvoice 1000000 | jq '.payment_request' | tr -d '"')
 $ bin/stack carol pay $ALICE_INVOICE
-$ bin/stack alice lookupinvoice $(bin/stack alice decodepayreq $ALICE_INVOICE | jq '.payment_hash' | tr -d '"')
+$ bin/stack alice lookupinvoice $(bin/stack alice decodepayreq $ALICE_INVOICE | jq '.payment_hash' | tr -d '"') | jq '.htlcs'
 ```
 
 ### Clightning plugin
