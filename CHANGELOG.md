@@ -1,5 +1,11 @@
 # Changelog
 
+## 2020-10-08
+ - Update `lnd` to v0.11.1-beta and enable wumbo channels
+ - Update `clightning` to v0.9.1
+ - Update `rtl` to v0.9.0
+ - Put nodes on a named docker network
+
 ## 2020-08-17
  - Add ARM64 image support for `eclair`
 

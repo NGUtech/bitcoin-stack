@@ -34,6 +34,10 @@ services:
     ]
     depends_on:
       - bitcoin
+    networks:
+      bitcoinstacknet:
+        aliases:
+          - ${ELEMENTS_HOST}
     ports:
       - "127.0.0.1:${ELEMENTS_RPC_PORT}:${ELEMENTS_RPC_PORT}"
     volumes:

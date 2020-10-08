@@ -29,6 +29,10 @@ services:
       "-zmqpubrawblock=tcp://0.0.0.0:${BITCOIN_ZMQ_BLOCK_PORT}",
       "-zmqpubhashblock=tcp://0.0.0.0:${BITCOIN_ZMQ_BLOCK_PORT}"
     ]
+    networks:
+      bitcoinstacknet:
+        aliases:
+          - ${BITCOIN_HOST}
     ports:
       - "127.0.0.1:${BITCOIN_RPC_PORT}:${BITCOIN_RPC_PORT}"
     volumes:

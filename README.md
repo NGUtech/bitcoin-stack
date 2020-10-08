@@ -93,7 +93,7 @@ $ bin/stack emma getinfo
 $ bin/stack frank getinfo
 ```
 
-Generate some bitcoin tx spam (optional) to enable smart fee estimation.
+Generate some bitcoin tx spam to enable smart fee estimation.
 ```
 $ docker-compose up -d demo
 $ docker-compose exec demo sh -c "node bitcoin-spam.js"
@@ -132,9 +132,10 @@ $ bin/stack alice sendpayment --keysend $BOB_NODE 10000
 Similar commands will connect `alice` & `bob` to `carol` across the `clightning` implementation of LN on Bitcoin.
 ```
 $ bin/stack alice channelto carol 2000000
-$ bin/stack bob channelto carol 10000000
-# once channels are opened a payment can be simulated
-$ CAROL_INVOICE=$(bin/stack carol invoice 3000000sat "label1" "desc1" | jq '.bolt11' | tr -d '"')
+# open a 0.5BTC WUMBO channel
+$ bin/stack bob channelto carol 50000000
+# once channels are opened a payment can be simulated on a wumbo channel
+$ CAROL_INVOICE=$(bin/stack carol invoice 4294967295msat "label1" "desc1" | jq '.bolt11' | tr -d '"')
 $ bin/stack bob payinvoice -f $CAROL_INVOICE
 $ bin/stack carol listfunds
 ```
@@ -180,11 +181,11 @@ $ bin/stack elements getwalletinfo
 ### Clightning payments on Elements
 You can also open a LN **L-BTC** channel on `clightning` across the Elements chain between `dave` & `emma`!
 ```
-# open a 1LBTC large channel (wumbo)
-$ bin/stack dave channelto emma 100000000
+# open a 0.5LBTC wumbo channel
+$ bin/stack dave channelto emma 50000000
 # this may take a minute to sync nodes & activate before channel has visible balance
 # once channels are opened a payment can be simulated
-$ EMMA_INVOICE=$(bin/stack emma invoice 100000sat "label1" "description1" | jq '.bolt11' | tr -d '"')
+$ EMMA_INVOICE=$(bin/stack emma invoice 4294967295msat "label1" "description1" | jq '.bolt11' | tr -d '"')
 $ bin/stack dave pay $EMMA_INVOICE
 $ bin/stack dave listpays
 $ bin/stack emma listinvoices

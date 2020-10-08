@@ -1,5 +1,9 @@
 version: "2.4"
 
+networks:
+  bitcoinstacknet:
+    driver: bridge
+
 volumes:
   alice_data:
   bob_data:
@@ -11,7 +15,7 @@ volumes:
 services:
   alice:
     container_name: ${COMPOSE_PROJECT_NAME}_alice
-    image: bitcoinstack/lnd:0.10.4-alpine
+    image: bitcoinstack/lnd:0.11.1-alpine
     restart: unless-stopped
     command: [
       "--noseedbackup",
@@ -22,6 +26,7 @@ services:
       "--tlsextradomain=${ALICE_HOST}",
       "--tlsextraip=0.0.0.0",
       "--autopilot.allocation=0",
+      "--protocol.wumbo-channels",
       "--bitcoin.active",
       "--bitcoin.regtest",
       "--bitcoin.node=bitcoind",
@@ -33,6 +38,10 @@ services:
     ]
     depends_on:
       - bitcoin
+    networks:
+      bitcoinstacknet:
+        aliases:
+          - ${ALICE_HOST}
     ports:
       - "127.0.0.1:${ALICE_RPC_PORT}:${ALICE_RPC_PORT}"
       - "127.0.0.1:${ALICE_REST_PORT}:${ALICE_REST_PORT}"
@@ -41,7 +50,7 @@ services:
 
   bob:
     container_name: ${COMPOSE_PROJECT_NAME}_bob
-    image: bitcoinstack/lnd:0.10.4-alpine
+    image: bitcoinstack/lnd:0.11.1-alpine
     restart: unless-stopped
     command: [
       "--noseedbackup",
@@ -53,6 +62,7 @@ services:
       "--tlsextraip=0.0.0.0",
       "--autopilot.allocation=0",
       "--accept-keysend",
+      "--protocol.wumbo-channels",
       "--bitcoin.active",
       "--bitcoin.regtest",
       "--bitcoin.node=bitcoind",
@@ -64,6 +74,10 @@ services:
     ]
     depends_on:
       - bitcoin
+    networks:
+      bitcoinstacknet:
+        aliases:
+          - ${BOB_HOST}
     ports:
       - "127.0.0.1:${BOB_RPC_PORT}:${BOB_RPC_PORT}"
       - "127.0.0.1:${BOB_REST_PORT}:${BOB_REST_PORT}"
@@ -72,7 +86,7 @@ services:
 
   carol:
     container_name: ${COMPOSE_PROJECT_NAME}_carol
-    image: bitcoinstack/clightning:0.9.0-1-alpine
+    image: bitcoinstack/clightning:0.9.1-alpine
     command: [
       "--alias=carol",
       "--network=regtest",
@@ -87,6 +101,10 @@ services:
     ]
     depends_on:
       - bitcoin
+    networks:
+      bitcoinstacknet:
+        aliases:
+          - ${CAROL_HOST}
     volumes:
       - carol_data:/home/clightning/.lightning
       - ./clightning/plugins:/home/clightning/.lightning/plugins
@@ -94,7 +112,7 @@ services:
 
   dave:
     container_name: ${COMPOSE_PROJECT_NAME}_dave
-    image: bitcoinstack/clightning:0.9.0-1-alpine
+    image: bitcoinstack/clightning:0.9.1-alpine
     command: [
       "--alias=dave",
       "--network=liquid-regtest",
@@ -109,13 +127,17 @@ services:
     ]
     depends_on:
       - elements
+    networks:
+      bitcoinstacknet:
+        aliases:
+          - ${DAVE_HOST}
     volumes:
       - dave_data:/home/clightning/.lightning
       - elements_shared:/elements
 
   emma:
     container_name: ${COMPOSE_PROJECT_NAME}_emma
-    image: bitcoinstack/clightning:0.9.0-1-alpine
+    image: bitcoinstack/clightning:0.9.1-alpine
     command: [
       "--alias=emma",
       "--network=liquid-regtest",
@@ -130,6 +152,10 @@ services:
     ]
     depends_on:
       - elements
+    networks:
+      bitcoinstacknet:
+        aliases:
+          - ${EMMA_HOST}
     volumes:
       - emma_data:/home/clightning/.lightning
       - elements_shared:/elements
@@ -156,10 +182,14 @@ services:
         -Declair.api.port=${FRANK_REST_PORT}
         -Declair.api.password=password
         -Declair.api.binding-ip=0.0.0.0
-    ports:
-      - "127.0.0.1:${FRANK_REST_PORT}:${FRANK_REST_PORT}"
     depends_on:
       - bitcoin
+    networks:
+      bitcoinstacknet:
+        aliases:
+          - ${FRANK_HOST}
+    ports:
+      - "127.0.0.1:${FRANK_REST_PORT}:${FRANK_REST_PORT}"
     volumes:
       - frank_data:/data
 
@@ -181,10 +211,12 @@ services:
     volumes:
       - ./node/app:/usr/src/app
       - alice_data:/lnd:ro
+    networks:
+      - bitcoinstacknet
 
   rtl:
     container_name: ${COMPOSE_PROJECT_NAME}_rtl
-    image: shahanafarooqui/rtl:0.8.3
+    image: shahanafarooqui/rtl:0.9.0
     restart: unless-stopped
     ports:
       - "127.0.0.1:${RTL_PORT}:${RTL_PORT}"
@@ -199,3 +231,5 @@ services:
       - ./rtl:/RTL/config
       - alice_data:/alice:ro
       - bob_data:/bob:ro
+    networks:
+      - bitcoinstacknet
