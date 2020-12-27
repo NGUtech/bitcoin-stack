@@ -1,5 +1,8 @@
 # Changelog
 
+## 2020-12-28
+ - Add explicit compose file path separator to `.env` file
+
 ## 2020-10-08
  - Update `lnd` to v0.11.1-beta and enable wumbo channels
  - Update `clightning` to v0.9.1
