@@ -184,8 +184,8 @@ You can also open a LN **L-BTC** channel on `clightning` across the Elements cha
 # open a 0.5LBTC wumbo channel
 $ bin/stack dave channelto emma 50000000
 # this may take a minute to sync nodes & activate before channel has visible balance
-# once channels are opened a payment can be simulated
-$ EMMA_INVOICE=$(bin/stack emma invoice 4294967295msat "label1" "description1" | jq '.bolt11' | tr -d '"')
+# once channels are opened a payment can be simulated (max size 4294967295msat)
+$ EMMA_INVOICE=$(bin/stack emma invoice 40000000msat "label1" "description1" | jq '.bolt11' | tr -d '"')
 $ bin/stack dave pay $EMMA_INVOICE
 $ bin/stack dave listpays
 $ bin/stack emma listinvoices

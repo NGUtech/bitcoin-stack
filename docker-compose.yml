@@ -86,7 +86,7 @@ services:
 
   carol:
     container_name: ${COMPOSE_PROJECT_NAME}_carol
-    image: bitcoinstack/clightning:0.9.1-alpine
+    image: bitcoinstack/clightning:0.9.2-alpine
     command: [
       "--alias=carol",
       "--network=regtest",
@@ -112,7 +112,7 @@ services:
 
   dave:
     container_name: ${COMPOSE_PROJECT_NAME}_dave
-    image: bitcoinstack/clightning:0.9.1-alpine
+    image: bitcoinstack/clightning:0.9.2-alpine
     command: [
       "--alias=dave",
       "--network=liquid-regtest",
@@ -137,7 +137,7 @@ services:
 
   emma:
     container_name: ${COMPOSE_PROJECT_NAME}_emma
-    image: bitcoinstack/clightning:0.9.1-alpine
+    image: bitcoinstack/clightning:0.9.2-alpine
     command: [
       "--alias=emma",
       "--network=liquid-regtest",
@@ -162,7 +162,7 @@ services:
 
   frank:
     container_name: ${COMPOSE_PROJECT_NAME}_frank
-    image: bitcoinstack/eclair:0.4.1
+    image: bitcoinstack/eclair:0.5.0
     command: ["bash", "eclair-node/bin/eclair-node.sh"]
     environment:
       - |
@@ -216,7 +216,7 @@ services:
 
   rtl:
     container_name: ${COMPOSE_PROJECT_NAME}_rtl
-    image: shahanafarooqui/rtl:0.9.0
+    image: shahanafarooqui/rtl:0.10.0
     restart: unless-stopped
     ports:
       - "127.0.0.1:${RTL_PORT}:${RTL_PORT}"

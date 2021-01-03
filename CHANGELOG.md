@@ -1,5 +1,10 @@
 # Changelog
 
+## 2021-01-03
+ - Update `clightning` to v0.9.2
+ - Update `eclair` to v0.5.0
+ - Update `rtl` to v0.10.0
+
 ## 2020-12-28
  - Add explicit compose file path separator to `.env` file
 
