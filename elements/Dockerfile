@@ -80,7 +80,7 @@ RUN set -ex \
     gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
   done
 
-ENV ELEMENTS_VERSION=0.18.1.6
+ENV ELEMENTS_VERSION=0.18.1.9
 ENV ELEMENTS_PREFIX=/opt/elements
 
 RUN wget https://github.com/ElementsProject/elements/releases/download/elements-${ELEMENTS_VERSION}/SHA256SUMS.asc

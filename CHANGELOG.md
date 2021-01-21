@@ -1,5 +1,10 @@
 # Changelog
 
+## 2021-01-21
+ - Update `clightning` to v0.9.3
+ - Update `bitcoind` to v0.21.0
+ - Update `elements` to v0.18.1.9
+
 ## 2021-01-03
  - Update `clightning` to v0.9.2
  - Update `eclair` to v0.5.0
