@@ -65,6 +65,7 @@ Precompiled images will be downloaded from Docker Hub (see below for manual buil
 
 ```
 $ docker-compose up -d bitcoin
+$ bin/stack bitcoin createwallet "default"
 $ bin/stack bitcoin generate 101
 $ docker-compose up -d alice bob frank
 
@@ -231,7 +232,7 @@ $ docker-compose down -v
 
 Images can be built locally using the following pattern:
 ```
-$ docker build -t bitcoinstack/bitcoin:0.20.1-alpine ./bitcoin
+$ docker build -t bitcoinstack/bitcoin:0.21.0-alpine ./bitcoin
 ```
 
 ---

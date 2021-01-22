@@ -86,7 +86,7 @@ services:
 
   carol:
     container_name: ${COMPOSE_PROJECT_NAME}_carol
-    image: bitcoinstack/clightning:0.9.2-alpine
+    image: bitcoinstack/clightning:0.9.3-alpine
     command: [
       "--alias=carol",
       "--network=regtest",
@@ -112,7 +112,7 @@ services:
 
   dave:
     container_name: ${COMPOSE_PROJECT_NAME}_dave
-    image: bitcoinstack/clightning:0.9.2-alpine
+    image: bitcoinstack/clightning:0.9.3-alpine
     command: [
       "--alias=dave",
       "--network=liquid-regtest",
@@ -137,7 +137,7 @@ services:
 
   emma:
     container_name: ${COMPOSE_PROJECT_NAME}_emma
-    image: bitcoinstack/clightning:0.9.2-alpine
+    image: bitcoinstack/clightning:0.9.3-alpine
     command: [
       "--alias=emma",
       "--network=liquid-regtest",

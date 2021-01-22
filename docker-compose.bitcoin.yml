@@ -7,7 +7,7 @@ volumes:
 services:
   bitcoin:
     container_name: ${COMPOSE_PROJECT_NAME}_bitcoin
-    image: bitcoinstack/bitcoin:0.20.1-alpine
+    image: bitcoinstack/bitcoin:0.21.0-alpine
     restart: unless-stopped
     command: [
       "-regtest=1",

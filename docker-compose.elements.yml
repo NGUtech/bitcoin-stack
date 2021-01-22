@@ -7,7 +7,7 @@ volumes:
 services:
   elements:
     container_name: ${COMPOSE_PROJECT_NAME}_elements
-    image: bitcoinstack/elements:0.18.1.6-alpine
+    image: bitcoinstack/elements:0.18.1.9-alpine
     command: [
       "-chain=liquid-regtest",
       "-validatepegin=1",
