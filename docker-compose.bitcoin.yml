@@ -1,8 +1,16 @@
 version: "2.4"
 
+networks:
+  bitcoinstacknet:
+    driver: bridge
+
 volumes:
   bitcoin_data:
   bitcoin_shared:
+  alice_data:
+  bob_data:
+  carol_data:
+  frank_data:
 
 services:
   bitcoin:
@@ -39,11 +47,132 @@ services:
       - bitcoin_data:/home/bitcoin/.bitcoin
       - bitcoin_shared:/opt/bitcoin/bin
 
-# utreexo:
-#   container_name: ${COMPOSE_PROJECT_NAME}_utreexo
-#   image: bitcoinstack/utreexo:0.1
-#   build: ./utreexo
-#   command: ["./cmd/utreexoserver/utreexoserver", "-net=regtest", "-datadir=/home/bitcoin/.bitcoin/regtest/blocks"]
-#   restart: unless-stopped
-#   volumes:
-#     - bitcoin_data:/home/bitcoin/.bitcoin
+  alice:
+    container_name: ${COMPOSE_PROJECT_NAME}_alice
+    image: bitcoinstack/lnd:0.11.1-alpine
+    restart: unless-stopped
+    command: [
+      "--noseedbackup",
+      "--alias=alice",
+      "--listen=0.0.0.0:${ALICE_PORT}",
+      "--rpclisten=0.0.0.0:${ALICE_RPC_PORT}",
+      "--restlisten=0.0.0.0:${ALICE_REST_PORT}",
+      "--tlsextradomain=${ALICE_HOST}",
+      "--tlsextraip=0.0.0.0",
+      "--autopilot.allocation=0",
+      "--protocol.wumbo-channels",
+      "--bitcoin.active",
+      "--bitcoin.regtest",
+      "--bitcoin.node=bitcoind",
+      "--bitcoind.rpchost=${BITCOIN_HOST}:${BITCOIN_RPC_PORT}",
+      "--bitcoind.rpcuser=${BITCOIN_RPC_USER}",
+      "--bitcoind.rpcpass=${BITCOIN_RPC_PASSWORD}",
+      "--bitcoind.zmqpubrawtx=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_TX_PORT}",
+      "--bitcoind.zmqpubrawblock=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_BLOCK_PORT}"
+    ]
+    depends_on:
+      - bitcoin
+    networks:
+      bitcoinstacknet:
+        aliases:
+          - ${ALICE_HOST}
+    ports:
+      - "127.0.0.1:${ALICE_RPC_PORT}:${ALICE_RPC_PORT}"
+      - "127.0.0.1:${ALICE_REST_PORT}:${ALICE_REST_PORT}"
+    volumes:
+      - alice_data:/home/lnd/.lnd
+
+  bob:
+    container_name: ${COMPOSE_PROJECT_NAME}_bob
+    image: bitcoinstack/lnd:0.11.1-alpine
+    restart: unless-stopped
+    command: [
+      "--noseedbackup",
+      "--alias=bob",
+      "--listen=0.0.0.0:${BOB_PORT}",
+      "--rpclisten=0.0.0.0:${BOB_RPC_PORT}",
+      "--restlisten=0.0.0.0:${BOB_REST_PORT}",
+      "--tlsextradomain=${BOB_HOST}",
+      "--tlsextraip=0.0.0.0",
+      "--autopilot.allocation=0",
+      "--accept-keysend",
+      "--protocol.wumbo-channels",
+      "--bitcoin.active",
+      "--bitcoin.regtest",
+      "--bitcoin.node=bitcoind",
+      "--bitcoind.rpchost=${BITCOIN_HOST}:${BITCOIN_RPC_PORT}",
+      "--bitcoind.rpcuser=${BITCOIN_RPC_USER}",
+      "--bitcoind.rpcpass=${BITCOIN_RPC_PASSWORD}",
+      "--bitcoind.zmqpubrawtx=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_TX_PORT}",
+      "--bitcoind.zmqpubrawblock=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_BLOCK_PORT}"
+    ]
+    depends_on:
+      - bitcoin
+    networks:
+      bitcoinstacknet:
+        aliases:
+          - ${BOB_HOST}
+    ports:
+      - "127.0.0.1:${BOB_RPC_PORT}:${BOB_RPC_PORT}"
+      - "127.0.0.1:${BOB_REST_PORT}:${BOB_REST_PORT}"
+    volumes:
+      - bob_data:/home/lnd/.lnd
+
+  carol:
+    container_name: ${COMPOSE_PROJECT_NAME}_carol
+    image: bitcoinstack/clightning:0.9.3-alpine
+    command: [
+      "--alias=carol",
+      "--network=regtest",
+      "--large-channels",
+      "--addr=0.0.0.0:${CAROL_PORT}",
+      "--bitcoin-cli=/bitcoin/bitcoin-cli",
+      "--bitcoin-datadir=/bitcoin",
+      "--bitcoin-rpcconnect=${BITCOIN_HOST}",
+      "--bitcoin-rpcport=${BITCOIN_RPC_PORT}",
+      "--bitcoin-rpcuser=${BITCOIN_RPC_USER}",
+      "--bitcoin-rpcpassword=${BITCOIN_RPC_PASSWORD}"
+    ]
+    depends_on:
+      - bitcoin
+    networks:
+      bitcoinstacknet:
+        aliases:
+          - ${CAROL_HOST}
+    volumes:
+      - carol_data:/home/clightning/.lightning
+      - ./clightning/plugins:/home/clightning/.lightning/plugins
+      - bitcoin_shared:/bitcoin
+
+  frank:
+    container_name: ${COMPOSE_PROJECT_NAME}_frank
+    image: bitcoinstack/eclair:0.5.0
+    command: ["bash", "eclair-node/bin/eclair-node.sh"]
+    environment:
+      - |
+        JAVA_TOOL_OPTIONS=
+        -Xmx512m
+        -Declair.chain=regtest
+        -Declair.datadir=/data
+        -Declair.node-alias=frank
+        -Declair.server.port=${FRANK_PORT}
+        -Declair.bitcoind.host=${BITCOIN_HOST}
+        -Declair.bitcoind.rpcport=${BITCOIN_RPC_PORT}
+        -Declair.bitcoind.rpcuser=${BITCOIN_RPC_USER}
+        -Declair.bitcoind.rpcpassword=${BITCOIN_RPC_PASSWORD}
+        -Declair.bitcoind.zmqtx=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_TX_PORT}
+        -Declair.bitcoind.zmqblock=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_BLOCK_PORT}
+        -Declair.api.enabled=true
+        -Declair.api.port=${FRANK_REST_PORT}
+        -Declair.api.password=password
+        -Declair.api.binding-ip=0.0.0.0
+    depends_on:
+      - bitcoin
+    networks:
+      bitcoinstacknet:
+        aliases:
+          - ${FRANK_HOST}
+    ports:
+      - "127.0.0.1:${FRANK_REST_PORT}:${FRANK_REST_PORT}"
+    volumes:
+      - frank_data:/data

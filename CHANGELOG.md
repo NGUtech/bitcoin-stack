@@ -1,5 +1,9 @@
 # Changelog
 
+## 2021-02-01
+ - Reroganise docker compose configs
+ - Update `lnd` to v0.12.0-beta
+
 ## 2021-01-21
  - Update `clightning` to v0.9.3
  - Update `bitcoind` to v0.21.0

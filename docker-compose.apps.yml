@@ -1,0 +1,43 @@
+version: "2.4"
+
+services:
+  demo:
+    container_name: ${COMPOSE_PROJECT_NAME}_demo
+    image: bitcoinstack/demo:0.1
+    restart: unless-stopped
+    command: ['node', 'subscriber.js']
+    depends_on:
+      - bitcoin
+      - alice
+    environment:
+      - BITCOIN_HOST
+      - BITCOIN_RPC_PORT
+      - BITCOIN_RPC_USER
+      - BITCOIN_RPC_PASSWORD
+      - ALICE_HOST
+      - ALICE_RPC_PORT
+    volumes:
+      - ./node/app:/usr/src/app
+      - alice_data:/lnd:ro
+    networks:
+      - bitcoinstacknet
+
+  rtl:
+    container_name: ${COMPOSE_PROJECT_NAME}_rtl
+    image: shahanafarooqui/rtl:0.10.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${RTL_PORT}:${RTL_PORT}"
+    depends_on:
+      - alice
+      - bob
+    environment:
+      - PORT=${RTL_PORT}
+      - HOST=${RTL_HOST}
+      - RTL_CONFIG_PATH=/RTL/config
+    volumes:
+      - ./rtl:/RTL/config
+      - alice_data:/alice:ro
+      - bob_data:/bob:ro
+    networks:
+      - bitcoinstacknet
