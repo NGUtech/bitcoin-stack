@@ -22,6 +22,26 @@ services:
     networks:
       - bitcoinstacknet
 
+  electrs:
+    container_name: ${COMPOSE_PROJECT_NAME}_electrs
+    image: bitcoinstack/electrs:0.8.7-alpine
+    restart: unless-stopped
+    command: [
+      'electrs',
+      '--timestamp',
+      '--jsonrpc-import',
+      '--network=regtest',
+      '--daemon-rpc-addr=bitcoin:${BITCOIN_RPC_PORT}',
+      '--electrum-rpc-addr=0.0.0.0:${ELECTRS_PORT}',
+      '--db-dir=/home/electrs/db'
+    ]
+    ports:
+      - "127.0.0.1:${ELECTRS_PORT}:${ELECTRS_PORT}"
+    depends_on:
+      - bitcoin
+    networks:
+      - bitcoinstacknet
+
   rtl:
     container_name: ${COMPOSE_PROJECT_NAME}_rtl
     image: shahanafarooqui/rtl:0.10.0

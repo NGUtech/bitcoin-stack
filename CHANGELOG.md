@@ -1,7 +1,20 @@
 # Changelog
 
+## 2021-02-11
+ - Update all applicable images to Alpine Linux v3.12
+ - Add Electrum server `electrs` v0.8.7
+
+ - | Image | Size |
+   | --- | --- |
+   | bitcoin:0.21.0-alpine | 272MB |
+   | elements:0.18.1.9-alpine | 293MB |
+   | lnd:0.12.0-alpine | 59.4MB |
+   | clightning:0.9.3-alpine | 199MB |
+   | eclair:0.5.0 | 394MB |
+   | electrs:0.8.7 | 17.7MB |
+
 ## 2021-02-01
- - Reroganise docker compose configs
+ - Reorganise docker compose configs
  - Update `lnd` to v0.12.0-beta
 
 ## 2021-01-21

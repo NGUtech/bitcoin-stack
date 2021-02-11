@@ -1,25 +1,28 @@
-FROM alpine:3.10 as clightning
+FROM alpine:3.12 as clightning
 
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
-RUN apk --no-cache add autoconf
-RUN apk --no-cache add automake
-RUN apk --no-cache add boost-dev
-RUN apk --no-cache add build-base
-RUN apk --no-cache add chrpath
-RUN apk --no-cache add file
-RUN apk --no-cache add gnupg
-RUN apk --no-cache add libevent-dev
-RUN apk --no-cache add libressl
-RUN apk --no-cache add libressl-dev
-RUN apk --no-cache add libtool
-RUN apk --no-cache add linux-headers
-RUN apk --no-cache add protobuf-dev
-RUN apk --no-cache add zeromq-dev
-RUN apk --no-cache add py3-mako
-RUN apk --no-cache add git
-RUN apk --no-cache add gmp-dev
-RUN apk --no-cache add sqlite-dev
-RUN apk --no-cache add gettext
+RUN apk --no-cache add autoconf \
+  automake \
+  boost-dev \
+  build-base \
+  chrpath \
+  file \
+  gnupg \
+  libevent-dev \
+  libressl \
+  libressl-dev \
+  libtool \
+  linux-headers \
+  protobuf-dev \
+  zeromq-dev \
+  py3-mako \
+  git \
+  gmp-dev \
+  sqlite-dev \
+  gettext
+
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
 RUN set -ex \
   && for key in \
     BFF0F67810C1EED1 \
@@ -51,7 +54,7 @@ RUN strip ${CLIGHTNING_PREFIX}/bin/lightning-cli
 RUN strip ${CLIGHTNING_PREFIX}/bin/lightningd
 
 # Build stage for compiled artifacts
-FROM alpine:3.10
+FROM alpine:3.12
 
 RUN adduser -S clightning
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories

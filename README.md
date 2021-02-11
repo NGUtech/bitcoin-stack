@@ -21,11 +21,11 @@ L2:  |   ALICE   +--+   BOB   +--+   CAROL   | | |   DAVE   +--+   EMMA   |
      |           |  |         |  |           | | |          |  |          |
      └-----+-----┘  └----+----┘  └-----+-----┘ | └----+-----┘  └-----+----┘
            |             |             |       |      |              |
-           |             |             |       |     ┌+--------------+┐
-           |             |             |       |     |      LBTC      |
-           |             |             |       |     └+--------------+┘
-           |             |             |       |      |              |
-           |   ┌---------+--------┐    |       |    ┌-+--------------+-┐
+           |             | ┌---------┐ |       |     ┌+--------------+┐
+           |             | | ELECTRS |╟|-------┤     |      $LBTC     |
+           |             | └----+----┘ |       |     └+--------------+┘
+           |             |      |      |       |      |              |
+           |   ┌---------+------+-┐    |       |    ┌-+--------------+-┐
            └---+                  +----┘       |    |                  |
 L1:            |     BITCOIN      |╟-----------┴---╢|     ELEMENTS     |
                |                  +-----------------+                  |
@@ -38,7 +38,9 @@ Additionally it can launch an `elements` sidechain (aka Liquid), with `clightnin
 
 An application demo node is include which demonstrates how to connect to LND and listen to invoice messages and is able to generate transaction spam for fee estimation.
 
-Everything is configured to run in **regtest** mode but can be adjusted as required. Most images are provided for AMD64 and ARM64 architectures so you may have to manually build for others (see bottom).
+An `electrs` server is provided as another test app for exposing the Electrum protocol wrapper for `bitcoin`.
+
+Everything is configured to run in **regtest** mode but can be adjusted as required. Images are provided for AMD64 and ARM64 architectures but you may have to manually build for others (see bottom).
 
 ## See the [changelog](CHANGELOG.md) before upgrading.
 
@@ -50,10 +52,10 @@ Everything is configured to run in **regtest** mode but can be adjusted as requi
  - Ports and other daemon configuration can be changed in the `.env` and `docker-compose.yml` files.
 
 ### To Do
- - Clightning keysend example
  - Orchestration
  - Clightning REST/RPC example
  - Add Clightning & Eclair configs to RTL
+ - RGB protocol
  - Libbitcoin reference
  - Elements token creation and transaction scripts
  - Token swaps within Elements
@@ -64,7 +66,7 @@ Everything is configured to run in **regtest** mode but can be adjusted as requi
 Precompiled images will be downloaded from Docker Hub (see below for manual build instructions). From your terminal in this folder:
 
 ```
-$ docker-compose up -d bitcoin
+$ docker-compose up -d bitcoin electrs
 $ bin/stack bitcoin createwallet "default"
 $ bin/stack bitcoin generate 101
 $ docker-compose up -d alice bob frank
@@ -149,6 +151,12 @@ $ CAROL_NODE=$(bin/stack carol getinfo | jq '.id' | tr -d '"')
 $ bin/stack bob sendpayment --keysend $CAROL_NODE 10000
 ```
 
+### Clightning keysend to LND (WIP)
+```
+$ ALICE_NODE=$(bin/stack alice getinfo | jq '.identity_pubkey' | tr -d '"')
+$ bin/stack carol keysend $ALICE_NODE 1000000msat
+```
+
 ### Clightning MPP to LND
 Since 0.9.0 `clightning` supports MPP by default so payments are adaptively split into random amounts.
 ```
@@ -211,6 +219,9 @@ $ curl -XPOST -u :password http://127.0.0.1:8110/getinfo
 
 #clightning
 Clightning exposes a JSON-RPC interface via a socket... example to follow..
+
+#electrs
+$ echo '{"jsonrpc":"2.0","method":"blockchain.block.header","id":"curltext","params":[0]}' | nc 127.0.0.1 50001
 ```
 
 ## RTL Admin

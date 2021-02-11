@@ -23,13 +23,10 @@
 # THE SOFTWARE.
 
 # Build stage for BerkeleyDB
-FROM alpine:3.10 as berkeleydb
+FROM alpine:3.12 as berkeleydb
 
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
-RUN apk --no-cache add autoconf
-RUN apk --no-cache add automake
-RUN apk --no-cache add build-base
-RUN apk --no-cache add libressl
+RUN apk --no-cache add autoconf automake build-base libressl
 
 ENV BERKELEYDB_VERSION=db-4.8.30.NC
 ENV BERKELEYDB_PREFIX=/opt/${BERKELEYDB_VERSION}
@@ -47,25 +44,26 @@ RUN make install
 RUN rm -rf ${BERKELEYDB_PREFIX}/docs
 
 # Build stage for Elements Core
-FROM alpine:3.10 as elements-core
+FROM alpine:3.12 as elements-core
 
 COPY --from=berkeleydb /opt /opt
 
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
-RUN apk --no-cache add autoconf
-RUN apk --no-cache add automake
-RUN apk --no-cache add boost-dev
-RUN apk --no-cache add build-base
-RUN apk --no-cache add chrpath
-RUN apk --no-cache add file
-RUN apk --no-cache add gnupg
-RUN apk --no-cache add libevent-dev
-RUN apk --no-cache add libressl
-RUN apk --no-cache add libressl-dev
-RUN apk --no-cache add libtool
-RUN apk --no-cache add linux-headers
-RUN apk --no-cache add protobuf-dev
-RUN apk --no-cache add zeromq-dev
+RUN apk --no-cache add autoconf \
+ automake \
+ boost-dev \
+ build-base \
+ chrpath \
+ file \
+ gnupg \
+ libevent-dev \
+ libressl \
+ libressl-dev \
+ libtool \
+ linux-headers \
+ protobuf-dev \
+ zeromq-dev
+
 RUN set -ex \
   && for key in \
     #niftynei
@@ -115,7 +113,7 @@ RUN strip ${ELEMENTS_PREFIX}/lib/libelementsconsensus.a
 RUN strip ${ELEMENTS_PREFIX}/lib/libelementsconsensus.so.0.0.0
 
 # Build stage for compiled artifacts
-FROM alpine:3.10
+FROM alpine:3.12
 
 RUN adduser -S elements
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories

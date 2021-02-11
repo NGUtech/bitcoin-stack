@@ -1,4 +1,4 @@
-FROM golang:1.14-alpine as builder
+FROM golang:1.15-alpine3.12 as builder
 
 WORKDIR /go/src/github.com/lightningnetwork/lnd
 
@@ -12,13 +12,10 @@ RUN apk add --no-cache --update alpine-sdk git make \
   && make \
   && make install tags="autopilotrpc chainrpc invoicesrpc routerrpc signrpc walletrpc watchtowerrpc wtclientrpc"
 
-# Start a new, final image to reduce size.
-FROM alpine:3.10 as final
+FROM alpine:3.12
 
 RUN adduser -S lnd
-RUN apk add --no-cache \
-  bash \
-  su-exec
+RUN apk add --no-cache bash su-exec
 
 ENV LND_DATA=/home/lnd/.lnd
 COPY --from=builder /go/bin/lncli /bin/
