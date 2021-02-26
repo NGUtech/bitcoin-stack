@@ -151,11 +151,8 @@ $ CAROL_NODE=$(bin/stack carol getinfo | jq '.id' | tr -d '"')
 $ bin/stack bob sendpayment --keysend $CAROL_NODE 10000
 ```
 
-### Clightning keysend to LND (WIP)
-```
-$ ALICE_NODE=$(bin/stack alice getinfo | jq '.identity_pubkey' | tr -d '"')
-$ bin/stack carol keysend $ALICE_NODE 1000000msat
-```
+### Clightning keysend to LND
+Clightning keysend functionality to LND is not currently supported. See https://github.com/ElementsProject/lightning/issues/4299
 
 ### Clightning MPP to LND
 Since 0.9.0 `clightning` supports MPP by default so payments are adaptively split into random amounts.

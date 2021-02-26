@@ -49,7 +49,7 @@ services:
 
   alice:
     container_name: ${COMPOSE_PROJECT_NAME}_alice
-    image: bitcoinstack/lnd:0.12.0-alpine
+    image: bitcoinstack/lnd:0.12.1-alpine
     restart: unless-stopped
     command: [
       "--noseedbackup",
@@ -84,7 +84,7 @@ services:
 
   bob:
     container_name: ${COMPOSE_PROJECT_NAME}_bob
-    image: bitcoinstack/lnd:0.12.0-alpine
+    image: bitcoinstack/lnd:0.12.1-alpine
     restart: unless-stopped
     command: [
       "--noseedbackup",
@@ -121,6 +121,7 @@ services:
   carol:
     container_name: ${COMPOSE_PROJECT_NAME}_carol
     image: bitcoinstack/clightning:0.9.3-alpine
+    restart: unless-stopped
     command: [
       "--alias=carol",
       "--network=regtest",
@@ -147,6 +148,7 @@ services:
   frank:
     container_name: ${COMPOSE_PROJECT_NAME}_frank
     image: bitcoinstack/eclair:0.5.0
+    restart: unless-stopped
     command: ["bash", "eclair-node/bin/eclair-node.sh"]
     environment:
       - |

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2021-02-26
+ - Update `lnd` to v0.12.1-beta
+ - Update `rtl` to v0.10.1
+
 ## 2021-02-11
  - Update all applicable images to Alpine Linux v3.12
  - Add Electrum server `electrs` v0.8.7
