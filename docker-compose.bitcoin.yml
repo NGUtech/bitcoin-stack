@@ -166,7 +166,7 @@ services:
         -Declair.bitcoind.zmqblock=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_BLOCK_PORT}
         -Declair.api.enabled=true
         -Declair.api.port=${FRANK_API_PORT}
-        -Declair.api.password=password
+        -Declair.api.password=${FRANK_API_PASSWORD}
         -Declair.api.binding-ip=0.0.0.0
     depends_on:
       - bitcoin
