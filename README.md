@@ -67,7 +67,9 @@ Precompiled images will be downloaded from Docker Hub (see below for manual buil
 
 ```
 $ docker-compose up -d bitcoin electrs
+# setup default wallet with predictable addresses
 $ bin/stack bitcoin createwallet "default"
+$ bin/stack bitcoin sethdseed true cSXteaZPxiDNEjtsgMhDKik5CL6YUc2hrEdkm51DrL85873UUFiQ
 $ bin/stack bitcoin generate 101
 $ docker-compose up -d alice bob frank
 
@@ -77,6 +79,9 @@ $ bin/stack elements generate 101
 
 # Clightning can also be started on Bitcoin & Elements
 $ docker-compose up -d carol dave emma
+
+# Start ION DID services
+$ docker-compose up -d ion-core
 ```
 
 Check containers are up and running with:

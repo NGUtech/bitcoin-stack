@@ -1,5 +1,8 @@
 # Changelog
 
+## 2021-03-26
+ - Provide `bitcoind` default wallet a HD seed for predictable addresses
+
 ## 2021-02-26
  - Update `lnd` to v0.12.1-beta
  - Update `rtl` to v0.10.1
