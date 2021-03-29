@@ -1,5 +1,8 @@
 # Changelog
 
+## 2021-03-29
+ - Update `eclair` to v0.5.1
+
 ## 2021-03-26
  - Provide `bitcoind` default wallet a HD seed for predictable addresses
 

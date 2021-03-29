@@ -1,4 +1,4 @@
-FROM openjdk:11.0.8-jdk-slim as BUILD
+FROM openjdk:11.0.8-jdk-slim as builder
 
 # Setup maven, we don't use https://hub.docker.com/_/maven/ as it declare .m2 as volume, we loose all mvn cache
 # We can alternatively do as proposed by https://github.com/carlossg/docker-maven#packaging-a-local-repository-with-the-image
@@ -25,7 +25,7 @@ ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
 # The easiest way to reliably get dependencies is to build the project with no sources
 WORKDIR /usr/src
 RUN git clone -n https://github.com/ACINQ/eclair.git . \
-  && git checkout v0.5.0
+  && git checkout v0.5.1
 RUN mvn package -pl eclair-node -am -DskipTests
 # It might be good idea to run the tests here, so that the docker build fail if the code is bugged
 
@@ -37,11 +37,11 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y bash jq curl unzip
 
 # copy and install eclair-cli executable
-COPY --from=BUILD /usr/src/eclair-core/eclair-cli .
+COPY --from=builder /usr/src/eclair-core/eclair-cli .
 RUN chmod +x eclair-cli && mv eclair-cli /sbin/eclair-cli
 
 # we only need the eclair-node.zip to run
-COPY --from=BUILD /usr/src/eclair-node/target/eclair-node-*.zip ./eclair-node.zip
+COPY --from=builder /usr/src/eclair-node/target/eclair-node-*.zip ./eclair-node.zip
 RUN unzip eclair-node.zip && mv eclair-node-* eclair-node
 
-ADD ./eclair.conf /data/eclair.conf
+COPY ./eclair.conf /data/eclair.conf
