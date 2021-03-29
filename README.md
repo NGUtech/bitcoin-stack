@@ -79,9 +79,6 @@ $ bin/stack elements generate 101
 
 # Clightning can also be started on Bitcoin & Elements
 $ docker-compose up -d carol dave emma
-
-# Start ION DID services
-$ docker-compose up -d ion-core
 ```
 
 Check containers are up and running with:
