@@ -168,10 +168,10 @@ function passthru_command() {
                 $ARGS
             ;;
         eclair)
-            NODE_REST_PORT=$(ucase $NODE )_REST_PORT
+            local NODE_API_PORT=$(ucase $NODE )_API_PORT
             docker-compose exec $EXEC_OPTS $NODE eclair-cli \
                 -p password \
-                -a $NODE:${!NODE_REST_PORT} \
+                -a $NODE:${!NODE_API_PORT} \
                 $ARGS
             ;;
         *)
