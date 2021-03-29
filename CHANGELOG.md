@@ -1,5 +1,8 @@
 # Changelog
 
+## 2021-03-29
+ - Add `ion` Decentralized ID (DID) v1.0.1 container stack (https://identity.foundation/ion)
+
 ## 2021-03-26
  - Provide `bitcoind` default wallet a HD seed for predictable addresses
 

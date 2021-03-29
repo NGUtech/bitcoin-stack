@@ -1,0 +1,68 @@
+version: "2.4"
+
+volumes:
+  mongo_data:
+  ipfs_data:
+
+services:
+  mongo:
+    container_name: ${COMPOSE_PROJECT_NAME}_mongo
+    image: mongo:3-xenial
+    restart: unless-stopped
+    ports:
+     - "127.0.0.1:${ION_MONGO_PORT}:${ION_MONGO_PORT}"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - bitcoinstacknet
+
+  ipfs:
+    container_name: ${COMPOSE_PROJECT_NAME}_ipfs
+    #this image doesn't work on ARM64 yet, use mhoekstra/go-ipfs:v0.7.0 if you want to deploy on ARM
+    image: ipfs/go-ipfs
+    restart: unless-stopped
+    command: ["daemon", "--migrate=true", "--offline=true"]
+    volumes:
+      - ipfs_data:/data/ipfs
+    ports:
+      - "127.0.0.1:${ION_IPFS_API_PORT}:${ION_IPFS_API_PORT}"
+    networks:
+      - bitcoinstacknet
+
+  ion-bitcoin:
+    container_name: ${COMPOSE_PROJECT_NAME}_ion-bitcoin
+    image: bitcoinstack/ion:1.0.1-alpine
+    restart: unless-stopped
+    command: ['npm', 'run', 'bitcoin']
+    environment:
+      - ION_BITCOIN_CONFIG_FILE_PATH=/usr/src/app/json/config/regtest-bitcoin-docker-config.json
+      - ION_BITCOIN_VERSIONING_CONFIG_FILE_PATH=/usr/src/app/json/regtest-bitcoin-versioning.json
+    depends_on:
+      - bitcoin
+      - mongo
+    volumes:
+      - ./ion/config:/usr/src/app/json/config:ro
+      - bitcoin_data:/bitcoin
+    ports:
+      - "127.0.0.1:${ION_BITCOIN_PORT}:${ION_BITCOIN_PORT}"
+    networks:
+      - bitcoinstacknet
+
+  ion-core:
+    container_name: ${COMPOSE_PROJECT_NAME}_ion-core
+    image: bitcoinstack/ion:1.0.1-alpine
+    restart: unless-stopped
+    command: ['npm', 'run', 'core']
+    environment:
+      - ION_CORE_CONFIG_FILE_PATH=/usr/src/app/json/config/regtest-core-docker-config.json
+      - ION_CORE_VERSIONING_CONFIG_FILE_PATH=/usr/src/app/json/regtest-core-versioning.json
+    depends_on:
+      - ion-bitcoin
+      - ipfs
+      - mongo
+    volumes:
+      - ./ion/config:/usr/src/app/json/config:ro
+    ports:
+      - "127.0.0.1:${ION_CORE_PORT}:${ION_CORE_PORT}"
+    networks:
+      - bitcoinstacknet

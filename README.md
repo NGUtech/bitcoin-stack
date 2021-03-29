@@ -20,25 +20,40 @@ L+:  |                       YOUR APPLICATION STACK                       |
 L2:  |   ALICE   +--+   BOB   +--+   CAROL   | | |   DAVE   +--+   EMMA   |
      |           |  |         |  |           | | |          |  |          |
      └-----+-----┘  └----+----┘  └-----+-----┘ | └----+-----┘  └-----+----┘
-           |             |             |       |      |              |
-           |             | ┌---------┐ |       |     ┌+--------------+┐
-           |             | | ELECTRS |╟|-------┤     |      $LBTC     |
-           |             | └----+----┘ |       |     └+--------------+┘
-           |             |      |      |       |      |              |
-           |   ┌---------+------+-┐    |       |    ┌-+--------------+-┐
+           | ┌---------┐ |             |       |      |              |
+           | |   ION   |╟|-------------|-------┤      |              |
+           | └----+----┘ | ┌---------┐ |       |     ┌+--------------+┐
+           |      |      | | ELECTRS |╟|-------┤     |      $LBTC     |
+           |      |      | └----+----┘ |       |     └+--------------+┘
+           |      |      |      |      |       |      |              |
+           |   ┌--+------+------+-┐    |       |    ┌-+--------------+-┐
            └---+                  +----┘       |    |                  |
 L1:            |     BITCOIN      |╟-----------┴---╢|     ELEMENTS     |
                |                  +-----------------+                  |
                └------------------┘                 └------------------┘
 ```
 
-This `docker-compose` template launches `bitcoin`, two `lnd` containers named `alice` & `bob`, with a `clightning` container as `carol`, and an `eclair` container as `frank`.
+## Composed Stacks
+**Bitcoin**
+ - bitcoind (bitcoin)
+ - lnd (alice, bob)
+ - clightning (carol)
+ - eclair (frank)
 
-Additionally it can launch an `elements` sidechain (aka Liquid), with `clightning` implementation containers as `dave` & `emma` servicing the LBTC asset.
+**Elements**
+ - elementsd (elements)
+ - clightning (LBTC) (dave, emma)
 
-An application demo node is include which demonstrates how to connect to LND and listen to invoice messages and is able to generate transaction spam for fee estimation.
+**Apps**
+ - electrs (electrs)
+ - nodejs (demo)
+ - rtl (rtl)
 
-An `electrs` server is provided as another test app for exposing the Electrum protocol wrapper for `bitcoin`.
+**Ion**
+ - mongo (mongo)
+ - ipfs (ipfs)
+ - ion-bitcoin (ion-bitcoin)
+ - ion-core (ion-core)
 
 Everything is configured to run in **regtest** mode but can be adjusted as required. Images are provided for AMD64 and ARM64 architectures but you may have to manually build for others (see bottom).
 
