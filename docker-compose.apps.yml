@@ -24,7 +24,7 @@ services:
 
   electrs:
     container_name: ${COMPOSE_PROJECT_NAME}_electrs
-    image: bitcoinstack/electrs:0.8.7-alpine
+    image: bitcoinstack/electrs:0.8.10-alpine
     restart: unless-stopped
     command: [
       'electrs',
@@ -44,7 +44,7 @@ services:
 
   rtl:
     container_name: ${COMPOSE_PROJECT_NAME}_rtl
-    image: shahanafarooqui/rtl:0.10.1
+    image: shahanafarooqui/rtl:0.10.2
     restart: unless-stopped
     ports:
       - "127.0.0.1:${RTL_PORT}:${RTL_PORT}"

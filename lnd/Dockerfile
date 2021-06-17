@@ -21,10 +21,7 @@ ENV LND_DATA=/home/lnd/.lnd
 COPY --from=builder /go/bin/lncli /bin/
 COPY --from=builder /go/bin/lnd /bin/
 COPY docker-entrypoint.sh /entrypoint.sh
-
-VOLUME ["/home/lnd/.lnd"]
-
-ADD ./lnd.conf /home/lnd/.lnd/lnd.conf
+COPY ./lnd.conf /home/lnd/.lnd/lnd.conf
 
 ENTRYPOINT ["/entrypoint.sh"]
 

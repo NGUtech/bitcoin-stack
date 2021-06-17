@@ -1,4 +1,4 @@
-FROM alpine:3.12 as clightning
+FROM alpine:3.12 as builder
 
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add autoconf \
@@ -34,7 +34,7 @@ RUN set -ex \
     gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
   done
 
-ENV CLIGHTNING_VERSION=0.9.3
+ENV CLIGHTNING_VERSION=0.10.0
 ENV CLIGHTNING_PREFIX=/opt/clightning
 
 RUN wget https://github.com/ElementsProject/lightning/releases/download/v${CLIGHTNING_VERSION}/SHA256SUMS
@@ -75,12 +75,9 @@ ENV CLIGHTNING_DATA=/home/clightning/.lightning
 ENV CLIGHTNING_PREFIX=/opt/clightning
 ENV PATH=${CLIGHTNING_PREFIX}/bin:$PATH
 
-COPY --from=clightning /opt /opt
+COPY --from=builder /opt /opt
 COPY docker-entrypoint.sh /entrypoint.sh
-
-VOLUME ["/home/clightning/.lightning"]
-
-ADD ./lightning.conf /home/clightning/.lightning/lightning.conf
+COPY ./lightning.conf /home/clightning/.lightning/lightning.conf
 
 ENTRYPOINT ["/entrypoint.sh"]
 

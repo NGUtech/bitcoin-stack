@@ -44,7 +44,7 @@ RUN make install
 RUN rm -rf ${BERKELEYDB_PREFIX}/docs
 
 # Build stage for Elements Core
-FROM alpine:3.12 as elements-core
+FROM alpine:3.12 as builder
 
 COPY --from=berkeleydb /opt /opt
 
@@ -78,7 +78,7 @@ RUN set -ex \
     gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
   done
 
-ENV ELEMENTS_VERSION=0.18.1.9
+ENV ELEMENTS_VERSION=0.18.1.12
 ENV ELEMENTS_PREFIX=/opt/elements
 
 RUN wget https://github.com/ElementsProject/elements/releases/download/elements-${ELEMENTS_VERSION}/SHA256SUMS.asc
@@ -130,12 +130,9 @@ ENV ELEMENTS_DATA=/home/elements/.elements
 ENV ELEMENTS_PREFIX=/opt/elements
 ENV PATH=${ELEMENTS_PREFIX}/bin:$PATH
 
-COPY --from=elements-core /opt /opt
+COPY --from=builder /opt /opt
 COPY docker-entrypoint.sh /entrypoint.sh
-
-VOLUME ["/home/elements/.elements"]
-
-ADD ./elements.conf /home/elements/.elements/elements.conf
+COPY ./elements.conf /home/elements/.elements/elements.conf
 
 ENTRYPOINT ["/entrypoint.sh"]
 

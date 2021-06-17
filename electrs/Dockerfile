@@ -13,20 +13,18 @@ WORKDIR /usr/local/src/electrs
 
 RUN rustup override set 1.49 \
   && git clone -n https://github.com/romanz/electrs.git . \
-  && git checkout v0.8.7 \
+  && git checkout v0.8.10 \
   && RUSTFLAGS="-C target-feature=-crt-static" cargo install --locked --path .
 
 # Build stage for compiled artifacts
 FROM alpine:3.12
 
-RUN apk add --no-cache --update libstdc++
-
 RUN adduser -S electrs
 
-COPY --from=builder /usr/local/cargo/bin/electrs /usr/local/bin/electrs
+RUN apk add --no-cache --update libstdc++
 
-VOLUME ["/home/electrs"]
-ADD ./config.toml /etc/electrs/config.toml
+COPY --from=builder /usr/local/cargo/bin/electrs /usr/local/bin/electrs
+COPY ./config.toml /etc/electrs/config.toml
 
 USER electrs
 

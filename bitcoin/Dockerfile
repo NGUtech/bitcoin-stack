@@ -44,7 +44,7 @@ RUN make install
 RUN rm -rf ${BERKELEYDB_PREFIX}/docs
 
 # Build stage for Bitcoin Core
-FROM alpine:3.12 as bitcoin-core
+FROM alpine:3.12 as builder
 
 COPY --from=berkeleydb /opt /opt
 
@@ -76,7 +76,7 @@ RUN set -ex \
     gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
   done
 
-ENV BITCOIN_VERSION=0.21.0
+ENV BITCOIN_VERSION=0.21.1
 ENV BITCOIN_PREFIX=/opt/bitcoin
 
 RUN wget https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
@@ -127,12 +127,9 @@ ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
 ENV BITCOIN_PREFIX=/opt/bitcoin
 ENV PATH=${BITCOIN_PREFIX}/bin:$PATH
 
-COPY --from=bitcoin-core /opt /opt
+COPY --from=builder /opt /opt
 COPY docker-entrypoint.sh /entrypoint.sh
-
-VOLUME ["/home/bitcoin/.bitcoin"]
-
-ADD ./bitcoin.conf /home/bitcoin/.bitcoin/bitcoin.conf
+COPY ./bitcoin.conf /home/bitcoin/.bitcoin/bitcoin.conf
 
 ENTRYPOINT ["/entrypoint.sh"]
 

@@ -25,7 +25,7 @@ ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
 # The easiest way to reliably get dependencies is to build the project with no sources
 WORKDIR /usr/src
 RUN git clone -n https://github.com/ACINQ/eclair.git . \
-  && git checkout v0.5.1
+  && git checkout v0.6.0
 RUN mvn package -pl eclair-node -am -DskipTests
 # It might be good idea to run the tests here, so that the docker build fail if the code is bugged
 

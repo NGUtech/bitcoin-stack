@@ -1,5 +1,14 @@
 # Changelog
 
+## 2021-06-17
+ - Update `bitcoin` to v0.21.1
+ - Update `clightning` to v0.10.0
+ - Update `eclair` to v0.6.0
+ - Update `electrs` to v0.8.10
+ - Update `elements` to v0.8.1.12
+ - Update `lnd` to v0.12.1
+ - Update `rtl` to v0.10.12
+
 ## 2021-03-29
  - Update `eclair` to v0.5.1
 

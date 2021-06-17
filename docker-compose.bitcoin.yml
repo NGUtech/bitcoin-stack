@@ -15,7 +15,7 @@ volumes:
 services:
   bitcoin:
     container_name: ${COMPOSE_PROJECT_NAME}_bitcoin
-    image: bitcoinstack/bitcoin:0.21.0-alpine
+    image: bitcoinstack/bitcoin:0.21.1-alpine
     restart: unless-stopped
     command: [
       "-regtest=1",
@@ -120,7 +120,7 @@ services:
 
   carol:
     container_name: ${COMPOSE_PROJECT_NAME}_carol
-    image: bitcoinstack/clightning:0.9.3-alpine
+    image: bitcoinstack/clightning:0.10.0-alpine
     restart: unless-stopped
     command: [
       "--alias=carol",
@@ -147,7 +147,7 @@ services:
 
   frank:
     container_name: ${COMPOSE_PROJECT_NAME}_frank
-    image: bitcoinstack/eclair:0.5.1
+    image: bitcoinstack/eclair:0.6.0
     restart: unless-stopped
     command: ["bash", "eclair-node/bin/eclair-node.sh"]
     environment:
