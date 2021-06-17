@@ -154,10 +154,14 @@ $ bin/stack bob sendpayment --keysend $CAROL_NODE 10000
 ```
 
 ### Clightning keysend to LND
-Clightning keysend functionality to LND is not currently supported. See https://github.com/ElementsProject/lightning/issues/4299
+Now `clightning` interoperates with `lnd` using `keysend`
+```
+$ BOB_NODE=$(bin/stack bob getinfo | jq '.identity_pubkey' | tr -d '"')
+$ bin/stack carol keysend $BOB_NODE 2000000
+```
 
 ### Clightning MPP to LND
-Since 0.9.0 `clightning` supports MPP by default so payments are adaptively split into random amounts.
+`clightning` supports MPP by default so payments are adaptively split into random amounts.
 ```
 $ ALICE_INVOICE=$(bin/stack alice addinvoice 1000000 | jq '.payment_request' | tr -d '"')
 $ bin/stack carol pay $ALICE_INVOICE
@@ -195,6 +199,8 @@ $ bin/stack dave channelto emma 50000000
 # once channels are opened a payment can be simulated (max size 4294967295msat)
 $ EMMA_INVOICE=$(bin/stack emma invoice 40000000msat "label1" "description1" | jq '.bolt11' | tr -d '"')
 $ bin/stack dave pay $EMMA_INVOICE
+$ EMMA_NODE=$(bin/stack emma getinfo | jq '.id' | tr -d '"')
+$ bin/stack dave keysend $EMMA_NODE 25000000
 $ bin/stack dave listpays
 $ bin/stack emma listinvoices
 ```
