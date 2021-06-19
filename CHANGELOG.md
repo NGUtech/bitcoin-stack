@@ -1,5 +1,8 @@
 # Changelog
 
+## 2021-06-19
+ - Update `lnd` to v0.13.0
+
 ## 2021-06-17
  - Update `bitcoin` to v0.21.1
  - Update `clightning` to v0.10.0

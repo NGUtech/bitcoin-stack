@@ -112,25 +112,25 @@ $ docker-compose logs -f demo
 $ bin/stack alice addinvoice 1000
 ```
 
-### LND MPP to LND
-A command is provided to easily create channels, so we can open some from `alice` to `bob` with some funding between the two `lnd` containers and do a multi part payment.
+### LND AMP to LND
+A command is provided to easily create channels, so we can open some from `alice` to `bob` with some funding between the two `lnd` containers and do an atomic multi-part (`amp`) payment. Alternatively you can use `max_parts` parameter.
 ```
 $ bin/stack alice channelto bob 5000000
 $ bin/stack alice channelto bob 2000000
 $ bin/stack alice channelto bob 500000
 # once channels are opened a payment can be simulated
 $ BOB_INVOICE=$(bin/stack bob addinvoice 5275000 | jq '.payment_request' | tr -d '"')
-$ bin/stack alice payinvoice --max_parts=5 -f $BOB_INVOICE
+$ bin/stack alice payinvoice --amp -f $BOB_INVOICE
 $ bin/stack alice listchannels
 $ bin/stack bob listchannels
 ```
 
-### LND keysend to LND
-The `bob` container is also configured to accept `keysend` transactions so payments can be made without requiring an invoice.
+### LND AMP keysend to LND
+The `bob` container is also configured to accept `keysend` transactions using `amp` so multi-part payments can be made without requiring an invoice.
 ```
 # assuming channel is opened as above
 $ BOB_NODE=$(bin/stack bob getinfo | jq '.identity_pubkey' | tr -d '"')
-$ bin/stack alice sendpayment --keysend $BOB_NODE 10000
+$ bin/stack alice sendpayment --amp $BOB_NODE 10000
 ```
 
 ### LND invoice payment to Clightning

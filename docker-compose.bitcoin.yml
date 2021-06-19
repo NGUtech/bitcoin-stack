@@ -49,7 +49,7 @@ services:
 
   alice:
     container_name: ${COMPOSE_PROJECT_NAME}_alice
-    image: bitcoinstack/lnd:0.12.1-alpine
+    image: bitcoinstack/lnd:0.13.0-alpine
     restart: unless-stopped
     command: [
       "--noseedbackup",
@@ -60,6 +60,9 @@ services:
       "--tlsextradomain=${ALICE_HOST}",
       "--tlsextraip=0.0.0.0",
       "--autopilot.allocation=0",
+      "--accept-amp",
+      "--accept-keysend",
+      "--protocol.no-anchors",
       "--protocol.wumbo-channels",
       "--bitcoin.active",
       "--bitcoin.regtest",
@@ -84,7 +87,7 @@ services:
 
   bob:
     container_name: ${COMPOSE_PROJECT_NAME}_bob
-    image: bitcoinstack/lnd:0.12.1-alpine
+    image: bitcoinstack/lnd:0.13.0-alpine
     restart: unless-stopped
     command: [
       "--noseedbackup",
@@ -95,7 +98,9 @@ services:
       "--tlsextradomain=${BOB_HOST}",
       "--tlsextraip=0.0.0.0",
       "--autopilot.allocation=0",
+      "--accept-amp",
       "--accept-keysend",
+      "--protocol.no-anchors",
       "--protocol.wumbo-channels",
       "--bitcoin.active",
       "--bitcoin.regtest",
