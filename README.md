@@ -1,4 +1,4 @@
-# Docker setup for Bitcoin, Elements/Liquid, LND, Clightning, & Eclair in regtest mode
+# Docker setup for Bitcoin, Elements/Liquid, LND, Clightning, Eclair, & Electrs in regtest mode
 
 ### ONLY FOR DEVELOPMENT and TESTING. These tools may not be suitable for production deployments.
 
@@ -60,6 +60,7 @@ Everything is configured to run in **regtest** mode but can be adjusted as requi
  - Elements token creation and transaction scripts
  - Token swaps within Elements
  - Lightning swaps across Bitcoin and Elements
+ - Trampoline routing example
  - Other scripting examples
 
 ## How to run
@@ -119,7 +120,7 @@ $ bin/stack alice channelto bob 5000000
 $ bin/stack alice channelto bob 2000000
 $ bin/stack alice channelto bob 500000
 # once channels are opened a payment can be simulated
-$ BOB_INVOICE=$(bin/stack bob addinvoice 5275000 | jq '.payment_request' | tr -d '"')
+$ BOB_INVOICE=$(bin/stack bob addinvoice 5275000 | jq -r '.payment_request')
 $ bin/stack alice payinvoice --amp -f $BOB_INVOICE
 $ bin/stack alice listchannels
 $ bin/stack bob listchannels
@@ -129,7 +130,7 @@ $ bin/stack bob listchannels
 The `bob` container is also configured to accept `keysend` transactions using `amp` so multi-part payments can be made without requiring an invoice.
 ```
 # assuming channel is opened as above
-$ BOB_NODE=$(bin/stack bob getinfo | jq '.identity_pubkey' | tr -d '"')
+$ BOB_NODE=$(bin/stack bob getinfo | jq -r '.identity_pubkey')
 $ bin/stack alice sendpayment --amp $BOB_NODE 10000
 ```
 
@@ -140,7 +141,7 @@ $ bin/stack alice channelto carol 2000000
 # open a 0.5BTC WUMBO channel
 $ bin/stack bob channelto carol 50000000
 # once channels are opened a payment can be simulated on a wumbo channel
-$ CAROL_INVOICE=$(bin/stack carol invoice 4294967295msat "label1" "desc1" | jq '.bolt11' | tr -d '"')
+$ CAROL_INVOICE=$(bin/stack carol invoice 4294967295msat "label1" "desc1" | jq -r '.bolt11')
 $ bin/stack bob payinvoice -f $CAROL_INVOICE
 $ bin/stack carol listfunds
 ```
@@ -149,23 +150,41 @@ $ bin/stack carol listfunds
 You can also receive `keysend` payments to `clightning`:
 ```
 # assuming channel is opened as above (might take a minute to sync & activate)
-$ CAROL_NODE=$(bin/stack carol getinfo | jq '.id' | tr -d '"')
+$ CAROL_NODE=$(bin/stack carol getinfo | jq -r '.id')
 $ bin/stack bob sendpayment --keysend $CAROL_NODE 10000
+```
+
+### LND PSBT based channel creation
+For this process we will use two terminal windows one for LND and one for Bitcoin PSBT processing.
+```
+# LND terminal
+$ BOB_NODE=$(bin/stack bob getinfo | jq -r '.identity_pubkey')
+$ bin/stack alice openchannel $BOB_NODE 750000 --psbt
+# Bitcoin terminal
+$ bin/stack bitcoin walletcreatefundedpsbt '[]' '[{"<address chosen by lnd>":0.00750000}]' | jq -r '.psbt' > funded.psbt
+$ docker cp funded.psbt "$(docker-compose ps -q alice)":/funded.psbt
+# LND terminal enter `/funded.psbt` as file path
+# Bitcoin terminal signing round
+$ bin/stack bitcoin walletprocesspsbt $(cat funded.psbt) | jq -r '.psbt' > signed.psbt
+# docker cp signed.psbt "$(docker-compose ps -q alice)":/signed.psbt
+# > LND terminal enter `/signed.psbt` as file path
+$ bin/stack bitcoin generate 3
+$ bin/stack alice listchannels
 ```
 
 ### Clightning keysend to LND
 Now `clightning` interoperates with `lnd` using `keysend`
 ```
-$ BOB_NODE=$(bin/stack bob getinfo | jq '.identity_pubkey' | tr -d '"')
+$ BOB_NODE=$(bin/stack bob getinfo | jq -r '.identity_pubkey')
 $ bin/stack carol keysend $BOB_NODE 2000000
 ```
 
 ### Clightning MPP to LND
 `clightning` supports MPP by default so payments are adaptively split into random amounts.
 ```
-$ ALICE_INVOICE=$(bin/stack alice addinvoice 1000000 | jq '.payment_request' | tr -d '"')
+$ ALICE_INVOICE=$(bin/stack alice addinvoice 1000000 | jq -r '.payment_request')
 $ bin/stack carol pay $ALICE_INVOICE
-$ bin/stack alice lookupinvoice $(bin/stack alice decodepayreq $ALICE_INVOICE | jq '.payment_hash' | tr -d '"') | jq '.htlcs'
+$ bin/stack alice lookupinvoice $(bin/stack alice decodepayreq $ALICE_INVOICE | jq -r '.payment_hash') | jq '.htlcs'
 ```
 
 ### Clightning plugin
@@ -178,7 +197,7 @@ $ bin/stack carol hello yourname
 Similar commands will connect `frank` to `bob` from the `eclair` implementation of LN on Bitcoin.
 ```
 $ bin/stack frank channelto bob 10000000
-$ CAROL_INVOICE=$(bin/stack carol invoice 50000000msat "label2" "desc2" | jq '.bolt11' | tr -d '"')
+$ CAROL_INVOICE=$(bin/stack carol invoice 50000000msat "label2" "desc2" | jq -r '.bolt11')
 $ bin/stack frank payinvoice --invoice=$CAROL_INVOICE
 $ bin/stack frank audit
 ```
@@ -197,9 +216,9 @@ You can also open a LN **L-BTC** channel on `clightning` across the Elements cha
 $ bin/stack dave channelto emma 50000000
 # this may take a minute to sync nodes & activate before channel has visible balance
 # once channels are opened a payment can be simulated (max size 4294967295msat)
-$ EMMA_INVOICE=$(bin/stack emma invoice 40000000msat "label1" "description1" | jq '.bolt11' | tr -d '"')
+$ EMMA_INVOICE=$(bin/stack emma invoice 40000000msat "label1" "description1" | jq -r '.bolt11')
 $ bin/stack dave pay $EMMA_INVOICE
-$ EMMA_NODE=$(bin/stack emma getinfo | jq '.id' | tr -d '"')
+$ EMMA_NODE=$(bin/stack emma getinfo | jq -r '.id')
 $ bin/stack dave keysend $EMMA_NODE 25000000
 $ bin/stack dave listpays
 $ bin/stack emma listinvoices

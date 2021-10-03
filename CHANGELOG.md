@@ -1,5 +1,13 @@
 # Changelog
 
+## 2020-10-03
+ - `lnd` PSBT based channel creation example
+ - Update `lnd` to v0.13.1
+ - Update `electrs` to v0.9.0
+ - Update `eclair` to v0.6.1
+ - Update `clightning` to v0.10.1
+ - Update `rtl` to v0.11.2
+
 ## 2021-06-19
  - Update `lnd` to v0.13.0
 

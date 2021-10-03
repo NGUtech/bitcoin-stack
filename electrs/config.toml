@@ -1,2 +1,2 @@
-cookie = "bitcoin:bitcoin"
+auth = "bitcoin:bitcoin"
 verbosity = 4

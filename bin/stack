@@ -25,7 +25,7 @@ function getChainNode() {
     local IMPL=$(getImpl $1)
     case "$IMPL" in
         clightning)
-            local NETWORK=$(bin/stack $1 getinfo | jq '.network' | tr -d '"')
+            local NETWORK=$(bin/stack $1 getinfo | jq -r '.network')
             if [[ $NETWORK == "liquid-regtest" ]]; then echo "elements"; else echo "bitcoin"; fi ;;
         *) echo "bitcoin"; ;;
     esac
@@ -54,8 +54,8 @@ function getAddress() {
     guardImpl $1 "$L2_SET"
     local IMPL=$(getImpl $1)
     case "$IMPL" in
-        lnd) echo $(bin/stack $1 newaddress np2wkh | jq '.address' | tr -d '"'); ;;
-        clightning) echo $(bin/stack $1 newaddr p2sh-segwit | jq '.address' | tr -d '"'); ;;
+        lnd) echo $(bin/stack $1 newaddress np2wkh | jq -r '.address'); ;;
+        clightning) echo $(bin/stack $1 newaddr p2sh-segwit | jq -r '.address'); ;;
         eclair) echo $(bin/stack $1 getnewaddress); ;;
     esac
 }
@@ -64,9 +64,9 @@ function getNodeId() {
     guardImpl $1 "$L2_SET"
     local IMPL=$(getImpl $1)
     case "$IMPL" in
-        lnd) echo $(bin/stack $1 getinfo | jq '.identity_pubkey' | tr -d '"'); ;;
-        clightning) echo $(bin/stack $1 getinfo | jq '.id' | tr -d '"'); ;;
-        eclair) echo $(bin/stack $1 getinfo | jq '.nodeId' | tr -d '"'); ;;
+        lnd) echo $(bin/stack $1 getinfo | jq -r '.identity_pubkey'); ;;
+        clightning) echo $(bin/stack $1 getinfo | jq -r '.id'); ;;
+        eclair) echo $(bin/stack $1 getinfo | jq -r '.nodeId'); ;;
     esac
 }
 
@@ -124,8 +124,8 @@ function pegin_command() {
     local AMOUNT=${args[2]}
     bin/stack $TARGET generate 1
     local ADDRS=$(bin/stack $TARGET getpeginaddress)
-    local MAINCHAIN=$(echo $ADDRS | jq '.mainchain_address' | tr -d '"')
-    local CLAIMSCRIPT=$(echo $ADDRS | jq '.claim_script' | tr -d '"')
+    local MAINCHAIN=$(echo $ADDRS | jq -r '.mainchain_address')
+    local CLAIMSCRIPT=$(echo $ADDRS | jq -r '.claim_script')
     local TXID=$(bin/stack $NODE sendtoaddress $MAINCHAIN $AMOUNT)
     bin/stack $NODE generate 101
     local PROOF=$(bin/stack $NODE gettxoutproof '''["'''$TXID'''"]''')

@@ -20,9 +20,9 @@
         "themeColor": "PURPLE",
         "channelBackupPath": "/tmp",
         "bitcoindConfigPath": "",
-        "enableLogging": true,
         "fiatConversion": false,
-        "lnServerUrl": "https://alice:8090/v1"
+        "lnServerUrl": "https://alice:8090/v1",
+        "logLevel": "INFO"
       }
     },
     {
@@ -39,9 +39,9 @@
         "themeColor": "BLUE",
         "channelBackupPath": "/tmp",
         "bitcoindConfigPath": "",
-        "enableLogging": true,
         "fiatConversion": false,
-        "lnServerUrl": "https://bob:8100/v1"
+        "lnServerUrl": "https://bob:8100/v1",
+        "logLevel": "INFO"
       }
     }
   ],

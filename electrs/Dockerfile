@@ -1,4 +1,4 @@
-FROM rust:1.49-alpine3.12 as builder
+FROM rust:1.53-alpine3.12 as builder
 
 RUN apk add --no-cache --update \
   alpine-sdk \
@@ -11,9 +11,9 @@ RUN apk add --no-cache --update \
 
 WORKDIR /usr/local/src/electrs
 
-RUN rustup override set 1.49 \
+RUN rustup override set 1.53 \
   && git clone -n https://github.com/romanz/electrs.git . \
-  && git checkout v0.8.10 \
+  && git checkout v0.9.0 \
   && RUSTFLAGS="-C target-feature=-crt-static" cargo install --locked --path .
 
 # Build stage for compiled artifacts
