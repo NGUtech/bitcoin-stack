@@ -6,9 +6,10 @@ WORKDIR /go/src/github.com/lightningnetwork/lnd
 # queries required to connect to linked containers succeed.
 ENV GODEBUG netdns=cgo
 
+ARG LND_VERSION
 RUN apk add --no-cache --update alpine-sdk git make \
   && git clone -n https://github.com/lightningnetwork/lnd . \
-  && git checkout v0.13.1-beta \
+  && git checkout v${LND_VERSION}-beta \
   && make \
   && make install tags="autopilotrpc chainrpc invoicesrpc routerrpc signrpc walletrpc watchtowerrpc wtclientrpc"
 

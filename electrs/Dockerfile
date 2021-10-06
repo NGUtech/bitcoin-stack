@@ -11,9 +11,10 @@ RUN apk add --no-cache --update \
 
 WORKDIR /usr/local/src/electrs
 
+ARG ELECTRS_VERSION
 RUN rustup override set 1.53 \
   && git clone -n https://github.com/romanz/electrs.git . \
-  && git checkout v0.9.0 \
+  && git checkout v${ELECTRS_VERSION} \
   && RUSTFLAGS="-C target-feature=-crt-static" cargo install --locked --path .
 
 # Build stage for compiled artifacts
