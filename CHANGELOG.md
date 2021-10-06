@@ -1,5 +1,9 @@
 # Changelog
 
+## 2020-10-06
+ - `lnd` udpated to v0.13.3
+ - Docker build automation for amd64/arm64 platforms
+
 ## 2020-10-03
  - `lnd` PSBT based channel creation example
  - Update `lnd` to v0.13.1
