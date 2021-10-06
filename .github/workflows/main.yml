@@ -2,6 +2,12 @@ name: Docker
 
 env:
   BUILD_TARGETS: linux/amd64,linux/arm64
+  BITCOIN_VERSION: '0.21.1
+  CLIGHTNING_VERSION: '0.10.1'
+  ECLAIR_VERSION: '0.6.1'
+  ELECTRS_VERSION: '0.9.0'
+  ELEMENTS_VERSION: '0.18.1.12'
+  LND_VERSION: '0.13.3'
 
 on:
   push:
@@ -31,25 +37,69 @@ jobs:
     - name: Prepare builds
       id: prepare
       run: |
-        docker manifest inspect bitcoinstack/lnd:test &>/dev/null || echo ::set-output name=lnd::test
-        docker manifest inspect bitcoinstack/clightning:0.10.1-alpine &>/dev/null || echo ::set-output name=clightning::0.10.1-alpine
+        docker manifest inspect bitcoinstack/bitcoin:${{ env.BITCOIN_VERSION }}-alpine &>/dev/null || echo ::set-output name=bitcoin::${{ env.BITCOIN_VERSION }}-alpine
+        docker manifest inspect bitcoinstack/clightning:${{ env.CLIGHTNING_VERSION }}-alpine &>/dev/null || echo ::set-output name=clightning::${{ env.CLIGHTNING_VERSION }}-alpine
+        docker manifest inspect bitcoinstack/eclair:${{ env.ECLAIR_VERSION }} &>/dev/null || echo ::set-output name=eclair::${{ env.ECLAIR_VERSION }}
+        docker manifest inspect bitcoinstack/electrs:${{ env.ELECTRS_VERSION }}-alpine &>/dev/null || echo ::set-output name=electrs::${{ env.ELECTRS_VERSION }}-alpine
+        docker manifest inspect bitcoinstack/elements:${{ env.ELEMENTS_VERSION }}-alpine &>/dev/null || echo ::set-output name=elements::${{ env.ELEMENTS_VERSION }}-alpine
+        docker manifest inspect bitcoinstack/lnd:${{ env.LND_VERSION }}-alpine &>/dev/null || echo ::set-output name=lnd::${{ env.LND_VERSION }}-alpine
+
+    - name: Build and push Bitcoin
+      if: ${{ steps.prepare.outputs.bitcoin }}
+      uses: docker/build-push-action@v2
+      with:
+        context: ./bitcoin
+        build-args: BITCOIN_VERSION=${{ env.BITCOIN_VERSION }}
+        platforms: ${{ env.BUILD_TARGETS }}
+        push: true
+        tags: bitcoinstack/bitcoin:${{ steps.prepare.outputs.bitcoin }}
 
     - name: Build and push Clightning
-      id: build-clightning
       if: ${{ steps.prepare.outputs.clightning }}
       uses: docker/build-push-action@v2
       with:
         context: ./clightning
+        build-args: CLIGHTNING_VERSION=${{ env.CLIGHTNING_VERSION }}
         platforms: ${{ env.BUILD_TARGETS }}
         push: true
         tags: bitcoinstack/clightning:${{ steps.prepare.outputs.clightning }}
 
+    - name: Build and push Eclair
+      if: ${{ steps.prepare.outputs.eclair }}
+      uses: docker/build-push-action@v2
+      with:
+        context: ./eclair
+        build-args: ECLAIR_VERSION=${{ env.ECLAIR_VERSION }}
+        platforms: ${{ env.BUILD_TARGETS }}
+        push: true
+        tags: bitcoinstack/eclair:${{ steps.prepare.outputs.eclair }}
+
+    - name: Build and push Electrs
+      if: ${{ steps.prepare.outputs.electrs }}
+      uses: docker/build-push-action@v2
+      with:
+        context: ./electrs
+        build-args: ELECTRS_VERSION=${{ env.ELECTRS_VERSION }}
+        platforms: ${{ env.BUILD_TARGETS }}
+        push: true
+        tags: bitcoinstack/electrs:${{ steps.prepare.outputs.electrs }}
+
+    - name: Build and push Elements
+      if: ${{ steps.prepare.outputs.elements }}
+      uses: docker/build-push-action@v2
+      with:
+        context: ./elements
+        build-args: ELEMENTS_VERSION=${{ env.ELEMENTS_VERSION }}
+        platforms: ${{ env.BUILD_TARGETS }}
+        push: true
+        tags: bitcoinstack/elements:${{ steps.prepare.outputs.elements }}
+
     - name: Build and push LND
-      id: build-lnd
       if: ${{ steps.prepare.outputs.lnd }}
       uses: docker/build-push-action@v2
       with:
         context: ./lnd
+        build-args: LND_VERSION=${{ env.LND_VERSION }}
         platforms: ${{ env.BUILD_TARGETS }}
         push: true
         tags: bitcoinstack/lnd:${{ steps.prepare.outputs.lnd }}

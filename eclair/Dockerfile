@@ -24,8 +24,9 @@ ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
 # This way we won't have to fetch dependencies again if only the source code changes
 # The easiest way to reliably get dependencies is to build the project with no sources
 WORKDIR /usr/src
+ARG ECLAIR_VERSION
 RUN git clone -n https://github.com/ACINQ/eclair.git . \
-  && git checkout v0.6.1
+  && git checkout v${ECLAIR_VERSION}
 RUN mvn package -pl eclair-node -am -DskipTests
 # It might be good idea to run the tests here, so that the docker build fail if the code is bugged
 
