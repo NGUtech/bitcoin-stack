@@ -31,8 +31,8 @@ jobs:
     - name: Prepare builds
       id: prepare
       run: |
-        docker manifest inspect bitcoinstack/lnd:test &> /dev/null || echo ::set-output name=lnd::test
-        docker manifest inspect bitcoinstack/clighnting:0.10.1-alpine &> /dev/null || echo ::set-output name=clightning::0.10.1-alpine
+        docker manifest inspect bitcoinstack/lnd:test &>/dev/null || echo ::set-output name=lnd::test
+        docker manifest inspect bitcoinstack/clightning:0.10.1-alpine &>/dev/null || echo ::set-output name=clightning::0.10.1-alpine
 
     - name: Build and push Clightning
       id: build-clightning
