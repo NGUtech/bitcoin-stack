@@ -3,4 +3,4 @@
 LICENSE
 README.md
 CHANGELOG.md
-/docker-compose*.yml
+docker-compose*.yml

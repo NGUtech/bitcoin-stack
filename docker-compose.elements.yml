@@ -9,7 +9,7 @@ volumes:
 services:
   elements:
     container_name: ${COMPOSE_PROJECT_NAME}_elements
-    image: bitcoinstack/elements:0.18.1.12-alpine
+    image: bitcoinstack/elements:${ELEMENTS_VERSION}-alpine
     restart: unless-stopped
     command: [
       "-chain=liquid-regtest",
@@ -49,7 +49,7 @@ services:
 
   dave:
     container_name: ${COMPOSE_PROJECT_NAME}_dave
-    image: bitcoinstack/clightning:0.10.1-alpine
+    image: bitcoinstack/clightning:${CLIGHTNING_VERSION}-alpine
     restart: unless-stopped
     command: [
       "--alias=dave",
@@ -75,7 +75,7 @@ services:
 
   emma:
     container_name: ${COMPOSE_PROJECT_NAME}_emma
-    image: bitcoinstack/clightning:0.10.1-alpine
+    image: bitcoinstack/clightning:${CLIGHTNING_VERSION}-alpine
     restart: unless-stopped
     command: [
       "--alias=emma",

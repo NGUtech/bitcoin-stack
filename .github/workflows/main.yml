@@ -2,12 +2,6 @@ name: Docker
 
 env:
   BUILD_TARGETS: linux/amd64,linux/arm64
-  BITCOIN_VERSION: '0.21.1'
-  CLIGHTNING_VERSION: '0.10.1'
-  ECLAIR_VERSION: '0.6.1'
-  ELECTRS_VERSION: '0.9.0'
-  ELEMENTS_VERSION: '0.18.1.12'
-  LND_VERSION: '0.13.3'
 
 on:
   push:
@@ -34,22 +28,26 @@ jobs:
         username: ${{ secrets.REGISTRY_USER }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
 
+    - name: Import environment
+      id: dotenv
+      uses: ./.github/actions/dotenv-action
+
     - name: Prepare builds
       id: prepare
       run: |
-        docker manifest inspect bitcoinstack/bitcoin:${{ env.BITCOIN_VERSION }}-alpine &>/dev/null || echo ::set-output name=bitcoin::${{ env.BITCOIN_VERSION }}-alpine
-        docker manifest inspect bitcoinstack/clightning:${{ env.CLIGHTNING_VERSION }}-alpine &>/dev/null || echo ::set-output name=clightning::${{ env.CLIGHTNING_VERSION }}-alpine
-        docker manifest inspect bitcoinstack/eclair:${{ env.ECLAIR_VERSION }} &>/dev/null || echo ::set-output name=eclair::${{ env.ECLAIR_VERSION }}
-        docker manifest inspect bitcoinstack/electrs:${{ env.ELECTRS_VERSION }}-alpine &>/dev/null || echo ::set-output name=electrs::${{ env.ELECTRS_VERSION }}-alpine
-        docker manifest inspect bitcoinstack/elements:${{ env.ELEMENTS_VERSION }}-alpine &>/dev/null || echo ::set-output name=elements::${{ env.ELEMENTS_VERSION }}-alpine
-        docker manifest inspect bitcoinstack/lnd:${{ env.LND_VERSION }}-alpine &>/dev/null || echo ::set-output name=lnd::${{ env.LND_VERSION }}-alpine
+        docker manifest inspect bitcoinstack/bitcoin:${{ steps.dotenv.outputs.bitcoin_version }}-alpine &>/dev/null || echo ::set-output name=bitcoin::${{ steps.dotenv.outputs.bitcoin_version }}-alpine
+        docker manifest inspect bitcoinstack/clightning:${{ steps.dotenv.outputs.clightning_version }}-alpine &>/dev/null || echo ::set-output name=clightning::${{ steps.dotenv.outputs.clightning_version }}-alpine
+        docker manifest inspect bitcoinstack/eclair:${{ steps.dotenv.outputs.eclair_version }} &>/dev/null || echo ::set-output name=eclair::${{ steps.dotenv.outputs.eclair_version }}
+        docker manifest inspect bitcoinstack/electrs:${{ steps.dotenv.outputs.electrs_version }}-alpine &>/dev/null || echo ::set-output name=electrs::${{ steps.dotenv.outputs.electrs_version }}-alpine
+        docker manifest inspect bitcoinstack/elements:${{ steps.dotenv.outputs.elements_version }}-alpine &>/dev/null || echo ::set-output name=elements::${{ steps.dotenv.outputs.elements_version }}-alpine
+        docker manifest inspect bitcoinstack/lnd:${{ steps.dotenv.outputs.lnd_version }}-alpine &>/dev/null || echo ::set-output name=lnd::${{ steps.dotenv.outputs.lnd_version }}-alpine
 
     - name: Build and push Bitcoin
       if: ${{ steps.prepare.outputs.bitcoin }}
       uses: docker/build-push-action@v2
       with:
         context: ./bitcoin
-        build-args: BITCOIN_VERSION=${{ env.BITCOIN_VERSION }}
+        build-args: BITCOIN_VERSION=${{ steps.dotenv.outputs.bitcoin_version }}
         platforms: ${{ env.BUILD_TARGETS }}
         push: true
         tags: bitcoinstack/bitcoin:${{ steps.prepare.outputs.bitcoin }}
@@ -59,7 +57,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: ./clightning
-        build-args: CLIGHTNING_VERSION=${{ env.CLIGHTNING_VERSION }}
+        build-args: CLIGHTNING_VERSION=${{ steps.dotenv.outputs.clightning_version }}
         platforms: ${{ env.BUILD_TARGETS }}
         push: true
         tags: bitcoinstack/clightning:${{ steps.prepare.outputs.clightning }}
@@ -69,7 +67,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: ./eclair
-        build-args: ECLAIR_VERSION=${{ env.ECLAIR_VERSION }}
+        build-args: ECLAIR_VERSION=${{ steps.dotenv.outputs.eclair_version }}
         platforms: ${{ env.BUILD_TARGETS }}
         push: true
         tags: bitcoinstack/eclair:${{ steps.prepare.outputs.eclair }}
@@ -79,7 +77,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: ./electrs
-        build-args: ELECTRS_VERSION=${{ env.ELECTRS_VERSION }}
+        build-args: ELECTRS_VERSION=${{ steps.dotenv.outputs.electrs_version }}
         platforms: ${{ env.BUILD_TARGETS }}
         push: true
         tags: bitcoinstack/electrs:${{ steps.prepare.outputs.electrs }}
@@ -89,7 +87,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: ./elements
-        build-args: ELEMENTS_VERSION=${{ env.ELEMENTS_VERSION }}
+        build-args: ELEMENTS_VERSION=${{ steps.dotenv.outputs.elements_version }}
         platforms: ${{ env.BUILD_TARGETS }}
         push: true
         tags: bitcoinstack/elements:${{ steps.prepare.outputs.elements }}
@@ -99,7 +97,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: ./lnd
-        build-args: LND_VERSION=${{ env.LND_VERSION }}
+        build-args: LND_VERSION=${{ steps.dotenv.outputs.lnd_version }}
         platforms: ${{ env.BUILD_TARGETS }}
         push: true
         tags: bitcoinstack/lnd:${{ steps.prepare.outputs.lnd }}
