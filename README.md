@@ -267,7 +267,7 @@ $ docker-compose down -v
 
 Images can be built locally using the following pattern:
 ```
-$ docker build --build-arg BITCOIN_VERSION=0.21.1 -t bitcoinstack/bitcoin:0.21.1 ./bitcoin
+$ docker build --build-arg BITCOIN_VERSION=21.1 -t bitcoinstack/bitcoin:21.1 ./bitcoin
 ```
 
 ---
