@@ -69,7 +69,7 @@ RUN apk --no-cache add autoconf \
 RUN set -ex \
   && for key in \
     #laanwj
-    90C8019E36C2E964 \
+    71A3B16735405025D447E8F274810B012346C9A6 \
   ; do \
     gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key" || \
     gpg --batch --keyserver pgp.mit.edu --recv-keys "$key" || \
