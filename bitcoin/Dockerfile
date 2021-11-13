@@ -69,7 +69,7 @@ RUN apk --no-cache add autoconf \
 RUN wget https://raw.githubusercontent.com/bitcoin/bitcoin/master/contrib/builder-keys/keys.txt
 RUN set -ex \
   && while read fingerprint keyholder_name; \
-  do gpg --keyserver hkps://keys.openpgp.org --recv-keys ${fingerprint}; \
+  do gpg --keyserver keyserver.ubuntu.com --recv-keys ${fingerprint}; \
   done < ./keys.txt
 
 ARG BITCOIN_VERSION
