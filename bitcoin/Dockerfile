@@ -129,7 +129,7 @@ ENV PATH=${BITCOIN_PREFIX}/bin:$PATH
 
 COPY --from=builder /opt /opt
 COPY docker-entrypoint.sh /entrypoint.sh
-COPY ./bitcoin.conf /home/bitcoin/.bitcoin/bitcoin.conf
+COPY ./bitcoin.conf ${BITCOIN_DATA}/bitcoin.conf
 
 ENTRYPOINT ["/entrypoint.sh"]
 
