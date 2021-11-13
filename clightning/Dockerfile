@@ -15,6 +15,7 @@ RUN apk --no-cache add autoconf \
   linux-headers \
   protobuf-dev \
   zeromq-dev \
+  python3-dev \
   py3-mako \
   py3-pip \
   py3-setuptools \
