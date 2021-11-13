@@ -37,16 +37,10 @@ RUN sed s/__atomic_compare_exchange/__atomic_compare_exchange_db/g -i ${BERKELEY
 RUN mkdir -p ${BERKELEYDB_PREFIX}
 
 WORKDIR /${BERKELEYDB_VERSION}/build_unix
-ARG TARGETPLATFORM
-ARG TARGETOS
 ARG TARGETARCH
-ARG TARGETVARIANT
-ARG BUILDPLATFORM
-ARG BUILDOS
-ARG BUILDARCH
-ARG BUILDVARIANT
-RUN echo "${TARGETPLATFORM}:${TARGETOS}:${TARGETARCH}:${TARGETVARIANT}:${BUILDPLATFORM}:${BUILDOS}:${BUILDARCH}:${BUILDVARIANT}"
-RUN ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=${BERKELEYDB_PREFIX}
+RUN if [ "${TARGETARCH}" = "arm64" ] ; \
+  then ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=${BERKELEYDB_PREFIX} --build=arm-unknown-linux ; \
+  else ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=${BERKELEYDB_PREFIX} ; fi
 RUN make -j$(nproc)
 RUN make install
 RUN rm -rf ${BERKELEYDB_PREFIX}/docs
