@@ -1,7 +1,6 @@
 # Changelog
 
 ## 2021-11-13
- - Update `bitcoin` to v22.0 (change source location to bitcoincore.org, adjust version style)
  - Update `clightning` to v0.10.2
  - Update `eclair` to v0.6.2
  - Update `electrs` to v0.9.2
