@@ -69,7 +69,7 @@ RUN apk --no-cache add autoconf \
 RUN set -ex \
   && for key in \
     #laanwj
-    90C8019E36C2E964 \
+    71A3B16735405025D447E8F274810B012346C9A6 \
   ; do \
     gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key" || \
     gpg --batch --keyserver pgp.mit.edu --recv-keys "$key" || \
@@ -81,11 +81,11 @@ RUN set -ex \
 ARG BITCOIN_VERSION
 ENV BITCOIN_PREFIX=/opt/bitcoin
 
+RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS
+RUN sha256sum --ignore-missing --check SHA256SUMS
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
 RUN gpg --verify SHA256SUMS.asc
-RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS
-RUN grep " bitcoin-${BITCOIN_VERSION}.tar.gz\$" SHA256SUMS | sha256sum -c -
 RUN tar -xzf *.tar.gz
 
 WORKDIR /bitcoin-${BITCOIN_VERSION}
