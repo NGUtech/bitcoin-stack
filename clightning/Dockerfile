@@ -16,12 +16,15 @@ RUN apk --no-cache add autoconf \
   protobuf-dev \
   zeromq-dev \
   py3-mako \
+  py3-pip \
+  py3-setuptools \
   git \
   gmp-dev \
   sqlite-dev \
   gettext
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
+RUN pip3 install mrkd
 
 RUN set -ex \
   && for key in \
