@@ -66,24 +66,18 @@ RUN apk --no-cache add autoconf \
   protobuf-dev \
   zeromq-dev
 
+RUN wget https://raw.githubusercontent.com/bitcoin/bitcoin/master/contrib/builder-keys/keys.txt
 RUN set -ex \
-  && for key in \
-    #laanwj
-    71A3B16735405025D447E8F274810B012346C9A6 \
-  ; do \
-    gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key" || \
-    gpg --batch --keyserver pgp.mit.edu --recv-keys "$key" || \
-    gpg --batch --keyserver keyserver.pgp.com --recv-keys "$key" || \
-    gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" || \
-    gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
-  done
+  && while read fingerprint keyholder_name; \
+  do gpg --keyserver hkps://keys.openpgp.org --recv-keys ${fingerprint}; \
+  done < ./keys.txt
 
 ARG BITCOIN_VERSION
 ENV BITCOIN_PREFIX=/opt/bitcoin
 
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
-RUN gpg --verify SHA256SUMS.asc
+RUN gpg --verify SHA256SUMS.asc bitcoin-${BITCOIN_VERSION}.tar.gz
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS
 RUN grep " bitcoin-${BITCOIN_VERSION}.tar.gz\$" SHA256SUMS | sha256sum -c -
 RUN tar -xzf *.tar.gz
