@@ -82,7 +82,7 @@ ARG BITCOIN_VERSION
 ENV BITCOIN_PREFIX=/opt/bitcoin
 
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS
-RUN sha256sum --ignore-missing --check SHA256SUMS
+RUN grep " bitcoin-${BITCOIN_VERSION}.tar.gz\$" SHA256SUMS | sha256sum -c -
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
 RUN gpg --verify SHA256SUMS.asc
