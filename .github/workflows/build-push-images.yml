@@ -1,4 +1,4 @@
-name: Docker
+name: Build-Push Images
 
 env:
   BUILD_TARGETS: linux/amd64,linux/arm64
@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  build-push-images:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo

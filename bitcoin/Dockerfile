@@ -72,7 +72,7 @@ ENV BITCOIN_PREFIX=/opt/bitcoin
 RUN wget -nv https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS
 RUN wget -nv https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
 RUN wget -nv https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
-RUN sha256sum -c SHA256SUMS
+RUN grep " bitcoin-${BITCOIN_VERSION}.tar.gz\$" SHA256SUMS | sha256sum -c -
 RUN wget -nv https://raw.githubusercontent.com/bitcoin/bitcoin/v${BITCOIN_VERSION}/contrib/builder-keys/keys.txt
 RUN gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys $(cat keys.txt | cut -d' ' -f1)
 RUN gpg --verify SHA256SUMS.asc SHA256SUMS
