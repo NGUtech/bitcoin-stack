@@ -1,7 +1,7 @@
 # Changelog
 
 ## 2022-11-28
- - Update `bitcoin` to v0.21.1
+ - Update `bitcoin` to v0.22.0
 
 ## 2021-11-13
  - Update `eclair` to v0.6.2
