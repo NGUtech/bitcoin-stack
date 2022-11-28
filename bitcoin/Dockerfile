@@ -72,11 +72,11 @@ ENV BITCOIN_PREFIX=/opt/bitcoin
 RUN wget -nv https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS
 RUN wget -nv https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
 RUN wget -nv https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
-RUN grep " bitcoin-${BITCOIN_VERSION}.tar.gz\$" SHA256SUMS | sha256sum -c -
+RUN grep "bitcoin-${BITCOIN_VERSION}.tar.gz\$" SHA256SUMS | sha256sum -c -
 RUN wget -nv https://raw.githubusercontent.com/bitcoin/bitcoin/v${BITCOIN_VERSION}/contrib/builder-keys/keys.txt
 RUN gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys $(cat keys.txt | cut -d' ' -f1) || true
 RUN gpg --batch --keyserver hkps://keyserver.ubuntu.com --recv-keys $(cat keys.txt | cut -d' ' -f1) || true
-RUN [[ $(gpg --verify SHA256SUMS.asc 2>&1 >/dev/null | grep -c "Good signature") -gt $(($(cat SHA256SUMS.asc | grep -c "BEGIN PGP")/2)) ]] || echo "Not enough good signatures."
+RUN [[ $(gpg --verify SHA256SUMS.asc 2>&1 >/dev/null | grep -c "Good signature") -gt $(($(cat SHA256SUMS.asc | grep -c "BEGIN PGP")/2)) ]]
 RUN tar -xzf *.tar.gz
 
 WORKDIR /bitcoin-${BITCOIN_VERSION}

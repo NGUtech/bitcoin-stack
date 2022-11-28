@@ -1,4 +1,4 @@
-name: Build-Push Images
+name: Build & Push Images
 
 env:
   BUILD_TARGETS: linux/amd64,linux/arm64
