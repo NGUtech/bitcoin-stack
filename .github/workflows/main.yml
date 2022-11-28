@@ -8,6 +8,10 @@ on:
     branches: [ master ]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -47,7 +51,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./bitcoin
-          build-args: BITCOIN_VERSION=${{ env.bitcoin }}
+          build-args: BITCOIN_VERSION=${{ steps.dotenv.outputs.bitcoin_version }}
           platforms: ${{ env.BUILD_TARGETS }}
           push: true
           tags: bitcoinstack/bitcoin:${{ env.bitcoin }}
@@ -57,7 +61,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./clightning
-          build-args: CLIGHTNING_VERSION=${{ env.clightning }}
+          build-args: CLIGHTNING_VERSION=${{ steps.dotenv.outputs.clightning_version }}
           platforms: ${{ env.BUILD_TARGETS }}
           push: true
           tags: bitcoinstack/clightning:${{ env.clightning }}
@@ -67,7 +71,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./eclair
-          build-args: ECLAIR_VERSION=${{ env.eclair }}
+          build-args: ECLAIR_VERSION=${{ steps.dotenv.outputs.eclair_version }}
           platforms: ${{ env.BUILD_TARGETS }}
           push: true
           tags: bitcoinstack/eclair:${{ env.eclair }}
@@ -77,7 +81,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./electrs
-          build-args: ELECTRS_VERSION=${{ env.electrs }}
+          build-args: ELECTRS_VERSION=${{ steps.dotenv.outputs.electrs_version }}
           platforms: ${{ env.BUILD_TARGETS }}
           push: true
           tags: bitcoinstack/electrs:${{ env.electrs }}
@@ -87,7 +91,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./elements
-          build-args: ELEMENTS_VERSION=${{ env.elements }}
+          build-args: ELEMENTS_VERSION=${{ steps.dotenv.outputs.elements_version }}
           platforms: ${{ env.BUILD_TARGETS }}
           push: true
           tags: bitcoinstack/elements:${{ env.elements }}
@@ -97,7 +101,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./lnd
-          build-args: LND_VERSION=${{ env.lnd_version }}
+          build-args: LND_VERSION=${{ steps.dotenv.outputs.lnd_version }}
           platforms: ${{ env.BUILD_TARGETS }}
           push: true
           tags: bitcoinstack/lnd:${{ env.lnd }}
