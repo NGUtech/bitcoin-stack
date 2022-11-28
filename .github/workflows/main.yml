@@ -39,7 +39,7 @@ jobs:
       - name: Prepare builds
         id: prepare
         run: |
-          docker manifest inspect bitcoinstack/bitcoin:${{ steps.dotenv.outputs.bitcoin_version }}-alpine &>/dev/null || echo "bitcoin=${{ steps.dotenv.outputs.bitcoin_version }}-alpine" >> $GITHUB_ENV
+          docker manifest inspect bitcoinstack/bitcoin:${{ steps.dotenv.outputs.bitcoin_version }}-alpine &>/dev/null || BV=${{ steps.dotenv.outputs.bitcoin_version }} && echo "bitcoin=${BV}-alpine" >> $GITHUB_ENV && echo "bitcoin_build=${BV##0.}" >> $GITHUB_ENV
           docker manifest inspect bitcoinstack/clightning:${{ steps.dotenv.outputs.clightning_version }}-alpine &>/dev/null || echo "clightning=${{ steps.dotenv.outputs.clightning_version }}-alpine" >> $GITHUB_ENV
           docker manifest inspect bitcoinstack/eclair:${{ steps.dotenv.outputs.eclair_version }} &>/dev/null || echo "eclair=${{ steps.dotenv.outputs.eclair_version }}" >> $GITHUB_ENV
           docker manifest inspect bitcoinstack/electrs:${{ steps.dotenv.outputs.electrs_version }}-alpine &>/dev/null || echo "electrs=${{ steps.dotenv.outputs.electrs_version }}-alpine" >> $GITHUB_ENV
@@ -51,7 +51,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./bitcoin
-          build-args: BITCOIN_VERSION=${{ steps.dotenv.outputs.bitcoin_version }}
+          build-args: BITCOIN_VERSION=${{ env.bitcoin_build }}
           platforms: ${{ env.BUILD_TARGETS }}
           push: true
           tags: bitcoinstack/bitcoin:${{ env.bitcoin }}
