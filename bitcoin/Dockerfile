@@ -55,6 +55,7 @@ RUN apk --no-cache add autoconf \
   automake \
   boost-dev \
   build-base \
+  ca-certificates \
   chrpath \
   file \
   gnupg \
