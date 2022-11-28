@@ -2,6 +2,7 @@
 
 ## 2022-11-28
  - Update `bitcoin` to v0.23.0
+ - Update `elements` to v0.21.0.3
 
 ## 2021-11-13
  - Update `eclair` to v0.6.2
