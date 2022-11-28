@@ -73,8 +73,8 @@ RUN wget -nv https://github.com/ElementsProject/elements/releases/download/eleme
 RUN wget -nv https://github.com/ElementsProject/elements/archive/elements-${ELEMENTS_VERSION}.tar.gz
 # RUN grep "elements-${ELEMENTS_VERSION}.tar.gz\$" SHA256SUMS.asc | sha256sum -c -
 RUN SIGNER_KEY=$(gpg --dry-run --verify SHA256SUMS.asc 2>&1 | grep "RSA" | rev | cut -d' ' -f1 | rev)
-RUN gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys ${SIGNER_KEY} || true
-RUN gpg --batch --keyserver hkps://keyserver.ubuntu.com --recv-keys ${SIGNER_KEY} || true
+RUN gpg --batch --keyserver keys.openpgp.org --recv-keys ${SIGNER_KEY} || true
+RUN gpg --batch --keyserver keyserver.ubuntu.com --recv-keys ${SIGNER_KEY} || true
 RUN gpg --verify SHA256SUMS.asc
 RUN tar -xzf *.tar.gz
 
