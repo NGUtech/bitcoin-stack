@@ -57,7 +57,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./clightning
-          build-args: CLIGHTNING_VERSION=${{ emv.clightning }}
+          build-args: CLIGHTNING_VERSION=${{ env.clightning }}
           platforms: ${{ env.BUILD_TARGETS }}
           push: true
           tags: bitcoinstack/clightning:${{ env.clightning }}
