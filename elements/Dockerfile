@@ -31,7 +31,7 @@ RUN apk --no-cache add autoconf automake build-base libressl
 ENV BERKELEYDB_VERSION=db-4.8.30.NC
 ENV BERKELEYDB_PREFIX=/opt/${BERKELEYDB_VERSION}
 
-RUN wget https://download.oracle.com/berkeley-db/${BERKELEYDB_VERSION}.tar.gz
+RUN wget -nv https://download.oracle.com/berkeley-db/${BERKELEYDB_VERSION}.tar.gz
 RUN tar -xzf *.tar.gz
 RUN sed s/__atomic_compare_exchange/__atomic_compare_exchange_db/g -i ${BERKELEYDB_VERSION}/dbinc/atomic.h
 RUN mkdir -p ${BERKELEYDB_PREFIX}
@@ -81,8 +81,8 @@ RUN set -ex \
 ARG ELEMENTS_VERSION
 ENV ELEMENTS_PREFIX=/opt/elements
 
-RUN wget https://github.com/ElementsProject/elements/releases/download/elements-${ELEMENTS_VERSION}/SHA256SUMS.asc
-RUN wget https://github.com/ElementsProject/elements/archive/elements-${ELEMENTS_VERSION}.tar.gz
+RUN wget -nv https://github.com/ElementsProject/elements/releases/download/elements-${ELEMENTS_VERSION}/SHA256SUMS.asc
+RUN wget -nv https://github.com/ElementsProject/elements/archive/elements-${ELEMENTS_VERSION}.tar.gz
 RUN gpg --verify SHA256SUMS.asc
 # @todo get the correct source bundle checksum from somewhere
 # RUN grep " elements-${ELEMENTS_VERSION}.tar.gz\$" SHA256SUMS.asc | sha256sum -c -

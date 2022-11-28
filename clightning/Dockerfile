@@ -41,11 +41,11 @@ RUN set -ex \
 ARG CLIGHTNING_VERSION
 ENV CLIGHTNING_PREFIX=/opt/clightning
 
-RUN wget https://github.com/ElementsProject/lightning/releases/download/v${CLIGHTNING_VERSION}/SHA256SUMS
-RUN wget https://github.com/ElementsProject/lightning/releases/download/v${CLIGHTNING_VERSION}/SHA256SUMS.asc
-RUN wget https://github.com/ElementsProject/lightning/releases/download/v${CLIGHTNING_VERSION}/clightning-v${CLIGHTNING_VERSION}.zip
+RUN wget -nv https://github.com/ElementsProject/lightning/releases/download/v${CLIGHTNING_VERSION}/SHA256SUMS
+RUN wget -nv https://github.com/ElementsProject/lightning/releases/download/v${CLIGHTNING_VERSION}/SHA256SUMS.asc
+RUN wget -nv https://github.com/ElementsProject/lightning/releases/download/v${CLIGHTNING_VERSION}/clightning-v${CLIGHTNING_VERSION}.zip
 # @todo get the correct source bundle checksum from somewhere
-# RUN gpg --verify SHA256SUMS.asc
+# RUN gpg --verify SHA256SUMS.asc SHA
 # RUN grep " release/clightning-v${CLIGHTNING_VERSION}.zip\$" SHA256SUMS | sed 's/ release\///g' | sha256sum -c -
 RUN unzip -q clightning-v${CLIGHTNING_VERSION}.zip
 
