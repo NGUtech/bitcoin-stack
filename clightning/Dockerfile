@@ -25,7 +25,7 @@ RUN apk --no-cache add autoconf \
   gettext
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
-RUN pip3 install mrkd mistune
+RUN pip3 install mrkd mistune==0.8.4
 
 ARG CLIGHTNING_VERSION
 ENV CLIGHTNING_PREFIX=/opt/clightning
