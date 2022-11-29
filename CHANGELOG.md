@@ -1,8 +1,8 @@
 # Changelog
 
 ## 2022-11-28
- - Update `bitcoin` to v0.23.0
- - Update `elements` to v0.21.0.3
+ - Update `bitcoin` to v23.0 (switching to new numbering convention)
+ - Update `elements` to v22.0.2
 
 ## 2021-11-13
  - Update `eclair` to v0.6.2
