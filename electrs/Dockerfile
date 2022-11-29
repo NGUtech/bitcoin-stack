@@ -14,7 +14,7 @@ WORKDIR /usr/local/src/electrs
 ARG ELECTRS_VERSION
 RUN rustup override set 1.53
 RUN git clone -n https://github.com/romanz/electrs.git . && git checkout v${ELECTRS_VERSION}
-RUN RUSTFLAGS="-C target-feature=-crt-static" cargo install --locked --release --path .
+RUN RUSTFLAGS="-C target-feature=-crt-static" cargo install --locked --no-default-features --jobs 1 --path .
 
 # Build stage for compiled artifacts
 FROM alpine:3.12
