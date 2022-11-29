@@ -27,26 +27,17 @@ RUN apk --no-cache add autoconf \
 RUN ln -s /usr/bin/python3 /usr/bin/python
 RUN pip3 install mrkd
 
-RUN set -ex \
-  && for key in \
-    BFF0F67810C1EED1 \
-  ; do \
-    gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key" || \
-    gpg --batch --keyserver pgp.mit.edu --recv-keys "$key" || \
-    gpg --batch --keyserver keyserver.pgp.com --recv-keys "$key" || \
-    gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" || \
-    gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
-  done
-
 ARG CLIGHTNING_VERSION
 ENV CLIGHTNING_PREFIX=/opt/clightning
 
 RUN wget -nv https://github.com/ElementsProject/lightning/releases/download/v${CLIGHTNING_VERSION}/SHA256SUMS
 RUN wget -nv https://github.com/ElementsProject/lightning/releases/download/v${CLIGHTNING_VERSION}/SHA256SUMS.asc
 RUN wget -nv https://github.com/ElementsProject/lightning/releases/download/v${CLIGHTNING_VERSION}/clightning-v${CLIGHTNING_VERSION}.zip
-# @todo get the correct source bundle checksum from somewhere
-# RUN gpg --verify SHA256SUMS.asc
-# RUN grep " release/clightning-v${CLIGHTNING_VERSION}.zip\$" SHA256SUMS | sed 's/ release\///g' | sha256sum -c -
+RUN grep "clightning-v${CLIGHTNING_VERSION}.zip\$" SHA256SUMS | sed 's/release\///g' | sha256sum -c -
+RUN SIGNER_KEY=$(gpg --dry-run --verify SHA256SUMS.asc 2>&1 | grep "RSA key" | rev | cut -d' ' -f1 | rev)
+RUN gpg --batch --keyserver keys.openpgp.org --recv-keys ${SIGNER_KEY} || true
+RUN gpg --batch --keyserver keyserver.ubuntu.com --recv-keys ${SIGNER_KEY} || true
+# @todo fix verification in action RUN gpg --verify SHA256SUMS.asc
 RUN unzip -q clightning-v${CLIGHTNING_VERSION}.zip
 
 WORKDIR /clightning-v${CLIGHTNING_VERSION}

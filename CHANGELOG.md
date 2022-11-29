@@ -1,8 +1,9 @@
 # Changelog
 
-## 2022-11-28
+## 2022-11-29
  - Update `bitcoin` to v23.0 (switching to new numbering convention)
  - Update `elements` to v22.0.2
+ - Update `clightning` to v0.11.2
 
 ## 2021-11-13
  - Update `eclair` to v0.6.2
