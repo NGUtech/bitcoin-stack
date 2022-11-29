@@ -30,7 +30,6 @@ services:
       'electrs',
       '--timestamp',
       '--network=regtest',
-      '--auth=${BITCOIN_RPC_USER}:${BITCOIN_RPC_PASSWORD}',
       '--daemon-p2p-addr=bitcoin:${BITCOIN_PORT}',
       '--daemon-rpc-addr=bitcoin:${BITCOIN_RPC_PORT}',
       '--electrum-rpc-addr=0.0.0.0:${ELECTRS_PORT}',

@@ -1,1 +1,3 @@
+# auth not available on command line
+auth = "bitcoin:bitcoin"
 verbosity = 4
