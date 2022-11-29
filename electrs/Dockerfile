@@ -12,10 +12,9 @@ RUN apk add --no-cache --update \
 WORKDIR /usr/local/src/electrs
 
 ARG ELECTRS_VERSION
-RUN rustup override set 1.53 \
-  && git clone -n https://github.com/romanz/electrs.git . \
-  && git checkout v${ELECTRS_VERSION} \
-  && RUSTFLAGS="-C target-feature=-crt-static" cargo install --locked --path .
+RUN rustup override set 1.53
+RUN git clone -n https://github.com/romanz/electrs.git . && git checkout v${ELECTRS_VERSION}
+RUN RUSTFLAGS="-C target-feature=-crt-static" cargo install --locked --release --path .
 
 # Build stage for compiled artifacts
 FROM alpine:3.12
