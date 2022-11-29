@@ -26,7 +26,7 @@ ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
 WORKDIR /usr/src
 ARG ECLAIR_VERSION
 RUN git clone -n https://github.com/ACINQ/eclair.git . && git checkout v${ECLAIR_VERSION}
-RUN mvn package -pl eclair-node -am -DskipTests
+RUN mvn package -ntp -pl eclair-node -am -DskipTests
 # It might be good idea to run the tests here, so that the docker build fail if the code is bugged
 
 # We currently use a debian image for runtime because of some jni-related issue with sqlite
