@@ -6,6 +6,7 @@
  - Update `clightning` to v0.12.1
  - Update `eclair` to v0.7.0-patch-disconnect
  - Update `electrs` to v0.9.10
+ - Update `lnd` to v0.14.5-beta
 
 ## 2021-11-13
  - Update `eclair` to v0.6.2

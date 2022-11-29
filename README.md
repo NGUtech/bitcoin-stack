@@ -265,7 +265,12 @@ When you are done you can destroy all running containers and volumes with:
 $ docker-compose down -v
 ```
 
-Multi-arch images can be built locally using the following commands:
+Single architecture images can be built locally as follows:
+```
+$ docker build --build-arg BITCOIN_VERSION=23.0 -t bitcoinstack/bitcoin:23.0-alpine ./bitcoin
+```
+
+Multi-architecture images can be built locally using the following commands:
 ```
 $ docker buildx create --name bitcoinstack --platform linux/amd64,linux/arm64
 $ docker buildx build --builder bitcoinstack --platform linux/amd64,linux/arm64 --build-arg BITCOIN_VERSION=22.0 -t bitcoinstack/bitcoin:22.0-alpine ./bitcoin
