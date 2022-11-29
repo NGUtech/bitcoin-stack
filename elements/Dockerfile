@@ -79,7 +79,7 @@ RUN gpg --batch --keyserver keyserver.ubuntu.com --recv-keys ${SIGNER_KEY} || tr
 # RUN gpg --verify SHA256SUMS-withsources.asc
 RUN tar -xzf *.tar.gz
 
-WORKDIR /elements-elements-${ELEMENTS_VERSION}
+WORKDIR /elements-${ELEMENTS_VERSION}
 
 RUN sed -i '/AC_PREREQ/a\AR_FLAGS=cr' src/univalue/configure.ac
 RUN sed -i '/AX_PROG_CC_FOR_BUILD/a\AR_FLAGS=cr' src/secp256k1/configure.ac
