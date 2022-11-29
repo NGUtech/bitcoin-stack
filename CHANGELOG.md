@@ -4,6 +4,8 @@
  - Update `bitcoin` to v23.0 (switching to new numbering convention)
  - Update `elements` to v22.0.2
  - Update `clightning` to v0.12.1
+ - Update `eclair` to v0.7.0-patch-disconnect
+ - Update `electrs` to v0.9.10
 
 ## 2021-11-13
  - Update `eclair` to v0.6.2
