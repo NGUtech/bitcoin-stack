@@ -51,7 +51,7 @@ FROM alpine:3.12 as builder
 COPY --from=berkeleydb /opt /opt
 
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
-RUN apk --no-cache add autoconf \
+RUN a --no-cache add autoconf \
   automake \
   boost-dev \
   build-base \
@@ -63,6 +63,7 @@ RUN apk --no-cache add autoconf \
   libressl-dev \
   libtool \
   linux-headers \
+  sqlite-dev \
   protobuf-dev \
   zeromq-dev
 

@@ -69,13 +69,14 @@ Precompiled images will be downloaded from Docker Hub (see below for manual buil
 ```
 $ docker-compose up -d bitcoin electrs
 # setup default wallet with predictable addresses
-$ bin/stack bitcoin createwallet "default"
+$ bin/stack bitcoin -named createwallet wallet_name=default descriptors=false
 $ bin/stack bitcoin sethdseed true cSXteaZPxiDNEjtsgMhDKik5CL6YUc2hrEdkm51DrL85873UUFiQ
 $ bin/stack bitcoin generate 101
 $ docker-compose up -d alice bob frank
 
 # Elements can be started optionally
 $ docker-compose up -d elements
+$ bin/stack elements -named createwallet wallet_name=default descriptors=false
 $ bin/stack elements generate 101
 
 # Clightning can also be started on Bitcoin & Elements
@@ -126,12 +127,12 @@ $ bin/stack alice listchannels
 $ bin/stack bob listchannels
 ```
 
-### LND AMP keysend to LND
-The `bob` container is also configured to accept `keysend` transactions using `amp` so multi-part payments can be made without requiring an invoice.
+### LND keysend to LND
+The `bob` container is also configured to accept `keysend` transactions so payments can be made without requiring an invoice.
 ```
 # assuming channel is opened as above
 $ BOB_NODE=$(bin/stack bob getinfo | jq -r '.identity_pubkey')
-$ bin/stack alice sendpayment --amp $BOB_NODE 10000
+$ bin/stack alice sendpayment --keysend --dest $BOB_NODE --amt 10000
 ```
 
 ### LND invoice payment to Clightning
@@ -151,7 +152,7 @@ You can also receive `keysend` payments to `clightning`:
 ```
 # assuming channel is opened as above (might take a minute to sync & activate)
 $ CAROL_NODE=$(bin/stack carol getinfo | jq -r '.id')
-$ bin/stack bob sendpayment --keysend $CAROL_NODE 10000
+$ bin/stack bob sendpayment --keysend --dest $CAROL_NODE --amt 10000
 ```
 
 ### LND PSBT based channel creation
@@ -159,7 +160,7 @@ For this process we will use two terminal windows one for LND and one for Bitcoi
 ```
 # LND terminal
 $ BOB_NODE=$(bin/stack bob getinfo | jq -r '.identity_pubkey')
-$ bin/stack alice openchannel $BOB_NODE 750000 --psbt
+$ bin/stack alice openchannel --node_key $BOB_NODE --local_amt 750000 --psbt
 # Bitcoin terminal
 $ bin/stack bitcoin walletcreatefundedpsbt '[]' '[{"<address chosen by lnd>":0.00750000}]' | jq -r '.psbt' > funded.psbt
 $ docker cp funded.psbt "$(docker-compose ps -q alice)":/funded.psbt

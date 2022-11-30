@@ -7,6 +7,7 @@
  - Update `eclair` to v0.7.0-patch-disconnect
  - Update `electrs` to v0.9.10
  - Update `lnd` to v0.15.4-beta
+ - Update `rtl` to v0.13.2
 
 ## 2021-11-13
  - Update `eclair` to v0.6.2

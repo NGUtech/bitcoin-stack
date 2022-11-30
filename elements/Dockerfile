@@ -63,6 +63,7 @@ RUN apk --no-cache add autoconf \
   libressl-dev \
   libtool \
   linux-headers \
+  sqlite-dev \
   protobuf-dev \
   zeromq-dev
 
