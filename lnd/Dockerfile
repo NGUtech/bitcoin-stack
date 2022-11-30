@@ -1,4 +1,4 @@
-FROM golang:1.16-alpine3.12 as builder
+FROM golang:1.19-alpine3.12 as builder
 
 WORKDIR /go/src/github.com/lightningnetwork/lnd
 
