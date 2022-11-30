@@ -45,6 +45,7 @@ jobs:
           docker manifest inspect bitcoinstack/electrs:${{ steps.dotenv.outputs.electrs_version }}-alpine &>/dev/null || echo "electrs=${{ steps.dotenv.outputs.electrs_version }}-alpine" >> $GITHUB_ENV
           docker manifest inspect bitcoinstack/elements:${{ steps.dotenv.outputs.elements_version }}-alpine &>/dev/null || echo "elements=${{ steps.dotenv.outputs.elements_version }}-alpine" >> $GITHUB_ENV
           docker manifest inspect bitcoinstack/lnd:${{ steps.dotenv.outputs.lnd_version }}-alpine &>/dev/null || echo "lnd=${{ steps.dotenv.outputs.lnd_version }}-alpine" >> $GITHUB_ENV
+          docker manifest inspect bitcoinstack/relay:${{ steps.dotenv.outputs.relay_version }} &>/dev/null || echo "relay=${{ steps.dotenv.outputs.relay_version }}" >> $GITHUB_ENV
 
       - name: Build and push Bitcoin
         if: env.bitcoin
@@ -105,3 +106,13 @@ jobs:
           platforms: ${{ env.BUILD_TARGETS }}
           push: true
           tags: bitcoinstack/lnd:${{ env.lnd }}
+
+      - name: Build and push Relay
+        if: env.relay
+        uses: docker/build-push-action@v3
+        with:
+          context: ./relay
+          build-args: RELAY_VERSION=${{ steps.dotenv.outputs.relay_version }}
+          platforms: ${{ env.BUILD_TARGETS }}
+          push: true
+          tags: bitcoinstack/relay:${{ env.relay }}

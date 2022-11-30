@@ -3,7 +3,7 @@ version: "2.4"
 services:
   demo:
     container_name: ${COMPOSE_PROJECT_NAME}_demo
-    image: bitcoinstack/demo:0.1
+    image: bitcoinstack/relay:${RELAY_VERSION}
     restart: unless-stopped
     command: ['node', 'subscriber.js']
     depends_on:
@@ -17,7 +17,7 @@ services:
       - ALICE_HOST
       - ALICE_RPC_PORT
     volumes:
-      - ./node/app:/usr/src/app
+      - ./relay/app:/usr/src/app
       - alice_data:/lnd:ro
     networks:
       - bitcoinstacknet

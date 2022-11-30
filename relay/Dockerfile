@@ -11,11 +11,14 @@ ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 USER node
 RUN npm install -g \
   bitcoin-json-rpc@^1.0.2 \
+  esm \
   @grpc/proto-loader@^0.5.2 \
   amqplib@^0.6.0 \
   dotenv@^8.2.0 \
   grpc@^1.24.1 \
-  zeromq@^5.1.1
+  zeromq@^5.1.1 \
+  @radar/lnrpc@^0.11.1-beta.1 \
+  ws@^7.4.4
 
 FROM node:14-alpine3.12
 
