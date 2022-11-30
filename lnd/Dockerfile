@@ -1,4 +1,4 @@
-FROM golang:1.19-alpine3.12 as builder
+FROM golang:1.18-alpine3.15 as builder
 
 WORKDIR /go/src/github.com/lightningnetwork/lnd
 
@@ -13,7 +13,7 @@ RUN apk add --no-cache --update alpine-sdk git make \
   && make \
   && make install tags="autopilotrpc chainrpc invoicesrpc peersrpc routerrpc signrpc walletrpc watchtowerrpc wtclientrpc"
 
-FROM alpine:3.12
+FROM alpine:3.15
 
 RUN adduser -S lnd
 RUN apk add --no-cache bash su-exec
