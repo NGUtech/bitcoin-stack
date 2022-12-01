@@ -20,7 +20,9 @@ jobs:
           bin/stack bitcoin -named createwallet wallet_name=default descriptors=false
           bin/stack bitcoin sethdseed true cSXteaZPxiDNEjtsgMhDKik5CL6YUc2hrEdkm51DrL85873UUFiQ
           bin/stack bitcoin generate 101
-      - name: Query Containers
+      - name: Query Bitcoind
+        run: curl --data-binary '{"jsonrpc":"1.0","id":"curltext","method":"getwalletinfo","params":[]}' -H 'content-type:text/plain;' http://bitcoin:bitcoin@127.0.0.1:18889
+      - name: Query Electrs
         run: |
-          curl -s --data-binary '{"jsonrpc":"1.0","id":"curltext","method":"getwalletinfo","params":[]}' -H 'content-type:text/plain;' http://bitcoin:bitcoin@127.0.0.1:18889
           echo '{"jsonrpc":"2.0","method":"blockchain.block.header","id":"curltext","params":[0]}' | nc 127.0.0.1 50001
+          echo '{"jsonrpc":"2.0","method":"blockchain.block.header","id":"curltext","params":[101]}' | nc 127.0.0.1 50001
