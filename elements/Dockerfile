@@ -70,10 +70,10 @@ RUN apk --no-cache add autoconf \
 ARG ELEMENTS_VERSION
 ENV ELEMENTS_PREFIX=/opt/elements
 
-RUN wget -nv https://github.com/ElementsProject/elements/releases/download/elements-${ELEMENTS_VERSION}/SHA256SUMS.asc
+RUN wget -nv https://github.com/ElementsProject/elements/releases/download/elements-${ELEMENTS_VERSION}/SHA256SUMS-withsources.asc
 RUN wget -nv https://github.com/ElementsProject/elements/releases/download/elements-${ELEMENTS_VERSION}/elements-${ELEMENTS_VERSION}.tar.gz
-RUN grep "elements-${ELEMENTS_VERSION}.tar.gz\$" SHA256SUMS.asc | sha256sum -c -
-RUN SIGNER_KEY=$(gpg --dry-run --verify SHA256SUMS.asc 2>&1 | grep "RSA key" | rev | cut -d' ' -f1 | rev)
+RUN grep "elements-${ELEMENTS_VERSION}.tar.gz\$" SHA256SUMS-withsources.asc | sha256sum -c -
+RUN SIGNER_KEY=$(gpg --dry-run --verify SHA256SUMS-withsources.asc 2>&1 | grep "RSA key" | rev | cut -d' ' -f1 | rev)
 RUN gpg --batch --keyserver keys.openpgp.org --recv-keys ${SIGNER_KEY} || true
 RUN gpg --batch --keyserver keyserver.ubuntu.com --recv-keys ${SIGNER_KEY} || true
 # @todo fix verification in action RUN gpg --verify SHA256SUMS.asc
