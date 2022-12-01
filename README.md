@@ -79,7 +79,7 @@ $ docker compose up -d alice bob frank
 $ docker compose up -d elements
 # setup default wallet with predictable addresses
 $ bin/stack elements -named createwallet wallet_name=default descriptors=false
-$ bin/stack elements sethdseed true KyNW4F2XG6waxV7cvXq5PbyZwx5xUMxyWX1959hZ4jPPJaiTgm1r
+$ bin/stack elements sethdseed true cU3PLoGpKkZ3M72w5jLB7Yub5WSLvep28GQQbFYQSi8JZcppAFVD
 $ bin/stack elements generate 101
 
 # Clightning can also be started on Bitcoin & Elements
@@ -232,10 +232,10 @@ $ bin/stack emma listinvoices
 REST/RPC queries can be executed directly from your application to each daemon. Use standard RPC adapters to connect to these and have full control over money flow; hook into message queues for notifications B).
 ```
 # bitcoin
-$ curl --data-binary '{"jsonrpc":"1.0","id":"curltext","method":"getwalletinfo","params":[]}' -H 'content-type:text/plain;' http://bitcoin:bitcoin@127.0.0.1:18889/
+$ curl --data-binary '{"jsonrpc":"1.0","id":"curltext","method":"getwalletinfo","params":[]}' -H 'content-type:text/plain;' http://bitcoin:bitcoin@127.0.0.1:18889
 
 # elements
-$ curl --data-binary '{"jsonrpc":"1.0","id":"curltext","method":"getwalletinfo","params":[]}' -H 'content-type:text/plain;' http://elements:elements@127.0.0.1:18886/
+$ curl --data-binary '{"jsonrpc":"1.0","id":"curltext","method":"getwalletinfo","params":[]}' -H 'content-type:text/plain;' http://elements:elements@127.0.0.1:18886
 
 # lnd
 $ ALICE_MACAROON_HEADER="Grpc-Metadata-macaroon: `docker compose exec -T alice cat /home/lnd/.lnd/data/chain/bitcoin/regtest/admin.macaroon | xxd -ps -u -c 1000`"

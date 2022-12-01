@@ -33,7 +33,8 @@ services:
       '--daemon-p2p-addr=bitcoin:${BITCOIN_PORT}',
       '--daemon-rpc-addr=bitcoin:${BITCOIN_RPC_PORT}',
       '--electrum-rpc-addr=0.0.0.0:${ELECTRS_PORT}',
-      '--db-dir=/home/electrs/db'
+      '--db-dir=/home/electrs/db',
+      '--log-filters=INFO'
     ]
     ports:
       - "127.0.0.1:${ELECTRS_PORT}:${ELECTRS_PORT}"

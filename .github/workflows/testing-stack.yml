@@ -24,5 +24,5 @@ jobs:
         run: curl --data-binary '{"jsonrpc":"1.0","id":"curltext","method":"getwalletinfo","params":[]}' -H 'content-type:text/plain;' http://bitcoin:bitcoin@127.0.0.1:18889
       - name: Query Electrs
         run: |
-          echo '{"jsonrpc":"2.0","method":"blockchain.block.header","id":"curltext","params":[0]}' | nc 127.0.0.1 50001 -w5
-          echo '{"jsonrpc":"2.0","method":"blockchain.block.header","id":"curltext","params":[101]}' | nc 127.0.0.1 50001 -w5
+          echo '{"jsonrpc":"2.0","method":"blockchain.block.header","id":"curltext","params":[0]}' | nc 127.0.0.1 50001 -w3
+          echo '{"jsonrpc":"2.0","method":"blockchain.block.header","id":"curltext","params":[101]}' | nc 127.0.0.1 50001 -w3

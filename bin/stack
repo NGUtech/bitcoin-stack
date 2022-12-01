@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
+ENV_FILE=.env
 CWD="$( cd "$(dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd "$CWD/.."
-source .env
+source $ENV_FILE
 
 EXEC_OPTS="-T"
 while [[ "$1" == -* ]]; do
@@ -138,7 +139,7 @@ function passthru_command() {
     local NODE_IMPL=$(getImpl $NODE)
     case "$NODE_IMPL" in
         bitcoin)
-            docker-compose exec $EXEC_OPTS --user bitcoin $NODE bitcoin-cli \
+            docker compose --env-file $ENV_FILE exec $EXEC_OPTS --user bitcoin $NODE bitcoin-cli \
                 -rpcuser=$BITCOIN_RPC_USER \
                 -rpcpassword=$BITCOIN_RPC_PASSWORD \
                 -rpcconnect=$BITCOIN_HOST \
@@ -146,7 +147,7 @@ function passthru_command() {
                 $ARGS
             ;;
         elements)
-            docker-compose exec $EXEC_OPTS --user elements $NODE elements-cli \
+            docker compose --env-file $ENV_FILE exec $EXEC_OPTS --user elements $NODE elements-cli \
                 -rpcuser=$ELEMENTS_RPC_USER \
                 -rpcpassword=$ELEMENTS_RPC_PASSWORD \
                 -rpcconnect=$ELEMENTS_HOST \
@@ -155,7 +156,7 @@ function passthru_command() {
             ;;
         lnd)
             NODE_RPC_PORT=$(ucase $NODE)_RPC_PORT
-            docker-compose exec $EXEC_OPTS --user lnd $NODE lncli \
+            docker compose --env-file $ENV_FILE exec $EXEC_OPTS --user lnd $NODE lncli \
                 --network regtest \
                 --rpcserver 127.0.0.1:${!NODE_RPC_PORT} \
                 $ARGS
@@ -163,13 +164,13 @@ function passthru_command() {
         clightning)
             local NETWORK=$(dockerInspect "$NODE" ".Args")
             [[ $NETWORK =~ .+--network=([[:alnum:]_-]+) ]]
-            docker-compose exec $EXEC_OPTS --user clightning $NODE lightning-cli \
+            docker compose --env-file $ENV_FILE exec $EXEC_OPTS --user clightning $NODE lightning-cli \
                 --network ${BASH_REMATCH[1]} \
                 $ARGS
             ;;
         eclair)
             local NODE_API_PORT=$(ucase $NODE )_API_PORT
-            docker-compose exec $EXEC_OPTS $NODE eclair-cli \
+            docker compose --env-file $ENV_FILE exec $EXEC_OPTS $NODE eclair-cli \
                 -p password \
                 -a $NODE:${!NODE_API_PORT} \
                 $ARGS
