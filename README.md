@@ -49,7 +49,7 @@ Everything is configured to run in **regtest** mode but can be adjusted as requi
  - `jq` tool is used in examples for parsing json responses.
  - All nodes will sync to chain after the first Bitcoin & Elements regtest blocks are generated.
  - Precompiled images are provided on Docker Hub but it is not recommended to use them in production environments.
- - Ports and other daemon configuration can be changed in the `.env` and `docker compose.yml` files.
+ - Ports and other daemon configuration can be changed in the `.env` and `docker-compose` files.
 
 ### To Do
  - Orchestration
@@ -68,27 +68,27 @@ Everything is configured to run in **regtest** mode but can be adjusted as requi
 Precompiled images will be downloaded from Docker Hub (see below for manual build instructions). From your terminal in this folder:
 
 ```
-$ docker compose up -d bitcoin electrs
+$ bin/stack up -d bitcoin electrs
 # setup default wallet with predictable addresses
 $ bin/stack bitcoin -named createwallet wallet_name=default descriptors=false
 $ bin/stack bitcoin sethdseed true cSXteaZPxiDNEjtsgMhDKik5CL6YUc2hrEdkm51DrL85873UUFiQ
 $ bin/stack bitcoin generate 101
-$ docker compose up -d alice bob frank
+$ bin/stack up -d alice bob frank
 
 # Elements can be started optionally
-$ docker compose up -d elements
+$ bin/stack up -d elements
 # setup default wallet with predictable addresses
 $ bin/stack elements -named createwallet wallet_name=default descriptors=false
 $ bin/stack elements sethdseed true cU3PLoGpKkZ3M72w5jLB7Yub5WSLvep28GQQbFYQSi8JZcppAFVD
 $ bin/stack elements generate 101
 
 # Clightning can also be started on Bitcoin & Elements
-$ docker compose up -d carol dave emma
+$ bin/stack up -d carol dave emma
 ```
 
 Check containers are up and running with:
 ```
-$ docker compose ps
+$ docker ps -a
 ```
 
 Use the provided CLI tool to execute commands in the containers:
@@ -105,7 +105,7 @@ $ bin/stack frank getinfo
 
 Generate some bitcoin tx spam to enable smart fee estimation.
 ```
-$ docker compose up -d demo
+$ bin/stack up -d demo
 $ docker compose exec demo sh -c "node bitcoin-spam.js"
 $ bin/stack bitcoin estimatesmartfee 24 ECONOMICAL
 ```
@@ -113,7 +113,7 @@ $ bin/stack bitcoin estimatesmartfee 24 ECONOMICAL
 ### Notification listener demo
 Start following the demo subscriber node in a separate terminal window to see invoice messages as they come through.
 ```
-$ docker compose logs -f demo
+$ bin/stack logs -f demo
 $ bin/stack alice addinvoice 1000
 ```
 
@@ -255,18 +255,18 @@ $ echo '{"jsonrpc":"2.0","method":"blockchain.block.header","id":"curltext","par
 ## RTL Admin
 A [Ride-The-Lightning](https://github.com/Ride-The-Lightning/RTL) admin UI container is available. The interface is configured to monitor `alice` and `bob` by default and is available at `http://localhost:3000` with login password `rtl`.
 ```
-$ docker compose up -d rtl
+$ bin/stack up -d rtl
 ```
 
 ## Other information
 View daemon logs as follows:
 ```
-$ docker compose logs -f
+$ bin/stack logs -f
 ```
 
 When you are done you can destroy all running containers and volumes with:
 ```
-$ docker compose down -v
+$ bin/stack down -v
 ```
 
 Single architecture images can be built locally as follows:

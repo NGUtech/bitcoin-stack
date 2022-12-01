@@ -136,6 +136,20 @@ function pegin_command() {
 }
 
 function passthru_command() {
+    case "$NODE" in
+        up)
+            docker compose --env-file $ENV_FILE up $ARGS
+            exit $?
+            ;;
+        down)
+            docker compose --env-file $ENV_FILE down $ARGS
+            exit $?
+            ;;
+        logs)
+            docker compose --env-file $ENV_FILE logs $ARGS
+            exit $?
+            ;;
+    esac
     local NODE_IMPL=$(getImpl $NODE)
     case "$NODE_IMPL" in
         bitcoin)
