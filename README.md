@@ -55,6 +55,7 @@ Everything is configured to run in **regtest** mode but can be adjusted as requi
  - Orchestration
  - Clightning REST/RPC example
  - Add Clightning & Eclair configs to RTL
+ - Lightning Terminal
  - Taro/RGB protocols
  - Libbitcoin reference
  - Elements token creation and transaction scripts
@@ -69,14 +70,15 @@ Precompiled images will be downloaded from Docker Hub (see below for manual buil
 ```
 $ docker compose up -d bitcoin electrs
 # setup default wallet with predictable addresses
-$ bin/stack bitcoin createwallet default
+$ bin/stack bitcoin -named createwallet wallet_name=default descriptors=false
 $ bin/stack bitcoin sethdseed true cSXteaZPxiDNEjtsgMhDKik5CL6YUc2hrEdkm51DrL85873UUFiQ
 $ bin/stack bitcoin generate 101
 $ docker compose up -d alice bob frank
 
 # Elements can be started optionally
 $ docker compose up -d elements
-$ bin/stack elements createwallet default
+# setup default wallet with predictable addresses
+$ bin/stack elements -named createwallet wallet_name=default descriptors=false
 $ bin/stack elements sethdseed true KyNW4F2XG6waxV7cvXq5PbyZwx5xUMxyWX1959hZ4jPPJaiTgm1r
 $ bin/stack elements generate 101
 
