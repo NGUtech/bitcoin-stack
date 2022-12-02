@@ -2,6 +2,7 @@
 
 ## 2022-12-02
  - Update `eclair` to v0.8.0
+ - Update `lnd` to v0.15.5-beta
 
 ## 2022-11-29
  - Update `bitcoin` to v23.0 (switching to new numbering convention)
