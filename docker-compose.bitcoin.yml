@@ -152,7 +152,7 @@ services:
 
   frank:
     container_name: ${COMPOSE_PROJECT_NAME}_frank
-    image: bitcoinstack/eclair:0.6.1
+    image: bitcoinstack/eclair:${ECLAIR_VERSION}
     restart: unless-stopped
     command: ["bash", "eclair-node/bin/eclair-node.sh"]
     environment:

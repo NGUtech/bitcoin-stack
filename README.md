@@ -197,7 +197,7 @@ A `clightning` plugin example is included for more advanced feature development.
 $ bin/stack carol hello yourname
 ```
 
-### Eclair invoice payment to Clightning
+### Eclair invoice payment through LND to Clightning
 Similar commands will connect `frank` to `bob` from the `eclair` implementation of LN on Bitcoin.
 ```
 $ bin/stack frank channelto bob 10000000
