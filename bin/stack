@@ -56,7 +56,7 @@ function getAddress() {
     local IMPL=$(getImpl $1)
     case "$IMPL" in
         lnd) echo $(bin/stack $1 newaddress np2wkh | jq -r '.address'); ;;
-        clightning) echo $(bin/stack $1 newaddr p2sh-segwit | jq -r '.address'); ;;
+        clightning) echo $(bin/stack $1 newaddr p2sh-segwit | jq -r '.["p2sh-segwit"]'); ;;
         eclair) echo $(bin/stack $1 getnewaddress); ;;
     esac
 }

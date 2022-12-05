@@ -59,6 +59,7 @@ Everything is configured to run in **regtest** mode but can be adjusted as requi
  - Taro/RGB protocols
  - Libbitcoin reference
  - Elements token creation and transaction scripts
+ - Elements pegout example
  - Token swaps within Elements
  - Lightning swaps across Bitcoin and Elements
  - Trampoline routing example
