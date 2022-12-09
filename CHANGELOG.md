@@ -1,5 +1,8 @@
 # Changelog
 
+## 2022-12-09
+ - Update `clightning` to v22.11.1
+
 ## 2022-12-02
  - Update `eclair` to v0.8.0
  - Update `lnd` to v0.15.5-beta
